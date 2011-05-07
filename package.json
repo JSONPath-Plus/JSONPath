@@ -1,0 +1,13 @@
+{
+  "author": "Stefan Goessner",
+  "name": "JSONPath",
+  "description": "A JS implementation of JSONPath",
+  "version": "0.8.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/s3u/JSONPath.git"
+  },
+  "main" : "./lib/jsonpath",
+  "dependencies": {},
+  "devDependencies": {}
+}
