@@ -1,4 +1,3 @@
-
 To install
     
     npm install JSONPath
@@ -6,6 +5,6 @@ To install
 To evaluate,
 
     var jsonpath = require('JSONPath');
-    jsonpath.exec(obj, path);
+    jsonpath.eval(obj, path);
 
 See http://www.opensource.org/licenses/mit-license.php for license.
