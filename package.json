@@ -2,6 +2,10 @@
   "author": "Stefan Goessner",
   "name": "JSONPath",
   "description": "A JS implementation of JSONPath",
+  "contributors": [ 
+    { "name": "Stefan Goessner", "email": "subbu@subbu.org" },
+    { "name": "Mike Brevoort", "email": "mike@brevoort.com" }
+  ],  
   "version": "0.8.1",
   "repository": {
     "type": "git",
