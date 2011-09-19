@@ -1,11 +1,18 @@
-To install
+Install
+=======
     
     npm install JSONPath
 
-To evaluate,
+Evaluate
+========
 
     var jsonpath = require('JSONPath');
     jsonpath.eval(obj, path);
+
+Or more concisely:
+
+	var jsonpath = require('JSONPath').eval;
+	jsonpath(obj, path);
 
 Examples
 ========
