@@ -1,7 +1,8 @@
-var jsonpath = require("../").eval
-  , testCase = require('nodeunit').testCase
+var assert = require('assert'),
+    vows = require('vows'),
+    JSONPath = require("../lib/jsonpath");
 
-// tests based on examples at http://goessner.net/articles/JsonPath/
+var jsonpath = JSONPath.eval;
 
 var json = {"store": {
     "book": [ 
@@ -35,126 +36,116 @@ var json = {"store": {
   }
 };
 
+var t1 = {
+  simpleString: "simpleString",
+  "@" : "@asPropertyName",
+  "$" : "$asPropertyName",
+  "a$a": "$inPropertyName",
+  "$": {
+    "@": "withboth",
+  },
+  a: {
+    b: {
+      c: "food"
+    }
+  }
+};
 
-module.exports = testCase({
-    
-    // ============================================================================    
+vows.describe('JSONPath').addBatch({
+  '.eval': {
+    'requires a JSON object': function() {
+      assert.throws(function() {
+          JSONPath.eval();
+        },
+        /JSON/
+      );
+    },
+    'requires an expression': function() {
+      assert.throws(function() {
+          JSONPath.eval({});
+        },
+        /expression/
+      );
+    },
+    'requires a valid resultType': function() {
+      assert.throws(function() {
+          JSONPath.eval({}, 'yo', { resultType: 'foo' });
+        },
+        /resultType/
+      );
+    }
+  },
+
+  'tests based on examples at http://goessner.net/articles/JsonPath/': {
     "wildcards": function(test) {
-    // ============================================================================    
-        test.expect(1);
         var books = json.store.book;
         var expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         var result = jsonpath(json, "$.store.book[*].author");
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
     
-    // ============================================================================    
     "all properties, entire tree": function(test) {
-    // ============================================================================    
-        test.expect(1);
         var books = json.store.book;
         var expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         var result = jsonpath(json, "$..author");
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
     
-    // ============================================================================    
     "all sub properties, single level": function(test) {
-    // ============================================================================    
-        test.expect(1);
         var expected = [json.store.book, json.store.bicycle];
         var result = jsonpath(json, "$.store.*");
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
 
-    // ============================================================================    
     "all sub properties, entire tree": function(test) {
-    // ============================================================================    
-        test.expect(1);
         var books = json.store.book;
         var expected = [books[0].price, books[1].price, books[2].price, books[3].price, json.store.bicycle.price];
         var result = jsonpath(json, "$.store..price");
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
     
-    // ============================================================================    
     "n property of entire tree": function(test) {
-    // ============================================================================    
-        test.expect(1);
         var books = json.store.book;
         var expected = [books[2]];
         var result = jsonpath(json, "$..book[2]");
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
 
-    // ============================================================================    
     "last property of entire tree": function(test) {
-    // ============================================================================    
-        test.expect(2);
         var books = json.store.book;
         var expected = [books[3]];
         var result = jsonpath(json, "$..book[(@.length-1)]");
-        test.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
         
         result = jsonpath(json, "$..book[-1:]"); 
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
     
-    // ============================================================================    
     "range of property of entire tree": function(test) {
-    // ============================================================================    
-        test.expect(2);
         var books = json.store.book;
         var expected = [books[0], books[1]];
         var result = jsonpath(json, "$..book[0,1]"); 
-        test.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
         
         result = jsonpath(json, "$..book[:2]"); 
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
     
-    // ============================================================================    
-    "filter all properties if sub property exists,o entire tree": function(test) {
-    // ============================================================================    
-        test.expect(1);
+    "filter all properties if sub property exists, or entire tree": function(test) {
         var books = json.store.book;
         var expected = [books[2], books[3]];
         var result = jsonpath(json, "$..book[?(@.isbn)]"); 
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
     
-    // ============================================================================    
     "filter all properties if sub property greater than of entire tree": function(test) {
-    // ============================================================================    
-        test.expect(1);
         var books = json.store.book;
         var expected = [books[0], books[2]];
         var result = jsonpath(json, "$..book[?(@.price<10)]"); 
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
     },
     
-    // ============================================================================    
     "all properties of a json structure": function(test) {
-    // ============================================================================    
-        // test.expect(1);
         var expected = [
           json.store,
           json.store.book,
@@ -166,12 +157,25 @@ module.exports = testCase({
         expected.push(json.store.bicycle.price);
 
         var result = jsonpath(json, "$..*"); 
-        test.deepEqual(expected, result);
-        
-        test.done();
+        assert.deepEqual(result, expected);
+    },
+
+    "test undefined, null": function(test) {
+        assert.throws(function() { jsonpath(undefined, "foo") });
+        assert.throws(function() { jsonpath(null, "foo") });
+        assert.equal(undefined, jsonpath({}, "foo")[0]);
+        assert.equal(undefined, jsonpath({ a: "b" }, "foo")[0]);
+        assert.equal(undefined, jsonpath({ a: "b" }, "foo")[100]);
+    },
+
+    "test $ and @": function(test) {
+        assert.equal(t1["$"],   jsonpath(t1, "\$")[0]);
+        assert.equal(t1["$"],   jsonpath(t1, "$")[0]);
+        assert.equal(t1["a$a"], jsonpath(t1, "a$a")[0]);
+        assert.equal(t1["@"],   jsonpath(t1, "\@")[0]);
+        assert.equal(t1["@"],   jsonpath(t1, "@")[0]);
+        assert.equal(t1["$"]["@"], jsonpath(t1, "$.$.@")[0]);
+        assert.equal(undefined, jsonpath(t1, "\@")[1]);
     }
-    
-    
-    
-        
-});
+  }
+}).export(module);

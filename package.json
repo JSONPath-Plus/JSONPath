@@ -4,16 +4,17 @@
   "description": "A JS implementation of JSONPath",
   "contributors": [ 
     { "name": "Stefan Goessner", "email": "subbu@subbu.org" },
-    { "name": "Mike Brevoort", "email": "mike@brevoort.com" }
+    { "name": "Mike Brevoort", "email": "mike@brevoort.com" },
+    { "name": "Derek Kastner", "email": "dkastner@gmail.com" }
   ],  
-  "version": "0.8.2",
+  "version": "0.9.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/s3u/JSONPath.git"
+    "url": "git://github.com/dkastner/JSONPath.git"
   },
   "main" : "./lib/jsonpath",
   "dependencies": {},
   "devDependencies": {
-    "nodeunit": "latest"
+    "vows": "latest"
   }
 }
