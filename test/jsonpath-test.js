@@ -1,4 +1,5 @@
 var assert = require('assert'),
+    fs = require('fs'),
     vows = require('vows'),
     JSONPath = require("../lib/jsonpath");
 
@@ -176,6 +177,40 @@ vows.describe('JSONPath').addBatch({
         assert.equal(t1["@"],   jsonpath(t1, "@")[0]);
         assert.equal(t1["$"]["@"], jsonpath(t1, "$.$.@")[0]);
         assert.equal(undefined, jsonpath(t1, "\@")[1]);
-    }
+    },
+
+    'matches $.quotes[?(@.pricing.signature == "abc123")].journey.stages[*]': function() {
+      var obj = JSON.parse(fs.readFileSync('test/fixtures/bing.json'));
+      var expected = [
+        {"id":"13", "carrier":"CO", "depInt":4,"arrInt":5,"duration":405,"redeye":false,"shortConnection":false,"longConnection":false,"depOrder":30534,"arrOrder":30759,"legs":[{"id":"14/0",
+"orig":"LAN",
+"dest":"ORD",
+"dep":"2011-10-28T16:18",
+"arr":"2011-10-28T16:18",
+"duration":60,"carrier":"CO",
+"flight":"6440"},{"id":"15/0",
+"orig":"ORD",
+"dest":"PDX",
+"dep":"2011-10-28T17:50",
+"arr":"2011-10-28T20:03",
+"duration":253,"carrier":"CO",
+"flight":"949"}],"connections":[{"duration":92,"short":false,"long":false}]},{"id":"16",
+"carrier":"CO",
+"depInt":2,"arrInt":5,"duration":509,"redeye":false,"shortConnection":false,"longConnection":false,"depOrder":32878,"arrOrder":33567,"legs":[{"id":"17/0",
+"orig":"PDX",
+"dest":"ORD",
+"dep":"2011-10-30T07:22",
+"arr":"2011-10-30T13:10",
+"duration":228,"carrier":"CO",
+"flight":"705"},{"id":"18/0",
+"orig":"ORD",
+"dest":"LAN",
+"dep":"2011-10-30T16:59",
+"arr":"2011-10-30T18:51",
+"duration":52,"carrier":"CO",
+"flight":"6046"}],"connections":[{"duration":229,"short":false,"long":false}]}];
+
+      assert.deepEqual(jsonpath(obj[0], '$.quotes[?(@.pricing.signature == "A6tT8o3xQqjRVMhxbd7URwf2rj53c5Jjl88UXYblt5ZgyfxY.7eepx2sh3ZLMAO-RQKS8aatkf7aDxGybFSHXIfaxmSXlepOVwSjaZAMQx2Vn0kVawxAqk-fy9C1X1MfYSAmVBR1c05iblSMFrysgRVwIQ4UNr0daD7sfPUJbfqF2lwKG2aBab41sQ3LfZC2P4or9Fjxs0zwreDp3PBfGLT8RLqnrYaonWfqqA.HFbA4ScgOFU3YsUD36CSod1cu1aMhtbccJD9ZvTP5g6hXLMYq4XXQT4zwgAx3zp7kjEm2x.epFpYZ2MQ8yYrvN4e6R2BbN0jPfWV1QWirpfSh2IKUzsCV3b3b-FK1BTKYlQCzzXoZRUGu8uxg--pzE11wMBKyMF12OavJpx4TXdey56gLDXLVdYUvFbzswfv2YlxQ7k6cNugvO8WgZbaJmQbalCJ.9gnN0sBfryrTRC79lEaLOjsPiOCTnIyDcECDuf-C")].journey.stages[*]'), expected);
+    },
   }
 }).export(module);
