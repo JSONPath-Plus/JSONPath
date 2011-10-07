@@ -1,6 +1,6 @@
 {
   "author": "Stefan Goessner",
-  "name": "JSONPath",
+  "name": "dkastner-JSONPath",
   "description": "A JS implementation of JSONPath",
   "contributors": [ 
     { "name": "Stefan Goessner", "email": "subbu@subbu.org" },
