@@ -212,5 +212,17 @@ vows.describe('JSONPath').addBatch({
 
       assert.deepEqual(jsonpath(obj[0], '$.quotes[?(@.pricing.signature == "A6tT8o3xQqjRVMhxbd7URwf2rj53c5Jjl88UXYblt5ZgyfxY.7eepx2sh3ZLMAO-RQKS8aatkf7aDxGybFSHXIfaxmSXlepOVwSjaZAMQx2Vn0kVawxAqk-fy9C1X1MfYSAmVBR1c05iblSMFrysgRVwIQ4UNr0daD7sfPUJbfqF2lwKG2aBab41sQ3LfZC2P4or9Fjxs0zwreDp3PBfGLT8RLqnrYaonWfqqA.HFbA4ScgOFU3YsUD36CSod1cu1aMhtbccJD9ZvTP5g6hXLMYq4XXQT4zwgAx3zp7kjEm2x.epFpYZ2MQ8yYrvN4e6R2BbN0jPfWV1QWirpfSh2IKUzsCV3b3b-FK1BTKYlQCzzXoZRUGu8uxg--pzE11wMBKyMF12OavJpx4TXdey56gLDXLVdYUvFbzswfv2YlxQ7k6cNugvO8WgZbaJmQbalCJ.9gnN0sBfryrTRC79lEaLOjsPiOCTnIyDcECDuf-C")].journey.stages[*]'), expected);
     },
+
+    'matches $.quotes[*].journey.stages[?(@.id == 123)]': function() {
+      var obj = JSON.parse(fs.readFileSync('test/fixtures/bing.json'));
+      assert.equal(jsonpath(obj[0], '$.quotes[*].journey.stages[?(@.id == 7)]')[0].id, 7);
+      assert.equal(jsonpath(obj[0], '$.quotes[*].journey.stages[?(@.id == 13)]')[0].id, 13);
+    },
+
+    'matches $..stages[?(@.id == 123)]': function() {
+      var obj = JSON.parse(fs.readFileSync('test/fixtures/bing.json'));
+      assert.equal(jsonpath(obj[0], '$..stages[?(@.id == 7)]')[0].id, 7);
+      assert.equal(jsonpath(obj[0], '$..stages[?(@.id == 13)]')[0].id, 13);
+    }
   }
 }).export(module);

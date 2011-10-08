@@ -40,6 +40,10 @@ vows.describe('Expression').addBatch({
       var obj = { one: { five: 6 } };
       assert.isFalse(Expression.execute('@.one.two==6', obj));
     },
+    'matches expressions with spaces': function() {
+      var obj = { one: 2 };
+      assert.isTrue(Expression.execute('?(@.one == 2)', obj));
+    },
 
     'throws a syntax error for invalid statements': function() {
       assert.throws(function() {
