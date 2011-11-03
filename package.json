@@ -1,19 +1,31 @@
 {
-  "author": "Stefan Goessner",
-  "name": "JSONPath",
-  "description": "A JS implementation of JSONPath",
-  "contributors": [ 
-    { "name": "Stefan Goessner", "email": "subbu@subbu.org" },
-    { "name": "Mike Brevoort", "email": "mike@brevoort.com" }
-  ],  
-  "version": "0.8.2",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/s3u/JSONPath.git"
-  },
-  "main" : "./lib/jsonpath",
-  "dependencies": {},
-  "devDependencies": {
-    "nodeunit": "latest"
-  }
+    "author": "Stefan Goessner",
+    "name": "JSONPath",
+    "description": "A JS implementation of JSONPath",
+    "contributors": [
+        {
+            "name": "Prof. Gšssner",
+            "email": "stefan.goessner@fh-dortmund.de"
+        },
+        {
+            "name": "Subbu Allamaraju",
+            "email": "subbu@subbu.org"
+        },
+        {
+            "name": "Mike Brevoort",
+            "email": "mike@brevoort.com"
+        }
+    ],
+    "version": "0.8.3",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/s3u/JSONPath.git"
+    },
+    "main": "./lib/jsonpath",
+    "dependencies": {
+        "underscore": "latest"
+    },
+    "devDependencies": {
+        "nodeunit": "latest"
+    }
 }
