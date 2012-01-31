@@ -1,5 +1,4 @@
 var jsonpath = require("../").eval,
-    sys = require('sys'),
     testCase = require('nodeunit').testCase
 
 // tests based on examples at http://goessner.net/articles/JsonPath/
