@@ -16,7 +16,7 @@
             "email": "mike@brevoort.com"
         }
     ],
-    "version": "0.8.6",
+    "version": "0.9.0",
     "repository": {
         "type": "git",
         "url": "git://github.com/s3u/JSONPath.git"
