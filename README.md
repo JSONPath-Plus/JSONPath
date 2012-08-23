@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 Install
 =======
     
