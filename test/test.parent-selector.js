@@ -51,9 +51,8 @@ module.exports = testCase({
     "simple parent selection": function(test) {
     // ============================================================================
         test.expect(1);
-        var expected = [json.store];
-        var result = jsonpath(json, "$.store.book^");
-        test.deepEqual(expected, result);
+        var result = jsonpath(json, "$.store.book^", {wrap: false});
+        test.deepEqual(json.store, result);
         test.done();
     },
 
@@ -84,6 +83,15 @@ module.exports = testCase({
         var expected = json2.children[0].children;
         var result = jsonpath(json2, "$..[?(@.name && @.name.match(/1_1$/))].name^^", {flatten: true});
         test.deepEqual(expected, result);
+        test.done();
+    },
+
+    // ============================================================================
+    "no such parent": function(test) {
+    // ============================================================================
+        test.expect(1);
+        var result = jsonpath(json2, "name^^");
+        test.deepEqual([], result);
         test.done();
     }
 
