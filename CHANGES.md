@@ -3,6 +3,7 @@
 
 * Support for parent selection via `^`
 * Access current path via `@path` in test statements
+* Allowing for multi-statement evals
 * Performance improvements
 * Version 0.10
 
