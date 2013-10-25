@@ -1,12 +1,15 @@
-[![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
+JSONPath [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
+========
+
+Analyse, transform, and selectively extract data from JSON documents (and JavaScript objects).
 
 Install
-=======
+-------
     
     npm install JSONPath
 
 Usage
-=====
+-----
 
 In node.js:
 
@@ -26,7 +29,7 @@ magic necessary:
 ```
 
 Examples
-========
+--------
 
 Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
 
@@ -87,12 +90,12 @@ XPath               | JSONPath               | Result
 //*                 | $..*                   | all Elements in XML document. All members of JSON structure.
 
 Development
-===========
+-----------
 
 Running the tests on node: `npm test`. For in-browser tests:
 
 * Ensure that nodeunit is browser-compiled: `cd node_modules/nodeunit; make browser;`
-* Server the js/html files:
+* Serve the js/html files:
 
 ```sh
     node -e "require('http').createServer(function(req,res) { \
@@ -103,6 +106,6 @@ Running the tests on node: `npm test`. For in-browser tests:
 
 
 License
-=======
+-------
 
-[http://www.opensource.org/licenses/mit-license.php](MIT).
+[MIT License](http://www.opensource.org/licenses/mit-license.php).
