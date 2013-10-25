@@ -1,56 +1,73 @@
 [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
+
 Install
 =======
     
     npm install JSONPath
 
-Evaluate
-========
+Usage
+=====
 
-    var jsonpath = require('JSONPath');
-    jsonpath.eval(obj, path);
+In node.js:
 
-Or more concisely:
+```js
+var jsonPath = require('JSONPath');
+jsonPath.eval(obj, path);
+```
 
-	var jsonpath = require('JSONPath').eval;
-	jsonpath(obj, path);
+For browser usage you can directly include `lib/jsonpath.js`, no browserify
+magic necessary:
+
+```html
+<script type="text/javascript" src="lib/jsonpath.js"></script>
+<script type="text/javascript">
+    jsonPath.eval(obj, path);
+</script>
+```
 
 Examples
 ========
 
 Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
 
-	{ "store": {
-	    "book": [ 
-	      { "category": "reference",
-	        "author": "Nigel Rees",
-	        "title": "Sayings of the Century",
-	        "price": 8.95
-	      },
-	      { "category": "fiction",
-	        "author": "Evelyn Waugh",
-	        "title": "Sword of Honour",
-	        "price": 12.99
-	      },
-	      { "category": "fiction",
-	        "author": "Herman Melville",
-	        "title": "Moby Dick",
-	        "isbn": "0-553-21311-3",
-	        "price": 8.99
-	      },
-	      { "category": "fiction",
-	        "author": "J. R. R. Tolkien",
-	        "title": "The Lord of the Rings",
-	        "isbn": "0-395-19395-8",
-	        "price": 22.99
-	      }
-	    ],
-	    "bicycle": {
-	      "color": "red",
-	      "price": 19.95
-	    }
-	  }
-	}
+```json
+{
+  "store": {
+    "book": [
+      {
+        "category": "reference",
+        "author": "Nigel Rees",
+        "title": "Sayings of the Century",
+        "price": 8.95
+      },
+      {
+        "category": "fiction",
+        "author": "Evelyn Waugh",
+        "title": "Sword of Honour",
+        "price": 12.99
+      },
+      {
+        "category": "fiction",
+        "author": "Herman Melville",
+        "title": "Moby Dick",
+        "isbn": "0-553-21311-3",
+        "price": 8.99
+      },
+      {
+        "category": "fiction",
+        "author": "J. R. R. Tolkien",
+        "title": "The Lord of the Rings",
+        "isbn": "0-395-19395-8",
+        "price": 22.99
+      }
+    ],
+    "bicycle": {
+      "color": "red",
+      "price": 19.95
+    }
+  }
+}
+```
 
 
 XPath               | JSONPath               | Result
@@ -66,8 +83,26 @@ XPath               | JSONPath               | Result
                     | $..book[:2]            | 
 //book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number
 //book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10
-//*                 | $..*                   |all Elements in XML document. All members of JSON structure.
+//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19
+//*                 | $..*                   | all Elements in XML document. All members of JSON structure.
+
+Development
+===========
+
+Running the tests on node: `npm test`. For in-browser tests:
+
+* Ensure that nodeunit is browser-compiled: `cd node_modules/nodeunit; make browser;`
+* Server the js/html files:
+
+```sh
+    node -e "require('http').createServer(function(req,res) { \
+        var s = require('fs').createReadStream('.' + req.url); \
+        s.pipe(res); s.on('error', function() {}); }).listen(8082);"
+```
+* To run the tests visit [http://localhost:8082/test/test.html]().
 
 
+License
+=======
 
-See http://www.opensource.org/licenses/mit-license.php for license.
+[http://www.opensource.org/licenses/mit-license.php](MIT).
