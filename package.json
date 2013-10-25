@@ -29,5 +29,5 @@
     "devDependencies": {
         "nodeunit": "0.6.x"
     },
-    "scripts": {"test": "node_modules/nodeunit/bin/nodeunit test/*.js"}
+    "scripts": {"test": "node_modules/nodeunit/bin/nodeunit test/test.*.js"}
 }
