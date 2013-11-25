@@ -27,5 +27,8 @@
     },
     "devDependencies": {
         "nodeunit": "0.6.x"
+    },
+    "browser": {
+        "underscore": "./browser/shim/underscore-is-array.js"
     }
 }
