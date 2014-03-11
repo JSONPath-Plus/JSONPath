@@ -14,9 +14,13 @@
         {
             "name": "Mike Brevoort",
             "email": "mike@brevoort.com"
+        },
+        {
+            "name": "Robert Krahn",
+            "email": "robert.krahn@gmail.com"
         }
     ],
-    "version": "0.9.3",
+    "version": "0.10.0",
     "repository": {
         "type": "git",
         "url": "git://github.com/s3u/JSONPath.git"
@@ -27,5 +31,6 @@
     },
     "devDependencies": {
         "nodeunit": "*"
-    }
+    },
+    "scripts": {"test": "node_modules/nodeunit/bin/nodeunit test/test.*.js"}
 }
