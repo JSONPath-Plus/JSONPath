@@ -18,7 +18,6 @@ var json = {
     }
 };
 
-
 module.exports = testCase({
     "get single": function (test) {
         var expected = json.store.book;
