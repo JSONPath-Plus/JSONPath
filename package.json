@@ -4,7 +4,7 @@
     "description": "A JS implementation of JSONPath",
     "contributors": [
         {
-            "name": "Prof. G�ssner",
+            "name": "Prof. Gössner",
             "email": "stefan.goessner@fh-dortmund.de"
         },
         {
@@ -16,7 +16,7 @@
             "email": "mike@brevoort.com"
         }
     ],
-    "version": "0.9.1",
+    "version": "0.9.3",
     "repository": {
         "type": "git",
         "url": "git://github.com/s3u/JSONPath.git"
