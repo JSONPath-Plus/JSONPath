@@ -26,9 +26,7 @@
         "url": "git://github.com/s3u/JSONPath.git"
     },
     "main": "./lib/jsonpath",
-    "dependencies": {
-        "underscore": "*"
-    },
+    "dependencies": {},
     "devDependencies": {
         "nodeunit": "*"
     },
