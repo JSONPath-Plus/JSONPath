@@ -1,10 +1,12 @@
+<!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8" />
         <title>JSONPath Tests</title>
         <link rel="stylesheet" href="../node_modules/nodeunit/dist/browser/nodeunit.css" type="text/css" />
         <script src="../node_modules/nodeunit/dist/browser/nodeunit.js"></script>
         <script src="../lib/jsonpath.js"></script>
-        <script type="text/javascript">
+        <script>
             // helper to get all the test cases
             var suites = [], _testCase = nodeunit.testCase;
             nodeunit.testCase = function(tc) {
@@ -16,7 +18,7 @@
             }
             var module = {exports: {}};
         </script>
-        <script type="text/javascript">
+        <script>
             // synchronous load function for JS code, uses XMLHttpRequest abstraction from
             // http://www.quirksmode.org/js/xmlhttp.html
             // Since the tests are written in node.js style we need to wrap their code into
