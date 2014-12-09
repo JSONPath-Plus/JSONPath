@@ -22,8 +22,8 @@ For browser usage you can directly include `lib/jsonpath.js`, no browserify
 magic necessary:
 
 ```html
-<script type="text/javascript" src="lib/jsonpath.js"></script>
-<script type="text/javascript">
+<script src="lib/jsonpath.js"></script>
+<script>
     jsonPath.eval(obj, path);
 </script>
 ```
