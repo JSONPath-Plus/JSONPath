@@ -1,4 +1,4 @@
-var jsonpath = require("../").eval,
+var JSONPath = require('../'),
     testCase = require('nodeunit').testCase
 
 var json = {
@@ -26,19 +26,19 @@ var json = {
 
 
 module.exports = testCase({
-    "multi statement eval": function (test) {
+    'multi statement eval': function (test) {
         var expected = json.store.books[0];
-        var selector = "$..[?("
-                     + "var sum = @.price && @.price[0]+@.price[1];"
-                     + "sum > 20;)]"
-        var result = jsonpath(json, selector, {wrap: false});
+        var selector = '$..[?('
+                     + 'var sum = @.price && @.price[0]+@.price[1];'
+                     + 'sum > 20;)]'
+        var result = JSONPath({json: json, path: selector, wrap: false});
         test.deepEqual(expected, result);
         test.done();
     },
 
-    "accessing current path": function (test) {
+    'accessing current path': function (test) {
         var expected = json.store.books[1];
-        var result = jsonpath(json, "$..[?(@path==\"$['store']['books'][1]\")]", {wrap: false});
+        var result = JSONPath({json: json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false});
         test.deepEqual(expected, result);
         test.done();
     }

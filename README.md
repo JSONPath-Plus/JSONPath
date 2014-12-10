@@ -14,8 +14,8 @@ Usage
 In node.js:
 
 ```js
-var jsonPath = require('JSONPath');
-jsonPath.eval(obj, path);
+var JSONPath = require('JSONPath');
+JSONPath({json: obj, path: path});
 ```
 
 For browser usage you can directly include `lib/jsonpath.js`, no browserify
@@ -24,7 +24,7 @@ magic necessary:
 ```html
 <script src="lib/jsonpath.js"></script>
 <script>
-    jsonPath.eval(obj, path);
+    JSONPath({json: obj, path: path});
 </script>
 ```
 
