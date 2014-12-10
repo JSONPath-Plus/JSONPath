@@ -20,7 +20,7 @@
             "email": "robert.krahn@gmail.com"
         }
     ],
-    "version": "0.10.0",
+    "version": "0.11.0",
     "repository": {
         "type": "git",
         "url": "git://github.com/s3u/JSONPath.git"
