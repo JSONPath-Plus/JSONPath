@@ -91,26 +91,25 @@ Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
 ```
 
 
-XPath               | JSONPath               | Result
-------------------- | ---------------------- | -------------------------------------
-/store/book/author	| $.store.book[*].author | the authors of all books in the store 
-//author            | $..author              | all authors 
-/store/*            | $.store.*              | all things in store, which are some books and a red bicycle.
-/store//price       | $.store..price         | the price of everything in the store.
-//book[3]           | $..book[2]             | the third book
-//book[last()]      | $..book[(@.length-1)]  | the last book in order.
-                    | $..book[-1:]           |
-//book[position()<3]| $..book[0,1]<br>$..book[:2]| the first two books
-//book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[category,author]| the categories and authors of all books
-//book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number
-//book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10
-//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19
-//*                 | $..*                   | all Elements in XML document. All members of JSON structure.
+XPath               | JSONPath               | Result                                | Notes
+------------------- | ---------------------- | ------------------------------------- | -----
+/store/book/author  | $.store.book[*].author | the authors of all books in the store |
+//author            | $..author              | all authors                           |
+/store/*            | $.store.*              | all things in store, which are some books and a red bicycle.|
+/store//price       | $.store..price         | the price of everything in the store. |
+//book[3]           | $..book[2]             | the third book                        |
+//book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | the last book in order.|
+//book[position()<3]| $..book[0,1]<br>$..book[:2]| the first two books               |
+//book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[category,author]| the categories and authors of all books |
+//book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number     |
+//book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10     |
+//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19 | Parent (caret) not present in original spec
+//*                 | $..*                   | all Elements in XML document. All members of JSON structure. |
+/store/book/[position()!=1] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in original spec
 
-Note that `@path` is additionally available for tests against the current path
-as will be any additional variables supplied as properties on the optional
-"sandbox" object option, although this was not indicated as part of the
-original specification.
+Any additional variables supplied as properties on the optional
+"sandbox" object option are also available to (parenthetical-based)
+evaluations.
 
 # Development
 
