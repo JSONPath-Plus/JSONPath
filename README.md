@@ -101,6 +101,7 @@ XPath               | JSONPath               | Result
 //book[last()]      | $..book[(@.length-1)]  | the last book in order.
                     | $..book[-1:]           |
 //book[position()<3]| $..book[0,1]           | the first two books
+//book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[category,author]| the categories and authors of all books
                     | $..book[:2]            | 
 //book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number
 //book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10
