@@ -44,7 +44,7 @@ options (the first argument) include:
 - ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
 - ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value" or "path" to determine whether to return results as the values of the found items or as their absolute paths.
 - ***sandbox*** (**default: An empty object **) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available; see the Syntax section for details.)
-- ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `false` will be returned (as opposed to an empty array). If `wrap` is set to false and a single result is found, that result will be the only item returned. An array will still be returned if multiple results are found, however.
+- ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `undefined` will be returned (as opposed to an empty array with `wrap` set to true). If `wrap` is set to false and a single result is found, that result will be the only item returned (not within an array). An array will still be returned if multiple results are found, however.
 
 Syntax with examples
 --------
