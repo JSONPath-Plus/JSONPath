@@ -1,7 +1,7 @@
 ## Dec 9, 2014
 * Offer new class-based API and object-based arguments (with option to run new queries without resupplying config)
 * Fix bug preventing an unwrapped null from being returned
-* For unwrapped results, return undefined instead of false upon failure to find path (since undefined is not a possible JSON value) and return the exact value upon falsy single results (in order to allow return of null)
+* For unwrapped results, return undefined instead of false upon failure to find path (to allow distinguishing of undefined--a non-allowed JSON value--from the valid JSON, null or false) and return the exact value upon falsy single results (in order to allow return of null)
 * Support "all" for resultType ("path" and "value" together)
 * Support "." within properties
 * Version 0.11
