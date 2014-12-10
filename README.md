@@ -103,9 +103,11 @@ XPath               | JSONPath               | Result                           
 //book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[category,author]| the categories and authors of all books |
 //book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number     |
 //book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10     |
-//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19 | Parent (caret) not present in original spec
+//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19 | Parent (caret) not present in the original spec
 //*                 | $..*                   | all Elements in XML document. All members of JSON structure. |
-/store/book/[position()!=1] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in original spec
+/store/book[not(. is /store/book[1])] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
+
+
 
 Any additional variables supplied as properties on the optional
 "sandbox" object option are also available to (parenthetical-based)
