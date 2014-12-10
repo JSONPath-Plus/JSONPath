@@ -3,6 +3,7 @@
 * Fix bug preventing an unwrapped null from being returned
 * Return undefined instead of false upon failure to find path (since undefined is not a possible JSON value)
 * Support "all" for resultType ("path" and "value" together)
+* Support "." within properties
 * Version 0.11
 
 ## Oct 23, 2013
