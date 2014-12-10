@@ -25,7 +25,7 @@ module.exports = testCase({
     'test undefined, null': function(test) {
     // ============================================================================    
         test.expect(5);
-        test.strictEqual(null, JSONPath({json: {a: null}, path: '$.a'}));
+        test.strictEqual(null, JSONPath({json: {a: null}, path: '$.a', wrap: false}));
         test.strictEqual(undefined, JSONPath({json: undefined, path: 'foo'}));
         test.strictEqual(undefined, JSONPath({json: null, path: 'foo'}));
         test.strictEqual(undefined, JSONPath({json: {}, path: 'foo'})[0]);
