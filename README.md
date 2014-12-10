@@ -1,15 +1,12 @@
-JSONPath [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
-========
+# JSONPath [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 
 Analyse, transform, and selectively extract data from JSON documents (and JavaScript objects).
 
-Install
--------
+# Install
     
     npm install JSONPath
 
-Usage
------
+# Usage
 
 In node.js:
 
@@ -28,7 +25,28 @@ magic necessary:
 </script>
 ```
 
-Examples
+An alternative syntax is available as:
+
+```js
+JSONPath(options, obj, path);
+```
+
+The following format is now deprecated:
+
+```js
+jsonPath.eval(options, obj, path);
+```
+
+Other properties that can be supplied for
+options (the first argument) include:
+
+- ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually as needed.
+- ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
+- ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value" or "path" to determine whether to return results as the values of the found items or as their absolute paths.
+- ***sandbox*** (**default: An empty object **) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available; see the Syntax section for details.)
+- ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `false` will be returned (as opposed to an empty array). If `wrap` is set to false and a single result is found, that result will be the only item returned. An array will still be returned if multiple results are found, however.
+
+Syntax with examples
 --------
 
 Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
@@ -89,8 +107,11 @@ XPath               | JSONPath               | Result
 //*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19
 //*                 | $..*                   | all Elements in XML document. All members of JSON structure.
 
-Development
------------
+Note that `@path` is additionally available for tests against the current path
+as will be any additional variables supplied as properties on the optional
+"sandbox" object option.
+
+# Development
 
 Running the tests on node: `npm test`. For in-browser tests:
 
@@ -105,7 +126,6 @@ Running the tests on node: `npm test`. For in-browser tests:
 * To run the tests visit [http://localhost:8082/test/test.html]().
 
 
-License
--------
+# License
 
 [MIT License](http://www.opensource.org/licenses/mit-license.php).
