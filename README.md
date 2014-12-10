@@ -109,7 +109,8 @@ XPath               | JSONPath               | Result
 
 Note that `@path` is additionally available for tests against the current path
 as will be any additional variables supplied as properties on the optional
-"sandbox" object option.
+"sandbox" object option, although this was not indicated as part of the
+original specification.
 
 # Development
 
