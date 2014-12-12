@@ -105,11 +105,13 @@ XPath               | JSONPath               | Result                           
 //book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[category,author]| the categories and authors of all books |
 //book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number     |
 //book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10     |
-//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19 | Parent (caret) not present in the original spec
 //*                 | $..*                   | all Elements in XML document. All members of JSON structure. |
+//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19 | Parent (caret) not present in the original spec
 /store/book[not(. is /store/book[1])] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
 /store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle") | Property name (tilde) is not present in the original spec
 //category[parent::*/author = "J. R. R. Tolkien"] | $..category[?(@parent.author === "J. R. R. Tolkien")] | Grabs all categories whose parent's author (i.e., the author sibling to the category property) is J. R. R. Tolkien | @parent is not present in the original spec
+//book/*[name() != 'category']     | $..book.*[?(@property !== "category")] | Grabs the children of "book" except for "category" ones  | @property is not present in the original spec
+/store/*/*[name(parent::*) != 'book'] | $.store.*.*[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
 
 Any additional variables supplied as properties on the optional
 "sandbox" object option are also available to (parenthetical-based)
