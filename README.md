@@ -40,11 +40,13 @@ jsonPath.eval(options, obj, path);
 Other properties that can be supplied for
 options (the first argument) include:
 
-- ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually as needed.
+- ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually (with an object and expression) as needed.
 - ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
-- ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value" or "path" to determine whether to return results as the values of the found items or as their absolute paths. If set to "all", both "value" and "path" will be returned.
+- ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value", "path", "parent", or "parentProperty" to determine respectively whether to return results as the values of the found items, as their absolute paths, as their parent objects, or as their parent's property name. If set to "all", all of these types will be returned on an object with the type as key name.
 - ***sandbox*** (**default: An empty object **) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available to those expressions; see the Syntax section for details.)
 - ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `undefined` will be returned (as opposed to an empty array with `wrap` set to true). If `wrap` is set to false and a single result is found, that result will be the only item returned (not within an array). An array will still be returned if multiple results are found, however.
+
+There is also now a class property, on JSONPath.cache which exposes the cache for those who wish to preserve and reuse it for optimization purposes.
 
 Syntax with examples
 --------
@@ -106,8 +108,8 @@ XPath               | JSONPath               | Result                           
 //*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19 | Parent (caret) not present in the original spec
 //*                 | $..*                   | all Elements in XML document. All members of JSON structure. |
 /store/book[not(. is /store/book[1])] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
-
-
+/store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle") | Property name (tilde) is not present in the original spec
+//category[parent::*/author = "J. R. R. Tolkien"] | $..category[?(@parent.author === "J. R. R. Tolkien")] | Grabs all categories whose parent's author (i.e., the author sibling to the category property) is J. R. R. Tolkien | @parent is not present in the original spec
 
 Any additional variables supplied as properties on the optional
 "sandbox" object option are also available to (parenthetical-based)
