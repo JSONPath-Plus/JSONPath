@@ -106,7 +106,7 @@ XPath               | JSONPath               | Result                           
 //book[isbn]        | $..book[?(@.isbn)]     | Filter all books with isbn number     |
 //book[price<10]    | $..book[?(@.price<10)] | Filter all books cheapier than 10     |
 //*                 | $..                    | All Elements in XML document. All members of JSON structure. |
-//*/*               | $..*                   | All Elements beneath root in XML document. All members of JSON structure beneath the root. |
+//\*/\*             | $..*                   | All Elements beneath root in XML document. All members of JSON structure beneath the root. |
 //*[price>19]/..    | $..[?(@.price>19)]^    | Categories with things more expensive than 19 | Parent (caret) not present in the original spec
 /store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle") | Property name (tilde) is not present in the original spec
 /store/book[not(. is /store/book[1])] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
