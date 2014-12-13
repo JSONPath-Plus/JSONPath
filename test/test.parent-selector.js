@@ -30,7 +30,7 @@ module.exports = testCase({
     'parent selection with multiple matches': function(test) {
     // ============================================================================
         test.expect(1);
-        var expected = [json.children,json.children];
+        var expected = [json.children, json.children];
         var result = jsonpath({json: json, path: '$.children[1:3]^'});
         test.deepEqual(expected, result);
         test.done();
