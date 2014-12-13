@@ -95,20 +95,21 @@ Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
 
 XPath               | JSONPath               | Result                                | Notes
 ------------------- | ---------------------- | ------------------------------------- | -----
-/store/book/author  | $.store.book[*].author | the authors of all books in the store |
-//author            | $..author              | all authors                           |
-/store/*            | $.store.*              | all things in store, which are some books and a red bicycle.|
-/store//price       | $.store..price         | the price of everything in the store. |
-//book[3]           | $..book[2]             | the third book                        |
-//book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | the last book in order.|
-//book[position()<3]| $..book[0,1]<br>$..book[:2]| the first two books               |
-//book[1]/*[self::category\|self::author] or //book[1]/(category,author) in XPath 2.0| $..book[0][category,author]| the categories and authors of all books |
-//book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number     |
-//book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10     |
-//*                 | $..*                   | all Elements in XML document. All members of JSON structure. |
-//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19 | Parent (caret) not present in the original spec
-/store/book[not(. is /store/book[1])] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
+/store/book/author  | $.store.book[*].author | The authors of all books in the store |
+//author            | $..author              | All authors                           |
+/store/*            | $.store.*              | All things in store, which are some books and a red bicycle.|
+/store//price       | $.store..price         | The price of everything in the store. |
+//book[3]           | $..book[2]             | The third book                        |
+//book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | The last book in order.|
+//book[position()<3]| $..book[0,1]<br>$..book[:2]| The first two books               |
+//book[1]/*[self::category\|self::author] or //book[1]/(category,author) in XPath 2.0| $..book[0][category,author]| The categories and authors of all books |
+//book[isbn]        | $..book[?(@.isbn)]     | Filter all books with isbn number     |
+//book[price<10]    | $..book[?(@.price<10)] | Filter all books cheapier than 10     |
+//*                 | $..                    | All Elements in XML document. All members of JSON structure. |
+//*/*               | $..*                   | All Elements beneath root in XML document. All members of JSON structure beneath the root. |
+//*[price>19]/..    | $..[?(@.price>19)]^    | Categories with things more expensive than 19 | Parent (caret) not present in the original spec
 /store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle") | Property name (tilde) is not present in the original spec
+/store/book[not(. is /store/book[1])] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
 //category[parent::*/author = "J. R. R. Tolkien"] | $..category[?(@parent.author === "J. R. R. Tolkien")] | Grabs all categories whose parent's author (i.e., the author sibling to the category property) is J. R. R. Tolkien | @parent is not present in the original spec
 //book/*[name() != 'category']     | $..book.*[?(@property !== "category")] | Grabs the children of "book" except for "category" ones  | @property is not present in the original spec
 /store/*/*[name(parent::*) != 'book'] | $.store.*.*[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec

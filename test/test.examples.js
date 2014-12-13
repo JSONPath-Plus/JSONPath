@@ -164,10 +164,30 @@ module.exports = testCase({
         test.done();
     },
 
-    // ============================================================================
     'all properties of a JSON structure': function(test) {
     // ============================================================================
-        // test.expect(1);
+        test.expect(1);
+        var expected = [
+          json,
+          json.store,
+          json.store.book,
+          json.store.bicycle
+        ];
+        json.store.book.forEach(function(book) { expected.push(book); });
+        json.store.book.forEach(function(book) { Object.keys(book).forEach(function(p) { expected.push(book[p]); });});
+        expected.push(json.store.bicycle.color);
+        expected.push(json.store.bicycle.price);
+
+        var result = jsonpath({json: json, path: '$..'});
+        test.deepEqual(expected, result);
+
+        test.done();
+    },
+
+    // ============================================================================
+    'all properties of a JSON structure beneath the root': function(test) {
+    // ============================================================================
+        test.expect(1);
         var expected = [
           json.store,
           json.store.book,
@@ -183,7 +203,6 @@ module.exports = testCase({
 
         test.done();
     }
-
 
 });
 
