@@ -131,6 +131,15 @@ module.exports = testCase({
         test.done();
     },
 
+    'categories and authors of all books': function(test) {
+        test.expect(1);
+        var expected = ['reference', 'Nigel Rees'];
+        var result = jsonpath({json: json, path: '$..book[0][category,author]'});
+        test.deepEqual(expected, result);
+
+        test.done();
+    },
+
     // ============================================================================
     'filter all properties if sub property exists, of entire tree': function(test) {
     // ============================================================================
