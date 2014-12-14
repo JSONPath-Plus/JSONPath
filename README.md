@@ -145,7 +145,7 @@ XPath               | JSONPath               | Result                           
 //book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[0][category,author]| The categories and authors of all books |
 //book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     |
 //book[price<10]    | $..book[?(@.price<10)] | Filter all books cheaper than 10     |
-//\*/\*|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
+//\*/\*\|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
 //*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
 //*[price>19]/..    | $..[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not present in the original spec
 /store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle") | Property name (tilde) is not present in the original spec
