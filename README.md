@@ -1,21 +1,18 @@
-JSONPath [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
-========
+# JSONPath [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 
 Analyse, transform, and selectively extract data from JSON documents (and JavaScript objects).
 
-Install
--------
+# Install
     
     npm install JSONPath
 
-Usage
------
+# Usage
 
 In node.js:
 
 ```js
-var jsonPath = require('JSONPath');
-jsonPath.eval(obj, path);
+var JSONPath = require('JSONPath');
+JSONPath({json: obj, path: path});
 ```
 
 For browser usage you can directly include `lib/jsonpath.js`, no browserify
@@ -24,11 +21,32 @@ magic necessary:
 ```html
 <script src="lib/jsonpath.js"></script>
 <script>
-    jsonPath.eval(obj, path);
+    JSONPath({json: obj, path: path});
 </script>
 ```
 
-Examples
+An alternative syntax is available as:
+
+```js
+JSONPath(options, obj, path);
+```
+
+The following format is now deprecated:
+
+```js
+jsonPath.eval(options, obj, path);
+```
+
+Other properties that can be supplied for
+options (the first argument) include:
+
+- ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually as needed.
+- ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
+- ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value" or "path" to determine whether to return results as the values of the found items or as their absolute paths.
+- ***sandbox*** (**default: An empty object **) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available; see the Syntax section for details.)
+- ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `false` will be returned (as opposed to an empty array). If `wrap` is set to false and a single result is found, that result will be the only item returned. An array will still be returned if multiple results are found, however.
+
+Syntax with examples
 --------
 
 Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
@@ -73,24 +91,27 @@ Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
 ```
 
 
-XPath               | JSONPath               | Result
-------------------- | ---------------------- | -------------------------------------
-/store/book/author	| $.store.book[*].author | the authors of all books in the store 
-//author            | $..author              | all authors 
-/store/*            | $.store.*              | all things in store, which are some books and a red bicycle.
-/store//price       | $.store..price         | the price of everything in the store.
-//book[3]           | $..book[2]             | the third book
-//book[last()]      | $..book[(@.length-1)]  | the last book in order.
-                    | $..book[-1:]           |
-//book[position()<3]| $..book[0,1]           | the first two books
-                    | $..book[:2]            | 
-//book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number
-//book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10
-//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19
-//*                 | $..*                   | all Elements in XML document. All members of JSON structure.
+XPath               | JSONPath               | Result                                | Notes
+------------------- | ---------------------- | ------------------------------------- | -----
+/store/book/author  | $.store.book[*].author | the authors of all books in the store |
+//author            | $..author              | all authors                           |
+/store/*            | $.store.*              | all things in store, which are some books and a red bicycle.|
+/store//price       | $.store..price         | the price of everything in the store. |
+//book[3]           | $..book[2]             | the third book                        |
+//book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | the last book in order.|
+//book[position()<3]| $..book[0,1]<br>$..book[:2]| the first two books               |
+//book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[category,author]| the categories and authors of all books |
+//book[isbn]        | $..book[?(@.isbn)]     | filter all books with isbn number     |
+//book[price<10]    | $..book[?(@.price<10)] | filter all books cheapier than 10     |
+//*[price>19]/..    | $..[?(@.price>19)]^    | categories with things more expensive than 19 | Parent (caret) not present in original spec
+//*                 | $..*                   | all Elements in XML document. All members of JSON structure. |
+/store/book/[position()!=1] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in original spec
 
-Development
------------
+Any additional variables supplied as properties on the optional
+"sandbox" object option are also available to (parenthetical-based)
+evaluations.
+
+# Development
 
 Running the tests on node: `npm test`. For in-browser tests:
 
@@ -105,7 +126,6 @@ Running the tests on node: `npm test`. For in-browser tests:
 * To run the tests visit [http://localhost:8082/test/test.html]().
 
 
-License
--------
+# License
 
 [MIT License](http://www.opensource.org/licenses/mit-license.php).

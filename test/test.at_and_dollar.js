@@ -1,5 +1,5 @@
-var jsonpath = require("../").eval
-  , testCase = require('nodeunit').testCase
+var JSONPath = require('../'),
+    testCase = require('nodeunit').testCase
 
 
 var t1 = {
@@ -22,29 +22,29 @@ module.exports = testCase({
     
 
     // ============================================================================    
-    "test undefined, null": function(test) {
+    'test undefined, null': function(test) {
     // ============================================================================    
         test.expect(5);
-        test.equal(undefined, jsonpath(undefined, "foo"));
-        test.equal(null, jsonpath(null, "foo"));
-        test.equal(undefined, jsonpath({}, "foo")[0]);
-        test.equal(undefined, jsonpath({ a: "b" }, "foo")[0]);
-        test.equal(undefined, jsonpath({ a: "b" }, "foo")[100]);
+        test.equal(undefined, JSONPath({json: undefined, path: 'foo'}));
+        test.equal(null, JSONPath({json: null, path: 'foo'}));
+        test.equal(undefined, JSONPath({json: {}, path: 'foo'})[0]);
+        test.equal(undefined, JSONPath({json: { a: 'b' }, path: 'foo'})[0]);
+        test.equal(undefined, JSONPath({json: { a: 'b' }, path: 'foo'})[100]);
         test.done();
     },
 
     
     // ============================================================================    
-    "test $ and @": function(test) {
+    'test $ and @': function(test) {
     // ============================================================================    
         test.expect(7);
-        test.equal(t1["$"],   jsonpath(t1, "\$")[0]);
-        test.equal(t1["$"],   jsonpath(t1, "$")[0]);
-        test.equal(t1["a$a"], jsonpath(t1, "a$a")[0]);
-        test.equal(t1["@"],   jsonpath(t1, "\@")[0]);
-        test.equal(t1["@"],   jsonpath(t1, "@")[0]);
-        test.equal(t1["$"]["@"], jsonpath(t1, "$.$.@")[0]);
-        test.equal(undefined, jsonpath(t1, "\@")[1]);
+        test.equal(t1['$'],   JSONPath({json: t1, path: '\$'})[0]);
+        test.equal(t1['$'],   JSONPath({json: t1, path: '$'})[0]);
+        test.equal(t1['a$a'], JSONPath({json: t1, path: 'a$a'})[0]);
+        test.equal(t1['@'],   JSONPath({json: t1, path: '\@'})[0]);
+        test.equal(t1['@'],   JSONPath({json: t1, path: '@'})[0]);
+        test.equal(t1['$']['@'], JSONPath({json: t1, path: '$.$.@'})[0]);
+        test.equal(undefined, JSONPath({json: t1, path: '\@'})[1]);
         
         test.done();
     }
