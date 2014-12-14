@@ -1,6 +1,5 @@
 ## Dec 12, 2014
 * Offer new class-based API and object-based arguments (with option to run new queries without resupplying config)
-* Fix bug preventing unwrapped null from being a possible return value
 * For unwrapped results, return undefined instead of false upon failure to find path (to allow distinguishing of undefined--a non-allowed JSON value--from the valid JSON, null or false) and return the exact value upon falsy single results (in order to allow return of null)
 * Support "parent" and "parentProperty" for resultType along with "all" (which also includes "path" and "value" together)
 * Support "." within properties

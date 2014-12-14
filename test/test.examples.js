@@ -164,19 +164,16 @@ module.exports = testCase({
         test.done();
     },
 
-    'all properties of a JSON structure': function(test) {
+    'all parent components of a JSON structure': function(test) {
     // ============================================================================
         test.expect(1);
         var expected = [
           json,
           json.store,
-          json.store.book,
-          json.store.bicycle
+          json.store.book
         ];
         json.store.book.forEach(function(book) { expected.push(book); });
-        json.store.book.forEach(function(book) { Object.keys(book).forEach(function(p) { expected.push(book[p]); });});
-        expected.push(json.store.bicycle.color);
-        expected.push(json.store.bicycle.price);
+        expected.push(json.store.bicycle);
 
         var result = jsonpath({json: json, path: '$..'});
         test.deepEqual(expected, result);
@@ -185,7 +182,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'all properties of a JSON structure beneath the root': function(test) {
+    'all properties of a JSON structure (beneath the root)': function(test) {
     // ============================================================================
         test.expect(1);
         var expected = [
@@ -202,6 +199,77 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
+    },
+    // ============================================================================
+    'Custom operator: parent (caret)': function(test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = [json.store, json.store.book];
+        var result = jsonpath({json: json, path: '$..[?(@.price>19)]^'});
+        test.deepEqual(expected, result);
+
+        test.done();
+
+    },
+    // ============================================================================
+    'Custom operator: property name (tilde)': function(test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = ['book', 'bicycle'];
+        var result = jsonpath({json: json, path: '$.store.*~'});
+        test.deepEqual(expected, result);
+
+        test.done();
+
+    },
+    // ============================================================================
+    'Custom property @path': function(test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = json.store.book.slice(1);
+        var result = jsonpath({json: json, path: '$.store.book[?(@path !== "$[\'store\'][\'book\'][0]")]'});
+        test.deepEqual(expected, result);
+
+        test.done();
+
+    },
+    // ============================================================================
+    'Custom property: @parent': function(test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = [];
+        var result = jsonpath({json: json, path: '$..category[?(@parent.author === "J. R. R. Tolkien")]'});
+        test.deepEqual(expected, result);
+
+        test.done();
+
+    },
+    // ============================================================================
+    'Custom property: @property': function(test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = json.store.book.reduce(function (arr, book) {
+            arr.push(book.author, book.title);
+            if (book.isbn) {arr.push(book.isbn);}
+            arr.push(book.price);
+            return arr;
+        }, []);
+        var result = jsonpath({json: json, path: '$..book.*[?(@property !== "category")]'});
+        test.deepEqual(expected, result);
+
+        test.done();
+
+    },
+    // ============================================================================
+    'Custom property: @parentProperty': function(test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = [json.store.bicycle.color, json.store.bicycle.price];
+        var result = jsonpath({json: json, path: '$.store.*[?(@parentProperty !== "book")]'});
+        test.deepEqual(expected, result);
+
+        test.done();
+
     }
 
 });

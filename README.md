@@ -92,27 +92,67 @@ Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
 }
 ```
 
+and the following XML representation:
+
+```xml
+<store>
+    <book>
+        <category>reference</category>
+        <author>Nigel Rees</author>
+        <title>Sayings of the Century</title>
+        <price>8.95</price>
+    </book>
+    <book>
+        <category>fiction</category>
+        <author>Evelyn Waugh</author>
+        <title>Sword of Honour</title>
+        <price>12.99</price>
+    </book>
+    <book>
+        <category>fiction</category>
+        <author>Herman Melville</author>
+        <title>Moby Dick</title>
+        <isbn>0-553-21311-3</isbn>
+        <price>8.99</price>
+    </book>
+    <book>
+        <category>fiction</category>
+        <author>J. R. R. Tolkien</author>
+        <title>The Lord of the Rings</title>
+        <isbn>0-395-19395-8</isbn>
+        <price>22.99</price>
+    </book>
+    <bicycle>
+        <color>red</color>
+        <price>19.95</price>
+    </bicycle>
+</store>
+```
+
+Please note that the XPath examples below do not distinguish between
+retrieving elements and their text content (except for the example
+indicating retrieval of all items).
 
 XPath               | JSONPath               | Result                                | Notes
 ------------------- | ---------------------- | ------------------------------------- | -----
 /store/book/author  | $.store.book[*].author | The authors of all books in the store |
 //author            | $..author              | All authors                           |
-/store/*            | $.store.*              | All things in store, which are some books and a red bicycle.|
+/store/*            | $.store.*              | All things in store, which are its books and a red bicycle.|
 /store//price       | $.store..price         | The price of everything in the store. |
 //book[3]           | $..book[2]             | The third book                        |
 //book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | The last book in order.|
 //book[position()<3]| $..book[0,1]<br>$..book[:2]| The first two books               |
-//book[1]/*[self::category\|self::author] or //book[1]/(category,author) in XPath 2.0| $..book[0][category,author]| The categories and authors of all books |
-//book[isbn]        | $..book[?(@.isbn)]     | Filter all books with isbn number     |
-//book[price<10]    | $..book[?(@.price<10)] | Filter all books cheapier than 10     |
-//*                 | $..                    | All Elements in XML document. All members of JSON structure. |
-//\*/\*             | $..*                   | All Elements beneath root in XML document. All members of JSON structure beneath the root. |
-//*[price>19]/..    | $..[?(@.price>19)]^    | Categories with things more expensive than 19 | Parent (caret) not present in the original spec
+//book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[0][category,author]| The categories and authors of all books |
+//book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     |
+//book[price<10]    | $..book[?(@.price<10)] | Filter all books cheaper than 10     |
+//\*/\*|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
+//*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
+//*[price>19]/..    | $..[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not present in the original spec
 /store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle") | Property name (tilde) is not present in the original spec
-/store/book[not(. is /store/book[1])] | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
-//category[parent::*/author = "J. R. R. Tolkien"] | $..category[?(@parent.author === "J. R. R. Tolkien")] | Grabs all categories whose parent's author (i.e., the author sibling to the category property) is J. R. R. Tolkien | @parent is not present in the original spec
-//book/*[name() != 'category']     | $..book.*[?(@property !== "category")] | Grabs the children of "book" except for "category" ones  | @property is not present in the original spec
-/store/*/*[name(parent::*) != 'book'] | $.store.*.*[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
+/store/book[not(. is /store/book[1])] in XPath 2.0 | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
+//category[parent::*/author = "J. R. R. Tolkien"] | $..category[?(@parent.author === "J. R. R. Tolkien")] | Grabs all categories whose parent's author (i.e., the author sibling to the category property) is J. R. R. Tolkien (i.e., "fiction") | @parent is not present in the original spec
+//book/*[name() != 'category']     | $..book.*[?(@property !== "category")] | Grabs all children of "book" except for "category" ones  | @property is not present in the original spec
+/store/*/*[name(parent::*) != 'book'] | $.store.*[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
 
 Any additional variables supplied as properties on the optional
 "sandbox" object option are also available to (parenthetical-based)
