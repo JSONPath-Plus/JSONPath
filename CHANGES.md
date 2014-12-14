@@ -1,5 +1,8 @@
 ## Dec 9, 2014
-* Offer new class-based API and object-based arguments
+* Offer new class-based API and object-based arguments (with option to run new queries without resupplying config)
+* Fix bug preventing an unwrapped null from being returned
+* Return undefined instead of false upon failure to find path (since undefined is not a possible JSON value)
+* Support "all" for resultType ("path" and "value" together)
 * Version 0.11
 
 ## Oct 23, 2013
