@@ -1,4 +1,4 @@
-var jsonpath = require("../").eval,
+var JSONPath = require('../'),
     testCase = require('nodeunit').testCase
 
 // tests based on examples at http://goessner.net/articles/JsonPath/
@@ -39,13 +39,13 @@ var json = {"store":{
 module.exports = testCase({
 
     // ============================================================================
-    "all sub properties, entire tree":function (test) {
+    'all sub properties, entire tree': function (test) {
         // ============================================================================
         test.expect(1);
         var books = json.store.book;
         var expected = [books[1].price, books[2].price, books[3].price, json.store.bicycle.price];
         expected = books[0].price.concat(expected);
-        var result = jsonpath(json, "$.store..price", {flatten: true});
+        var result = JSONPath({json: json, path: '$.store..price', flatten: true});
         test.deepEqual(expected, result);
 
         test.done();

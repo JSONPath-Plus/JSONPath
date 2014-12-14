@@ -1,4 +1,4 @@
-var jsonpath = require("../").eval,
+var JSONPath = require('../'),
     testCase = require('nodeunit').testCase
 
 var json = {
@@ -19,16 +19,16 @@ var json = {
 };
 
 module.exports = testCase({
-    "get single": function (test) {
+    'get single': function (test) {
         var expected = json.store.book;
-        var result = jsonpath(json, "store.book", {flatten: true, wrap: false});
+        var result = JSONPath({json: json, path: 'store.book', flatten: true, wrap: false});
         test.deepEqual(expected, result);
         test.done();
     },
 
-    "get arr": function (test) {
+    'get arr': function (test) {
         var expected = json.store.books;
-        var result = jsonpath(json, "store.books", {flatten: true, wrap: false});
+        var result = JSONPath({json: json, path: 'store.books', flatten: true, wrap: false});
         test.deepEqual(expected, result);
         test.done();
     }

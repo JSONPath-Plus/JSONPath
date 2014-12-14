@@ -1,3 +1,6 @@
+## Dec 9, 2014
+* Offer new class-based API and object-based arguments
+* Version 0.11
 
 ## Oct 23, 2013
 
