@@ -247,7 +247,7 @@ module.exports = testCase({
     // ============================================================================
     'Custom property: @property': function(test) {
     // ============================================================================
-        test.expect(1);
+        test.expect(2);
         var expected = json.store.book.reduce(function (arr, book) {
             arr.push(book.author, book.title);
             if (book.isbn) {arr.push(book.isbn);}
@@ -257,15 +257,28 @@ module.exports = testCase({
         var result = jsonpath({json: json, path: '$..book.*[?(@property !== "category")]'});
         test.deepEqual(expected, result);
 
+        expected = json.store.book.slice(1);
+        result = jsonpath({json: json, path: '$..book[?(@property !== 0)]'});
+        test.deepEqual(expected, result);
+
         test.done();
 
     },
     // ============================================================================
     'Custom property: @parentProperty': function(test) {
     // ============================================================================
-        test.expect(1);
+        test.expect(2);
         var expected = [json.store.bicycle.color, json.store.bicycle.price];
         var result = jsonpath({json: json, path: '$.store.*[?(@parentProperty !== "book")]'});
+        test.deepEqual(expected, result);
+
+        expected = json.store.book.slice(1).reduce(function (result, book) {
+            return result.concat(Object.keys(book).reduce(function (result, prop) {
+                result.push(book[prop]);
+                return result;
+            }, []));
+        }, []);
+        result = jsonpath({json: json, path: '$..book.*[?(@parentProperty !== 0)]'});
         test.deepEqual(expected, result);
 
         test.done();
