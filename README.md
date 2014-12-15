@@ -158,6 +158,17 @@ Any additional variables supplied as properties on the optional
 "sandbox" object option are also available to (parenthetical-based)
 evaluations.
 
+# Potential sources of confusion for XPath users
+
+1. In JSONPath, a filter expression, in addition to its `@` being a
+reference to its children, actually selects the immediate children
+as well, whereas in XPath, filter conditions do not select the children
+but delimit which of its parent nodes will be obtained in the result.
+1. In JSONPath, array indexes are, as in JavaScript, 0-based (they begin
+from 0), whereas in XPath, they are 1-based.
+1. In JSONPath, equality tests utilize (as per JavaScript) multiple equal signs
+whereas in XPath, they use a single equal sign.
+
 # Development
 
 Running the tests on node: `npm test`. For in-browser tests:
