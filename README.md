@@ -146,10 +146,11 @@ XPath               | JSONPath               | Result                           
 //book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[0][category,author]| The categories and authors of all books |
 //book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     |
 //book[price<10]    | $..book[?(@.price<10)] | Filter all books cheaper than 10     |
+| //\*[name() = 'price' and . != 8.95] | $..\*[?(@property === 'price' && @ !== 8.95)] | Obtain all property values of objects whose property is price and which does not equal 8.95 |
 //\*/\*\|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
 //*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
 //*[price>19]/..    | $..[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not present in the original spec
-/store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle") | Property name (tilde) is not present in the original spec
+/store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle"). Useful with wildcard properties. | Property name (tilde) is not present in the original spec
 /store/book[not(. is /store/book[1])] in XPath 2.0 | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
 //book[parent::*/bicycle/color = "red"]/category | $..book[?(@parent.bicycle && @parent.bicycle.color === "red")].category | Grabs all categories of books where the parent object of the book has a bicycle child whose color is red (i.e., all the books) | @parent is not present in the original spec
 //book/*[name() != 'category']     | $..book.*[?(@property !== "category")] | Grabs all children of "book" except for "category" ones  | @property is not present in the original spec

@@ -165,6 +165,15 @@ module.exports = testCase({
     },
 
     // ============================================================================
+    '@ as a scalar value': function(test) {
+    // ============================================================================
+        var expected = [json.store.bicycle.price].concat(json.store.book.slice(1).map(function (book) {return book.price;}));
+        var result = jsonpath({json: json, path: "$..*[?(@property === 'price' && @ !== 8.95)]", wrap: false});
+        test.deepEqual(expected, result);
+        test.done();
+    },
+
+    // ============================================================================
     'all properties of a JSON structure (beneath the root)': function(test) {
     // ============================================================================
         test.expect(1);
