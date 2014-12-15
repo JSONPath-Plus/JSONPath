@@ -164,23 +164,6 @@ module.exports = testCase({
         test.done();
     },
 
-    'all parent components of a JSON structure': function(test) {
-    // ============================================================================
-        test.expect(1);
-        var expected = [
-          json,
-          json.store,
-          json.store.book
-        ];
-        json.store.book.forEach(function(book) { expected.push(book); });
-        expected.push(json.store.bicycle);
-
-        var result = jsonpath({json: json, path: '$..'});
-        test.deepEqual(expected, result);
-
-        test.done();
-    },
-
     // ============================================================================
     'all properties of a JSON structure (beneath the root)': function(test) {
     // ============================================================================
@@ -200,6 +183,24 @@ module.exports = testCase({
 
         test.done();
     },
+
+    'all parent components of a JSON structure': function(test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = [
+          json,
+          json.store,
+          json.store.book
+        ];
+        json.store.book.forEach(function(book) { expected.push(book); });
+        expected.push(json.store.bicycle);
+
+        var result = jsonpath({json: json, path: '$..'});
+        test.deepEqual(expected, result);
+
+        test.done();
+    },
+
     // ============================================================================
     'Custom operator: parent (caret)': function(test) {
     // ============================================================================
