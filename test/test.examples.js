@@ -237,8 +237,8 @@ module.exports = testCase({
     'Custom property: @parent': function(test) {
     // ============================================================================
         test.expect(1);
-        var expected = [];
-        var result = jsonpath({json: json, path: '$..category[?(@parent.author === "J. R. R. Tolkien")]'});
+        var expected = ['reference', 'fiction', 'fiction', 'fiction'];
+        var result = jsonpath({json: json, path: '$..book[?(@parent.bicycle && @parent.bicycle.color === "red")].category'});
         test.deepEqual(expected, result);
 
         test.done();
