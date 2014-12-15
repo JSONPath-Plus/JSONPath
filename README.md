@@ -12,7 +12,7 @@ In node.js:
 
 ```js
 var JSONPath = require('JSONPath');
-JSONPath({json: obj, path: path});
+JSONPath({json: obj, path: path, callback: callback});
 ```
 
 For browser usage you can directly include `lib/jsonpath.js`, no browserify
@@ -21,14 +21,14 @@ magic necessary:
 ```html
 <script src="lib/jsonpath.js"></script>
 <script>
-    JSONPath({json: obj, path: path});
+    JSONPath({json: obj, path: path, callback: callback});
 </script>
 ```
 
 An alternative syntax is available as:
 
 ```js
-JSONPath(options, obj, path);
+JSONPath(options, obj, path, callback);
 ```
 
 The following format is now deprecated:
@@ -46,6 +46,7 @@ options (the first argument) include:
 - ***sandbox*** (**default: An empty object **) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available to those expressions; see the Syntax section for details.)
 - ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `undefined` will be returned (as opposed to an empty array with `wrap` set to true). If `wrap` is set to false and a single result is found, that result will be the only item returned (not within an array). An array will still be returned if multiple results are found, however.
 - ***preventEval*** (**default: false**) - Although JavaScript evaluation expressions are allowed by default, for security reasons (if one is operating on untrusted user input, for example), one may wish to set this option to `true` to throw exceptions when these expressions are attempted.
+- ***callback*** (***default: (none)***) - If supplied, a callback will be called immediately upon retrieval of an end point value. The three arguments supplied will be the value of the payload (according to `resultType`), the type of the payload (whether it is a normal "value" or a "property" name), and a full payload object (with all `resultType`s).
 
 There is also now a class property, on JSONPath.cache which exposes the cache for those who wish to preserve and reuse it for optimization purposes.
 
