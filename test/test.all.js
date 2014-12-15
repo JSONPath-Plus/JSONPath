@@ -18,40 +18,41 @@ var json = {
 module.exports = testCase({
 
     // ============================================================================
-    'simple parent selection': function(test) {
+    'simple parent selection, return both path and value': function(test) {
     // ============================================================================
         test.expect(1);
-        var result = jsonpath({json: json, path: '$.children[0]^', flatten: true});
-        test.deepEqual(json.children, result);
+        var result = jsonpath({json: json, path: '$.children[0]^', resultType: 'all'});
+        test.deepEqual([{path: "$['children']", value: json.children, parent: json, parentProperty: 'children'}], result);
         test.done();
     },
 
     // ============================================================================
-    'parent selection with multiple matches': function(test) {
+    'parent selection with multiple matches, return both path and value': function(test) {
     // ============================================================================
         test.expect(1);
-        var expected = [json.children, json.children];
-        var result = jsonpath({json: json, path: '$.children[1:3]^'});
+        var expectedOne = {path: "$['children']", value: json.children, parent: json, parentProperty: 'children'};
+        var expected = [expectedOne, expectedOne];
+        var result = jsonpath({json: json, path: '$.children[1:3]^', resultType: 'all'});
         test.deepEqual(expected, result);
         test.done();
     },
 
     // ============================================================================
-    'select sibling via parent': function(test) {
+    'select sibling via parent, return both path and value': function(test) {
     // ============================================================================
         test.expect(1);
-        var expected = [{"name": "child3_2"}];
-        var result = jsonpath({json: json, path: '$..[?(@.name && @.name.match(/3_1$/))]^[?(@.name.match(/_2$/))]'});
+        var expected = [{path: "$['children'][2]['children'][1]", value: {name: 'child3_2'}, parent: json.children[2].children, parentProperty: 1}];
+        var result = jsonpath({json: json, path: '$..[?(@.name && @.name.match(/3_1$/))]^[?(@.name.match(/_2$/))]', resultType: 'all'});
         test.deepEqual(expected, result);
         test.done();
     },
 
     // ============================================================================
-    'parent parent parent': function(test) {
+    'parent parent parent, return both path and value': function(test) {
     // ============================================================================
         test.expect(1);
-        var expected = json.children[0].children;
-        var result = jsonpath({json: json, path: '$..[?(@.name && @.name.match(/1_1$/))].name^^', flatten: true});
+        var expected = [{path: "$['children'][0]['children']", value: json.children[0].children, parent: json.children[0], parentProperty: 'children'}];
+        var result = jsonpath({json: json, path: '$..[?(@.name && @.name.match(/1_1$/))].name^^', resultType: 'all'});
         test.deepEqual(expected, result);
         test.done();
     },
@@ -60,7 +61,7 @@ module.exports = testCase({
     'no such parent': function(test) {
     // ============================================================================
         test.expect(1);
-        var result = jsonpath({json: json, path: 'name^^'});
+        var result = jsonpath({json: json, path: 'name^^', resultType: 'all'});
         test.deepEqual([], result);
         test.done();
     }
