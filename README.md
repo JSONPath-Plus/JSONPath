@@ -191,9 +191,10 @@ whereas in XPath, they use a single equal sign.
 # Todos
 
 1. Support non-eval version (which supports parenthetical evaluations)
-1. Pull or streaming parser?
+1. Support OR outside of filters (as in XPath `|`).
 1. Create syntax to work like XPath filters in not selecting children?
 1. Allow for type-based searches to be JSON Schema aware
+1. Pull or streaming parser?
 
 # Development
 
