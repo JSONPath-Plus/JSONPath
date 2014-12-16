@@ -52,10 +52,11 @@ The properties that can be supplied on the options object or evaluate method (as
 - ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `undefined` will be returned (as opposed to an empty array with `wrap` set to true). If `wrap` is set to false and a single result is found, that result will be the only item returned (not within an array). An array will still be returned if multiple results are found, however.
 - ***preventEval*** (**default: false**) - Although JavaScript evaluation expressions are allowed by default, for security reasons (if one is operating on untrusted user input, for example), one may wish to set this option to `true` to throw exceptions when these expressions are attempted.
 - ***callback*** (**default: (none)**) - If supplied, a callback will be called immediately upon retrieval of an end point value. The three arguments supplied will be the value of the payload (according to `resultType`), the type of the payload (whether it is a normal "value" or a "property" name), and a full payload object (with all `resultType`s).
+- ***otherTypeCallback*** (**default: \<A function that throws an error when @other() is encountered\>**) - In the current absence of JSON Schema support, one can determine types beyond the built-in types by adding the operator `@other()` at the end of one's query. If such a path is encountered, the `otherTypeCallback` will be invoked with the value of the item, its path, its parent, and its parent's property name.
 
 ## Instance methods
 
-- ***evaluate(path, json, callback)*** OR ***evaluate({path: <path>, json: <json object>, callback: <callback function>})*** - This method is only necessary if the `autostart` property is set to `false`. It can be used for repeated evaluations using the same configuration. Besides the listed properties, the latter method pattern can accept any of the other allowed instance properties (except for `autostart` which would have no relevance here).
+- ***evaluate(path, json, callback, otherTypeCallback)*** OR ***evaluate({path: \<path\>, json: \<json object\>, callback: \<callback function\>, otherTypeCallback: \<otherTypeCallback function\>})*** - This method is only necessary if the `autostart` property is set to `false`. It can be used for repeated evaluations using the same configuration. Besides the listed properties, the latter method pattern can accept any of the other allowed instance properties (except for `autostart` which would have no relevance here).
 
 ## Class properties and methods
 
@@ -171,6 +172,7 @@ XPath               | JSONPath               | Result                           
 //book/*[position() != 0]    | $..book[?(@property !== 0)] | Grabs all books whose property (which, being that we are reaching inside an array, is the numeric index) is not 0 | @property is not present in the original spec
 /store/*/*[name(parent::*) != 'book'] | $.store.*[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
 //book[count(preceding-sibling::*) != 0]/*/text() | $..book.*[?(@parentProperty !== 0)]  | Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0 | @parentProperty is not present in the original spec
+
 
 Any additional variables supplied as properties on the optional
 "sandbox" object option are also available to (parenthetical-based)

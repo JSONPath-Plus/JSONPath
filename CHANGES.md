@@ -3,6 +3,7 @@
 * Offer new class-based API and object-based arguments (with option to run new queries via evaluate() method without resupplying config)
 * Allow new preventEval=true and autostart=false option
 * Allow new callback option to allow a callback function to execute as each final result node is obtained
+* Allow type operators: JavaScript types (@boolean(), @number(), @string()), other fundamental JavaScript types (@null(), @object(), @array()), the JSONSchema-added type, @integer(), and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (@undefined(), @function(), @nonFinite()). Finally, @other() is made available in conjunction with a new callback option, `otherTypeCallback`, can be used to allow user-defined type detection (at least until JSON Schema awareness may be provided).
 * Support "parent" and "parentProperty" for resultType along with "all" (which also includes "path" and "value" together)
 * Support "." within properties
 * Support custom @parent, @parentProperty, @property (in addition to custom property @path) inside evaluations
