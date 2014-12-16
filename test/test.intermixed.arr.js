@@ -1,7 +1,11 @@
-var JSONPath = require('../'),
-    testCase = require('nodeunit').testCase
+/*global require, module*/
+/*jslint vars:true*/
+(function () {'use strict';
 
-// tests based on examples at http://goessner.net/articles/JsonPath/
+var jsonpath = require('../'),
+    testCase = require('nodeunit').testCase;
+
+// tests based on examples at http://goessner.net/articles/jsonpath/
 
 var json = {"store":{
     "book":[
@@ -45,9 +49,11 @@ module.exports = testCase({
         var books = json.store.book;
         var expected = [books[1].price, books[2].price, books[3].price, json.store.bicycle.price];
         expected = books[0].price.concat(expected);
-        var result = JSONPath({json: json, path: '$.store..price', flatten: true});
+        var result = jsonpath({json: json, path: '$.store..price', flatten: true});
         test.deepEqual(expected, result);
 
         test.done();
     }
 });
+
+}());
