@@ -61,8 +61,8 @@ The properties that can be supplied on the options object or evaluate method (as
 ## Class properties and methods
 
 - ***JSONPath.cache*** - Exposes the cache object for those who wish to preserve and reuse it for optimization purposes.
-- ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or unnormalized path as string and converts to an array.
-- ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and converts to a normalized path string.
+- ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or unnormalized path as string and converts to an array: for example, `['$', 'aProperty', 'anotherProperty']`.
+- ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and converts to a normalized path string. The string will be in form like: `$['aProperty']['anotherProperty]`. The terminal constructions `~` and typed operators like `@string()`, as with `$`, get added without enclosing single quotes and brackets.
 
 # Syntax through examples
 
