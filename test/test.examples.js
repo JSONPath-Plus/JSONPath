@@ -293,7 +293,20 @@ module.exports = testCase({
 
         test.done();
 
-    }
+    },
+
+    // ============================================================================
+    '@number()': function (test) {
+    // ============================================================================
+        test.expect(1);
+        var books = json.store.book;
+        var expected = [8.95, 12.99, 8.99, 22.99];
+        var result = jsonpath({json: json, path: '$.store.book..*@number()', flatten: true});
+        test.deepEqual(expected, result);
+
+        test.done();
+    },
+
 
 });
 
