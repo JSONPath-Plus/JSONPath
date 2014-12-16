@@ -44,7 +44,7 @@ jsonPath.eval(options, obj, path);
 The properties that can be supplied on the options object or evaluate method (as the first argument) include:
 
 - ***path*** (**required**) - The JSONPath expression as a (normalized or unnormalized) string or array
-- ***json*** (**required**) - The JSON object to evaluate (whether of null, boolean, string, object, or array type).
+- ***json*** (**required**) - The JSON object to evaluate (whether of null, boolean, number, string, object, or array type).
 - ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually.
 - ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
 - ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value", "path", "parent", or "parentProperty" to determine respectively whether to return results as the values of the found items, as their absolute paths, as their parent objects, or as their parent's property name. If set to "all", all of these types will be returned on an object with the type as key name.
