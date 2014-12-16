@@ -43,19 +43,19 @@ jsonPath.eval(options, obj, path);
 
 The properties that can be supplied on the options object or evaluate method (as the first argument) include:
 
-- ***path*** - The JSONPath expression as a (normalized or unnormalized) string or array
-- ***json*** - The JSON object to evaluate (whether of null, boolean, string, object, or array type).
+- ***path*** (**required**) - The JSONPath expression as a (normalized or unnormalized) string or array
+- ***json*** (**required**) - The JSON object to evaluate (whether of null, boolean, string, object, or array type).
 - ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually.
 - ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
 - ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value", "path", "parent", or "parentProperty" to determine respectively whether to return results as the values of the found items, as their absolute paths, as their parent objects, or as their parent's property name. If set to "all", all of these types will be returned on an object with the type as key name.
-- ***sandbox*** (**default: An empty object **) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available to those expressions; see the Syntax section for details.)
+- ***sandbox*** (**default: {}**) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available to those expressions; see the Syntax section for details.)
 - ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `undefined` will be returned (as opposed to an empty array with `wrap` set to true). If `wrap` is set to false and a single result is found, that result will be the only item returned (not within an array). An array will still be returned if multiple results are found, however.
 - ***preventEval*** (**default: false**) - Although JavaScript evaluation expressions are allowed by default, for security reasons (if one is operating on untrusted user input, for example), one may wish to set this option to `true` to throw exceptions when these expressions are attempted.
-- ***callback*** (***default: (none)***) - If supplied, a callback will be called immediately upon retrieval of an end point value. The three arguments supplied will be the value of the payload (according to `resultType`), the type of the payload (whether it is a normal "value" or a "property" name), and a full payload object (with all `resultType`s).
+- ***callback*** (**default: (none)**) - If supplied, a callback will be called immediately upon retrieval of an end point value. The three arguments supplied will be the value of the payload (according to `resultType`), the type of the payload (whether it is a normal "value" or a "property" name), and a full payload object (with all `resultType`s).
 
 ## Instance methods
 
-- ***evaluate(path, json, callback) OR evaluate({path: <path>, json: <json object>, callback: <callback function>})*** - This method is only necessary if the `autostart` property is set to `false`. It can be used for repeated evaluations using the same configuration. Besides the listed properties, the latter method pattern can accept any of the other allowed instance properties (except for `autostart` which would have no relevance here).
+- ***evaluate(path, json, callback)*** OR ***evaluate({path: <path>, json: <json object>, callback: <callback function>})*** - This method is only necessary if the `autostart` property is set to `false`. It can be used for repeated evaluations using the same configuration. Besides the listed properties, the latter method pattern can accept any of the other allowed instance properties (except for `autostart` which would have no relevance here).
 
 ## Class properties and methods
 
