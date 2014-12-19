@@ -8,6 +8,7 @@
 * Support "." within properties
 * Support custom @parent, @parentProperty, @property (in addition to custom property @path) inside evaluations
 * Support a custom operator ("~") to allow grabbing of property names
+* Support "$" for retrieval of root, and document this as well as "$.." behavior
 * Fix for @path in index/property evaluations
 * Expose cache on JSONPath.cache for those who wish to preserve and reuse it
 * Expose class methods `toPathString` for converting a path as array into a (normalized) path as string and `toPathArray` for the reverse (though accepting unnormalized strings as well as normalized)

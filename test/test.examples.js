@@ -211,6 +211,17 @@ module.exports = testCase({
     },
 
     // ============================================================================
+    'root': function (test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = json;
+        var result = jsonpath({json: json, path: '$', wrap: false});
+        test.deepEqual(expected, result);
+
+        test.done();
+    },
+
+    // ============================================================================
     'Custom operator: parent (caret)': function(test) {
     // ============================================================================
         test.expect(1);
