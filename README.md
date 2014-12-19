@@ -161,9 +161,9 @@ XPath               | JSONPath               | Result                           
 //book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     |
 //book[price<10]    | $..book[?(@.price<10)] | Filter all books cheaper than 10     |
 | //\*[name() = 'price' and . != 8.95] | $..\*[?(@property === 'price' && @ !== 8.95)] | Obtain all property values of objects whose property is price and which does not equal 8.95 |
+/                   | $                      | The root of the JSON object (i.e., the whole object itself) |
 //\*/\*\|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
 //*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
-/                   | $                      | The root of the JSON object (i.e., the whole object itself) | This root behavior was not documented in the original spec.
 //*[price>19]/..    | $..[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not documented in the original spec
 /store/*/name() (in XPath 2.0)  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle"). Useful with wildcard properties. | Property name (tilde) is not present in the original spec
 /store/book\[not(. is /store/book\[1\])\] (in XPath 2.0) | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
