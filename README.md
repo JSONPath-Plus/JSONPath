@@ -197,6 +197,8 @@ whereas in XPath, they use a single equal sign.
 1. Create syntax to work like XPath filters in not selecting children?
 1. Allow for type-based searches to be JSON Schema aware
 1. Pull or streaming parser?
+1. Allow option for parentNode equivalent (maintaining entire chain of
+parent-and-parentProperty objects up to root)
 
 # Development
 
