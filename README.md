@@ -23,14 +23,14 @@ magic necessary:
 ```html
 <script src="lib/jsonpath.js"></script>
 <script>
-    JSONPath({path: path, json: obj, callback: callback});
+    JSONPath({path: path, json: obj, callback: callback, otherTypeCallback: otherTypeCallback});
 </script>
 ```
 
 An alternative syntax is available as:
 
 ```js
-JSONPath(options, path, obj, callback);
+JSONPath(options, path, obj, callback, otherTypeCallback);
 ```
 
 The following format is now deprecated:
