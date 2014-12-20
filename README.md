@@ -199,6 +199,8 @@ whereas in XPath, they use a single equal sign.
 1. Pull or streaming parser?
 1. Allow option for parentNode equivalent (maintaining entire chain of
 parent-and-parentProperty objects up to root)
+1. Fix in JSONPath to avoid need for "$"?
+1. Define any allowed behaviors for: '$.', '$[0]', $.[0], or $.['prop']
 
 # Development
 
