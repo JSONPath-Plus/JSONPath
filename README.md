@@ -202,6 +202,8 @@ retrieval of schema segment for a given JSON fragment)
 parent-and-parentProperty objects up to root)
 1. Fix in JSONPath to avoid need for "$"?
 1. Define any allowed behaviors for: '$.', '$[0]', $.[0], or $.['prop']
+1. Modularize operator detection and usage to allow for
+extensibility (at least non-standard ones)?
 
 # Development
 
