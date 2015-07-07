@@ -192,6 +192,8 @@ whereas in XPath, they use a single equal sign.
 
 # Todos
 
+1. Conditionally resolve JSON references/JSON pointers instead or in
+addition to raw retrieved data, with options on how deeply nested.
 1. Support non-eval version (which supports parenthetical evaluations)
 1. Support OR outside of filters (as in XPath `|`).
 1. Create syntax to work like XPath filters in not selecting children?
