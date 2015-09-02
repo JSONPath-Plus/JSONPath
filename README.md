@@ -1,3 +1,5 @@
+> As I'm not able to actively maintain this project, I'm transferring the ownership of this project to https://github.com/JSONPath-js. If you are interested in co-maintaining this project, please drop an email to subbu at subbu dot org.
+
 # JSONPath [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 
 Analyse, transform, and selectively extract data from JSON documents (and JavaScript objects).
