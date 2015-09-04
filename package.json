@@ -28,7 +28,7 @@
     "main": "./lib/jsonpath",
     "dependencies": {},
     "devDependencies": {
-        "nodeunit": "0.8.8"
+        "nodeunit": "*"
     },
     "scripts": {"test": "./node_modules/.bin/nodeunit test"}
 }
