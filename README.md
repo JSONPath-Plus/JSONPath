@@ -42,7 +42,7 @@ options (the first argument) include:
 
 - ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually as needed.
 - ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
-- ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value", "path" or "pointer" to determine whether to return results as the values of the found items or as their absolute paths or as a [JSON Pointer](http://www.rfc-base.org/txt/rfc-6901.txt) to the absolute paths.
+- ***resultType*** (**default: "value"**) - Can be case-insensitive form of `value`, `path" or `pointer` to determine whether to return results as the values of the found items or as their absolute paths or as a [JSON Pointer](http://www.rfc-base.org/txt/rfc-6901.txt) to the absolute paths.
 - ***sandbox*** (**default: An empty object **) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available; see the Syntax section for details.)
 - ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `false` will be returned (as opposed to an empty array). If `wrap` is set to false and a single result is found, that result will be the only item returned. An array will still be returned if multiple results are found, however.
 
