@@ -1,3 +1,6 @@
+## ?
+- Fix: Enhance Node checking to avoid issue reported with angular-mock
+
 ## Dec 12, 2015 10:39pm
 - Breaking change: Problems with upper-case letters in npm is causing us to rename the package, so have renamed package to "jsonpath-plus" (there are already package with lower-case "jsonpath" or "json-path"). The new name also reflects that
 there have been changes to the original spec.
