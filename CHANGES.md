@@ -1,3 +1,7 @@
+## Dec 12, 2015 10:11pm
+- Give warning in README that problems in npm with upper-case letters is causing us to rename to "jsonpath-plus" (next version will actually apply the change).
+- Version 0.11.1
+
 ## Dec 12, 2015
 - Breaking change: For unwrapped results, return `undefined` instead of `false` upon failure to find path (to allow distinguishing of `undefined`--a non-allowed JSON value--from the valid JSON values, `null` or `false`) and return the exact value upon falsy single results (in order to allow return of `null`)
 - Deprecated: Use of `jsonPath.eval()`; use new class-based API instead
