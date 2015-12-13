@@ -192,15 +192,20 @@ whereas in XPath, they use a single equal sign.
 
 # Todos
 
+1. Conditionally resolve JSON references/JSON pointers instead or in
+addition to raw retrieved data, with options on how deeply nested.
 1. Support non-eval version (which supports parenthetical evaluations)
 1. Support OR outside of filters (as in XPath `|`).
 1. Create syntax to work like XPath filters in not selecting children?
-1. Allow for type-based searches to be JSON Schema aware
+1. Allow for type-based searches to be JSON Schema aware (and allow
+retrieval of schema segment for a given JSON fragment)
 1. Pull or streaming parser?
 1. Allow option for parentNode equivalent (maintaining entire chain of
 parent-and-parentProperty objects up to root)
 1. Fix in JSONPath to avoid need for "$"?
 1. Define any allowed behaviors for: '$.', '$[0]', $.[0], or $.['prop']
+1. Modularize operator detection and usage to allow for
+extensibility (at least non-standard ones)?
 
 # Development
 
