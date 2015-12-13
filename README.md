@@ -61,8 +61,8 @@ The properties that can be supplied on the options object or evaluate method (as
 ## Class properties and methods
 
 - ***JSONPath.cache*** - Exposes the cache object for those who wish to preserve and reuse it for optimization purposes.
-- ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or unnormalized path as string and converts to an array.
-- ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and converts to a normalized path string.
+- ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or unnormalized path as string and converts to an array: for example, `['$', 'aProperty', 'anotherProperty']`.
+- ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and converts to a normalized path string. The string will be in form like: `$['aProperty']['anotherProperty]`. The terminal constructions `~` and typed operators like `@string()`, as with `$`, get added without enclosing single quotes and brackets.
 
 # Syntax through examples
 
@@ -157,25 +157,24 @@ XPath               | JSONPath               | Result                           
 //book[3]           | $..book[2]             | The third book (book object)          |
 //book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | The last book in order.|
 //book[position()<3]| $..book[0,1]<br>$..book[:2]| The first two books               |
-//book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0| $..book[0][category,author]| The categories and authors of all books |
+//book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0 | $..book[0][category,author]| The categories and authors of all books |
 //book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     |
 //book[price<10]    | $..book[?(@.price<10)] | Filter all books cheaper than 10     |
 | //\*[name() = 'price' and . != 8.95] | $..\*[?(@property === 'price' && @ !== 8.95)] | Obtain all property values of objects whose property is price and which does not equal 8.95 |
 //\*/\*\|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
 //*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
 //*[price>19]/..    | $..[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not present in the original spec
-/store/*/name() in XPath 2.0  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle"). Useful with wildcard properties. | Property name (tilde) is not present in the original spec
-/store/book[not(. is /store/book[1])] in XPath 2.0 | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
-//book[parent::*/bicycle/color = "red"]/category | $..book[?(@parent.bicycle && @parent.bicycle.color === "red")].category | Grabs all categories of books where the parent object of the book has a bicycle child whose color is red (i.e., all the books) | @parent is not present in the original spec
+/store/*/name() (in XPath 2.0)  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle"). Useful with wildcard properties. | Property name (tilde) is not present in the original spec
+/store/book\[not(. is /store/book\[1\])\] (in XPath 2.0) | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
+//book[parent::\*/bicycle/color = "red"]/category | $..book[?(@parent.bicycle && @parent.bicycle.color === "red")].category | Grabs all categories of books where the parent object of the book has a bicycle child whose color is red (i.e., all the books) | @parent is not present in the original spec
 //book/*[name() != 'category']     | $..book.*[?(@property !== "category")] | Grabs all children of "book" except for "category" ones  | @property is not present in the original spec
 //book/*[position() != 0]    | $..book[?(@property !== 0)] | Grabs all books whose property (which, being that we are reaching inside an array, is the numeric index) is not 0 | @property is not present in the original spec
-/store/*/*[name(parent::*) != 'book'] | $.store.*[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
-//book[count(preceding-sibling::*) != 0]/*/text() | $..book.*[?(@parentProperty !== 0)]  | Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0 | @parentProperty is not present in the original spec
+/store/\*/\*[name(parent::*) != 'book'] | $.store.*[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
+//book[count(preceding-sibling::\*) != 0]/\*/text() | $..book.*[?(@parentProperty !== 0)]  | Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0 | @parentProperty is not present in the original spec
+//book/../\*\[. instance of element(\*, xs:decimal)\] (in XPath 2.0) | $..book..\*@number() | Get the numeric values within the book array | @number(), the other basic types (@boolean(), @string()), other low-level derived types (@null(), @object(), @array()), the JSONSchema-added type, @integer(), the type, @other(), to be used in conjunction with a user-defined callback (see `otherTypeCallback`) and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (@undefined(), @function(), @nonFinite()) are not present in the original spec
 
 
-Any additional variables supplied as properties on the optional
-"sandbox" object option are also available to (parenthetical-based)
-evaluations.
+Any additional variables supplied as properties on the optional "sandbox" object option are also available to (parenthetical-based) evaluations.
 
 # Potential sources of confusion for XPath users
 

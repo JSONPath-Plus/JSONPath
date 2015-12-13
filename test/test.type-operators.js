@@ -43,18 +43,6 @@ var json = {"store":{
 module.exports = testCase({
 
     // ============================================================================
-    '@number()': function (test) {
-    // ============================================================================
-        test.expect(1);
-        var books = json.store.book;
-        var expected = [8.95, 8.94, 8.93, 12.99, 8.99, 22.99];
-        var result = jsonpath({json: json, path: '$.store.book..*@number()', flatten: true});
-        test.deepEqual(expected, result);
-
-        test.done();
-    },
-    
-    // ============================================================================
     '@other()': function (test) {
     // ============================================================================
         test.expect(1);
