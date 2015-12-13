@@ -1,9 +1,11 @@
 # JSONPath [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 
+***(This package is being moved to "jsonpath-plus" to avoid npm problems in dealing with upper-case packages.)***
+
 Analyse, transform, and selectively extract data from JSON documents (and JavaScript objects).
 
 # Install
-    
+
     npm install JSONPath
 
 # Usage
@@ -202,8 +204,8 @@ retrieval of schema segment for a given JSON fragment)
 1. Pull or streaming parser?
 1. Allow option for parentNode equivalent (maintaining entire chain of
 parent-and-parentProperty objects up to root)
-1. Fix in JSONPath to avoid need for "$"?
-1. Define any allowed behaviors for: '$.', '$[0]', $.[0], or $.['prop']
+1. Fix in JSONPath to avoid need for `$`?
+1. Define any allowed behaviors for: `$.`, `$[0]`, `$.[0]`, or `$.['prop']`
 1. Modularize operator detection and usage to allow for
 extensibility (at least non-standard ones)?
 

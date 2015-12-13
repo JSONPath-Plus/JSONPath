@@ -1,3 +1,7 @@
+## Dec 12, 2015 10:36pm
+- Actually add the warning in the README that problems in npm with upper-case letters is causing us to rename to "jsonpath-plus" (next version will actually apply the change).
+- Version 0.11.2
+
 ## Dec 12, 2015 10:11pm
 - Give warning in README that problems in npm with upper-case letters is causing us to rename to "jsonpath-plus" (next version will actually apply the change).
 - Version 0.11.1
