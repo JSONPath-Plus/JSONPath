@@ -1,12 +1,10 @@
-# JSONPath [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
-
-***(This package is being moved to "jsonpath-plus" to avoid npm problems in dealing with upper-case packages.)***
+# JSONPath Plus [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 
 Analyse, transform, and selectively extract data from JSON documents (and JavaScript objects).
 
 # Install
 
-    npm install JSONPath
+    npm install jsonpath-plus
 
 # Usage
 
@@ -15,7 +13,7 @@ Analyse, transform, and selectively extract data from JSON documents (and JavaSc
 In node.js:
 
 ```js
-var JSONPath = require('JSONPath');
+var JSONPath = require('jsonpath-plus');
 JSONPath({json: obj, path: path, callback: callback});
 ```
 

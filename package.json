@@ -1,6 +1,6 @@
 {
     "author": "Stefan Goessner",
-    "name": "JSONPath",
+    "name": "jsonpath-plus",
     "description": "A JS implementation of JSONPath",
     "contributors": [
         {
@@ -25,7 +25,7 @@
         }
     ],
     "license": "MIT",
-    "version": "0.11.2",
+    "version": "0.12.0",
     "repository": {
         "type": "git",
         "url": "git://github.com/s3u/JSONPath.git"

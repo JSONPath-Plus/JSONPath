@@ -1,3 +1,8 @@
+## Dec 12, 2015 10:39pm
+- Breaking change: Problems with upper-case letters in npm is causing us to rename the package, so have renamed package to "jsonpath-plus" (there are already package with lower-case "jsonpath" or "json-path"). The new name also reflects that
+there have been changes to the original spec.
+- Version 0.12.0
+
 ## Dec 12, 2015 10:36pm
 - Actually add the warning in the README that problems in npm with upper-case letters is causing us to rename to "jsonpath-plus" (next version will actually apply the change).
 - Version 0.11.2
