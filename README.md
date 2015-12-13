@@ -64,8 +64,7 @@ The properties that can be supplied on the options object or evaluate method (as
 - ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or unnormalized path as string and converts to an array.
 - ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and converts to a normalized path string.
 
-Syntax with examples
---------
+# Syntax through examples
 
 Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
 
@@ -188,6 +187,14 @@ but delimit which of its parent nodes will be obtained in the result.
 from 0), whereas in XPath, they are 1-based.
 1. In JSONPath, equality tests utilize (as per JavaScript) multiple equal signs
 whereas in XPath, they use a single equal sign.
+
+# Todos
+
+1. Support non-eval version (which supports parenthetical evaluations)
+1. Support OR outside of filters (as in XPath `|`).
+1. Create syntax to work like XPath filters in not selecting children?
+1. Allow for type-based searches to be JSON Schema aware
+1. Pull or streaming parser?
 
 # Development
 
