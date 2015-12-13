@@ -1,0 +1,16 @@
+{
+  "extends": "standard",
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "indent": 0,
+    "one-var": 0,
+    "brace-style": 0,
+    "block-spacing": [2, "never"],
+    "semi": [2, "always"]
+  },
+  "globals": {
+    "define": true
+  }
+}

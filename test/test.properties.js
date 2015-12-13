@@ -1,10 +1,9 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
     testCase = require('nodeunit').testCase;
-
 
 var json = {
   "test1": {
@@ -12,14 +11,13 @@ var json = {
       "test3.test4.test5": {
         "test7": "value"
       }
-    },
+    }
   },
   "datafield": [
     {"tag": "035", "subfield": {"@code": "a", "#text": "1879"}},
     {"@tag": "042", "subfield": {"@code": "a", "#text": "5555"}}
   ]
 };
-
 
 module.exports = testCase({
 
@@ -40,12 +38,11 @@ module.exports = testCase({
         test.expect(2);
         var result = jsonpath({json: json, path: "$.datafield[?(@.tag=='035')]", wrap: false});
         test.deepEqual(json.datafield[0], result);
-        var result = jsonpath({json: json, path: "$.datafield[?(@['@tag']=='042')]", wrap: false});
+        result = jsonpath({json: json, path: "$.datafield[?(@['@tag']=='042')]", wrap: false});
         test.deepEqual(json.datafield[1], result);
 
         test.done();
     }
 
 });
-
 }());

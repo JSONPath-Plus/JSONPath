@@ -1,5 +1,5 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
@@ -8,17 +8,16 @@ var jsonpath = require('../'),
 var json = {
     "name": "root",
     "children": [
-        {"name": "child1", "children": [{"name": "child1_1"},{"name": "child1_2"}]},
+        {"name": "child1", "children": [{"name": "child1_1"}, {"name": "child1_2"}]},
         {"name": "child2", "children": [{"name": "child2_1"}]},
         {"name": "child3", "children": [{"name": "child3_1"}, {"name": "child3_2"}]}
     ]
 };
 
-
 module.exports = testCase({
 
     // ============================================================================
-    'simple parent selection': function(test) {
+    'simple parent selection': function (test) {
     // ============================================================================
         test.expect(1);
         var result = jsonpath({json: json, path: '$.children[0]^', flatten: true});
@@ -27,7 +26,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'parent selection with multiple matches': function(test) {
+    'parent selection with multiple matches': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = [json.children, json.children];
@@ -37,7 +36,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'select sibling via parent': function(test) {
+    'select sibling via parent': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = [{"name": "child3_2"}];
@@ -47,7 +46,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'parent parent parent': function(test) {
+    'parent parent parent': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = json.children[0].children;
@@ -57,7 +56,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'no such parent': function(test) {
+    'no such parent': function (test) {
     // ============================================================================
         test.expect(1);
         var result = jsonpath({json: json, path: 'name^^'});
@@ -66,5 +65,4 @@ module.exports = testCase({
     }
 
 });
-
 }());

@@ -1,14 +1,13 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
     testCase = require('nodeunit').testCase;
 
-
 var t1 = {
   simpleString: "simpleString",
-  "@" : "@asPropertyName",
+  "@": "@asPropertyName",
   "a$a": "$inPropertyName",
   "$": {
     "@": "withboth"
@@ -19,14 +18,12 @@ var t1 = {
     }
   }
 };
-  
 
 module.exports = testCase({
-    
 
-    // ============================================================================    
-    'test undefined, null': function(test) {
-    // ============================================================================    
+    // ============================================================================
+    'test undefined, null': function (test) {
+    // ============================================================================
         test.expect(6);
         test.strictEqual(null, jsonpath({json: {a: null}, path: '$.a', wrap: false}));
         test.strictEqual(undefined, jsonpath({json: undefined, path: 'foo'}));
@@ -37,20 +34,17 @@ module.exports = testCase({
         test.done();
     },
 
-    
-    // ============================================================================    
-    'test $ and @': function(test) {
-    // ============================================================================    
+    // ============================================================================
+    'test $ and @': function (test) {
+    // ============================================================================
         test.expect(5);
-        test.strictEqual(t1.$,   jsonpath({json: t1, path: '$'})[0]);
+        test.strictEqual(t1.$, jsonpath({json: t1, path: '$'})[0]);
         test.strictEqual(t1.a$a, jsonpath({json: t1, path: 'a$a'})[0]);
-        test.strictEqual(t1['@'],   jsonpath({json: t1, path: '@'})[0]);
+        test.strictEqual(t1['@'], jsonpath({json: t1, path: '@'})[0]);
         test.strictEqual(t1.$['@'], jsonpath({json: t1, path: '$.$.@'})[0]);
         test.strictEqual(undefined, jsonpath({json: t1, path: '\\@'})[1]);
-        
+
         test.done();
     }
-    
 });
-
 }());

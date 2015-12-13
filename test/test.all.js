@@ -1,5 +1,5 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
@@ -8,17 +8,16 @@ var jsonpath = require('../'),
 var json = {
     "name": "root",
     "children": [
-        {"name": "child1", "children": [{"name": "child1_1"},{"name": "child1_2"}]},
+        {"name": "child1", "children": [{"name": "child1_1"}, {"name": "child1_2"}]},
         {"name": "child2", "children": [{"name": "child2_1"}]},
         {"name": "child3", "children": [{"name": "child3_1"}, {"name": "child3_2"}]}
     ]
 };
 
-
 module.exports = testCase({
 
     // ============================================================================
-    'simple parent selection, return both path and value': function(test) {
+    'simple parent selection, return both path and value': function (test) {
     // ============================================================================
         test.expect(1);
         var result = jsonpath({json: json, path: '$.children[0]^', resultType: 'all'});
@@ -27,7 +26,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'parent selection with multiple matches, return both path and value': function(test) {
+    'parent selection with multiple matches, return both path and value': function (test) {
     // ============================================================================
         test.expect(1);
         var expectedOne = {path: "$['children']", value: json.children, parent: json, parentProperty: 'children'};
@@ -38,7 +37,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'select sibling via parent, return both path and value': function(test) {
+    'select sibling via parent, return both path and value': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = [{path: "$['children'][2]['children'][1]", value: {name: 'child3_2'}, parent: json.children[2].children, parentProperty: 1}];
@@ -48,7 +47,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'parent parent parent, return both path and value': function(test) {
+    'parent parent parent, return both path and value': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = [{path: "$['children'][0]['children']", value: json.children[0].children, parent: json.children[0], parentProperty: 'children'}];
@@ -58,14 +57,12 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'no such parent': function(test) {
+    'no such parent': function (test) {
     // ============================================================================
         test.expect(1);
         var result = jsonpath({json: json, path: 'name^^', resultType: 'all'});
         test.deepEqual([], result);
         test.done();
     }
-
 });
-
 }());

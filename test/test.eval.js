@@ -1,5 +1,5 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
@@ -28,13 +28,12 @@ var json = {
     }
 };
 
-
 module.exports = testCase({
     'multi statement eval': function (test) {
         var expected = json.store.books[0];
-        var selector = '$..[?('
-                     + 'var sum = @.price && @.price[0]+@.price[1];'
-                     + 'sum > 20;)]';
+        var selector = '$..[?(' +
+                     'var sum = @.price && @.price[0]+@.price[1];' +
+                     'sum > 20;)]';
         var result = jsonpath({json: json, path: selector, wrap: false});
         test.deepEqual(expected, result);
         test.done();
@@ -47,5 +46,4 @@ module.exports = testCase({
         test.done();
     }
 });
-
 }());

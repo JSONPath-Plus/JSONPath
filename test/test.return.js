@@ -1,10 +1,9 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
     testCase = require('nodeunit').testCase;
-
 
 var json = {"store": {
     "book": [
@@ -38,7 +37,6 @@ var json = {"store": {
   }
 };
 
-
 module.exports = testCase({
 
     // ============================================================================
@@ -52,5 +50,4 @@ module.exports = testCase({
         test.done();
     }
 });
-
 }());

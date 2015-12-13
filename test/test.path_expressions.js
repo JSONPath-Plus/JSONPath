@@ -1,5 +1,8 @@
+/*eslint-disable quotes*/
+(function () {'use strict';
+
 var jsonpath = require('../'),
-    testCase = require('nodeunit').testCase
+    testCase = require('nodeunit').testCase;
 
 // tests based on examples at http://goessner.net/articles/JsonPath/
 
@@ -36,11 +39,10 @@ var json = {"store": {
   }
 };
 
-
 module.exports = testCase({
 
     // ============================================================================
-    'dot notation': function(test) {
+    'dot notation': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -52,7 +54,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'bracket notation': function(test) {
+    'bracket notation': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -64,7 +66,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'bracket notation without quotes': function(test) {
+    'bracket notation without quotes': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -76,7 +78,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'mixed notation': function(test) {
+    'mixed notation': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -88,7 +90,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'bracket notation containing dots': function(test) {
+    'bracket notation containing dots': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -100,7 +102,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'mixed notation continaing dots': function(test) {
+    'mixed notation continaing dots': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -109,5 +111,6 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
-    },
+    }
 });
+}());

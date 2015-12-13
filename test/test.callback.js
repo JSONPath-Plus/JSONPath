@@ -1,10 +1,9 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
     testCase = require('nodeunit').testCase;
-
 
 var json = {"store": {
     "book": [
@@ -38,14 +37,13 @@ var json = {"store": {
   }
 };
 
-
 module.exports = testCase({
 
     // ============================================================================
     'Callback': function (test) {
     // ============================================================================
         test.expect(1);
-        
+
         var expected = ['value', json.store.bicycle, {path: "$['store']['bicycle']", value: json.store.bicycle, parent: json.store, parentProperty: 'bicycle'}];
         var result;
         function callback (data, type, fullData) {
@@ -60,5 +58,4 @@ module.exports = testCase({
         test.done();
     }
 });
-
 }());

@@ -1,5 +1,5 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
@@ -37,5 +37,4 @@ module.exports = testCase({
         test.done();
     }
 });
-
 }());

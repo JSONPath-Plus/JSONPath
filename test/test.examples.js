@@ -1,5 +1,5 @@
 /*global require, module*/
-/*jslint vars:true*/
+/*eslint-disable quotes*/
 (function () {'use strict';
 
 var jsonpath = require('../'),
@@ -39,11 +39,10 @@ var json = {"store": {
   }
 };
 
-
 module.exports = testCase({
 
     // ============================================================================
-    'wildcards': function(test) {
+    'wildcards': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -55,7 +54,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'all properties, entire tree': function(test) {
+    'all properties, entire tree': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -67,7 +66,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'all sub properties, single level': function(test) {
+    'all sub properties, single level': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = [json.store.book, json.store.bicycle];
@@ -78,7 +77,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'all sub properties, entire tree': function(test) {
+    'all sub properties, entire tree': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -90,7 +89,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'n property of entire tree': function(test) {
+    'n property of entire tree': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -102,7 +101,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'last property of entire tree': function(test) {
+    'last property of entire tree': function (test) {
     // ============================================================================
         test.expect(2);
         var books = json.store.book;
@@ -117,7 +116,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'range of property of entire tree': function(test) {
+    'range of property of entire tree': function (test) {
     // ============================================================================
         test.expect(2);
         var books = json.store.book;
@@ -131,7 +130,7 @@ module.exports = testCase({
         test.done();
     },
 
-    'categories and authors of all books': function(test) {
+    'categories and authors of all books': function (test) {
         test.expect(1);
         var expected = ['reference', 'Nigel Rees'];
         var result = jsonpath({json: json, path: '$..book[0][category,author]'});
@@ -141,7 +140,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'filter all properties if sub property exists, of entire tree': function(test) {
+    'filter all properties if sub property exists, of entire tree': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -153,7 +152,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'filter all properties if sub property greater than of entire tree': function(test) {
+    'filter all properties if sub property greater than of entire tree': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
@@ -165,7 +164,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    '@ as a scalar value': function(test) {
+    '@ as a scalar value': function (test) {
     // ============================================================================
         var expected = [json.store.bicycle.price].concat(json.store.book.slice(1).map(function (book) {return book.price;}));
         var result = jsonpath({json: json, path: "$..*[?(@property === 'price' && @ !== 8.95)]", wrap: false});
@@ -174,7 +173,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'all properties of a JSON structure (beneath the root)': function(test) {
+    'all properties of a JSON structure (beneath the root)': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = [
@@ -182,8 +181,8 @@ module.exports = testCase({
             json.store.book,
             json.store.bicycle
         ];
-        json.store.book.forEach(function(book) { expected.push(book); });
-        json.store.book.forEach(function(book) { Object.keys(book).forEach(function(p) { expected.push(book[p]); });});
+        json.store.book.forEach(function (book) {expected.push(book);});
+        json.store.book.forEach(function (book) {Object.keys(book).forEach(function (p) {expected.push(book[p]);});});
         expected.push(json.store.bicycle.color);
         expected.push(json.store.bicycle.price);
 
@@ -193,7 +192,7 @@ module.exports = testCase({
         test.done();
     },
 
-    'all parent components of a JSON structure': function(test) {
+    'all parent components of a JSON structure': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = [
@@ -201,7 +200,7 @@ module.exports = testCase({
             json.store,
             json.store.book
         ];
-        json.store.book.forEach(function(book) { expected.push(book); });
+        json.store.book.forEach(function (book) {expected.push(book);});
         expected.push(json.store.bicycle);
 
         var result = jsonpath({json: json, path: '$..'});
@@ -222,7 +221,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'Custom operator: parent (caret)': function(test) {
+    'Custom operator: parent (caret)': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = [json.store, json.store.book];
@@ -230,10 +229,9 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
-
     },
     // ============================================================================
-    'Custom operator: property name (tilde)': function(test) {
+    'Custom operator: property name (tilde)': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = ['book', 'bicycle'];
@@ -241,10 +239,9 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
-
     },
     // ============================================================================
-    'Custom property @path': function(test) {
+    'Custom property @path': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = json.store.book.slice(1);
@@ -252,10 +249,9 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
-
     },
     // ============================================================================
-    'Custom property: @parent': function(test) {
+    'Custom property: @parent': function (test) {
     // ============================================================================
         test.expect(1);
         var expected = ['reference', 'fiction', 'fiction', 'fiction'];
@@ -263,10 +259,9 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
-
     },
     // ============================================================================
-    'Custom property: @property': function(test) {
+    'Custom property: @property': function (test) {
     // ============================================================================
         test.expect(2);
         var expected = json.store.book.reduce(function (arr, book) {
@@ -283,10 +278,9 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
-
     },
     // ============================================================================
-    'Custom property: @parentProperty': function(test) {
+    'Custom property: @parentProperty': function (test) {
     // ============================================================================
         test.expect(2);
         var expected = [json.store.bicycle.color, json.store.bicycle.price];
@@ -303,22 +297,17 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
-
     },
 
     // ============================================================================
     '@number()': function (test) {
     // ============================================================================
         test.expect(1);
-        var books = json.store.book;
         var expected = [8.95, 12.99, 8.99, 22.99];
         var result = jsonpath({json: json, path: '$.store.book..*@number()', flatten: true});
         test.deepEqual(expected, result);
 
         test.done();
-    },
-
-
+    }
 });
-
 }());
