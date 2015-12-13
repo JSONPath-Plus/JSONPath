@@ -51,7 +51,20 @@ module.exports = testCase({
         var result = jsonpath({
             json: json,
             sandbox: {category: 'reference'},
-            path: "$..[?(@.category == category)]", wrap: false
+            path: "$..[?(@.category === category)]", wrap: false
+        });
+        test.deepEqual(expected, result);
+        test.done();
+    },
+
+    'sandbox (with parsing function)': function (test) {
+        var expected = json.store.book;
+        var result = jsonpath({
+            json: json,
+            sandbox: {filter: function (arg) {
+                return arg.category === 'reference';
+            }},
+            path: "$..[?(filter(@))]", wrap: false
         });
         test.deepEqual(expected, result);
         test.done();
