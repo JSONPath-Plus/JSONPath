@@ -23,14 +23,14 @@ magic necessary:
 ```html
 <script src="lib/jsonpath.js"></script>
 <script>
-    JSONPath({path: path, json: obj, callback: callback});
+    JSONPath({path: path, json: obj, callback: callback, otherTypeCallback: otherTypeCallback});
 </script>
 ```
 
 An alternative syntax is available as:
 
 ```js
-JSONPath(options, path, obj, callback);
+JSONPath(options, path, obj, callback, otherTypeCallback);
 ```
 
 The following format is now deprecated:
@@ -51,8 +51,10 @@ The properties that can be supplied on the options object or evaluate method (as
 - ***sandbox*** (**default: {}**) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available to those expressions; see the Syntax section for details.)
 - ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `undefined` will be returned (as opposed to an empty array with `wrap` set to true). If `wrap` is set to false and a single result is found, that result will be the only item returned (not within an array). An array will still be returned if multiple results are found, however.
 - ***preventEval*** (**default: false**) - Although JavaScript evaluation expressions are allowed by default, for security reasons (if one is operating on untrusted user input, for example), one may wish to set this option to `true` to throw exceptions when these expressions are attempted.
+- ***parent*** (**default: null**) - In the event that a query could be made to return the root node, this allows the parent of that root node to be returned within results.
+- ***parentProperty*** (**default: null**) - In the event that a query could be made to return the root node, this allows the parentProperty of that root node to be returned within results.
 - ***callback*** (**default: (none)**) - If supplied, a callback will be called immediately upon retrieval of an end point value. The three arguments supplied will be the value of the payload (according to `resultType`), the type of the payload (whether it is a normal "value" or a "property" name), and a full payload object (with all `resultType`s).
-- ***otherTypeCallback*** (**default: \<A function that throws an error when @other() is encountered\>**) - In the current absence of JSON Schema support, one can determine types beyond the built-in types by adding the operator `@other()` at the end of one's query. If such a path is encountered, the `otherTypeCallback` will be invoked with the value of the item, its path, its parent, and its parent's property name.
+- ***otherTypeCallback*** (**default: \<A function that throws an error when @other() is encountered\>**) - In the current absence of JSON Schema support, one can determine types beyond the built-in types by adding the operator `@other()` at the end of one's query. If such a path is encountered, the `otherTypeCallback` will be invoked with the value of the item, its path, its parent, and its parent's property name, and it should return a boolean indicating whether the supplied value belongs to the "other" type or not (or it may handle transformations and return false).
 
 ## Instance methods
 
@@ -161,9 +163,10 @@ XPath               | JSONPath               | Result                           
 //book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     |
 //book[price<10]    | $..book[?(@.price<10)] | Filter all books cheaper than 10     |
 | //\*[name() = 'price' and . != 8.95] | $..\*[?(@property === 'price' && @ !== 8.95)] | Obtain all property values of objects whose property is price and which does not equal 8.95 |
+/                   | $                      | The root of the JSON object (i.e., the whole object itself) |
 //\*/\*\|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
 //*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
-//*[price>19]/..    | $..[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not present in the original spec
+//*[price>19]/..    | $..[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not documented in the original spec
 /store/*/name() (in XPath 2.0)  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle"). Useful with wildcard properties. | Property name (tilde) is not present in the original spec
 /store/book\[not(. is /store/book\[1\])\] (in XPath 2.0) | $.store.book[?(@path !== "$[\'store\'][\'book\'][0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
 //book[parent::\*/bicycle/color = "red"]/category | $..book[?(@parent.bicycle && @parent.bicycle.color === "red")].category | Grabs all categories of books where the parent object of the book has a bicycle child whose color is red (i.e., all the books) | @parent is not present in the original spec
@@ -194,6 +197,10 @@ whereas in XPath, they use a single equal sign.
 1. Create syntax to work like XPath filters in not selecting children?
 1. Allow for type-based searches to be JSON Schema aware
 1. Pull or streaming parser?
+1. Allow option for parentNode equivalent (maintaining entire chain of
+parent-and-parentProperty objects up to root)
+1. Fix in JSONPath to avoid need for "$"?
+1. Define any allowed behaviors for: '$.', '$[0]', $.[0], or $.['prop']
 
 # Development
 

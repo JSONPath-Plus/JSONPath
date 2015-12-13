@@ -47,7 +47,7 @@ module.exports = testCase({
         test.expect(1);
         var expected = "$['store']['bicycle']['color']";
         var result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color']);
-        test.equal(expected, result);
+        test.strictEqual(expected, result);
 
         test.done();
     },
