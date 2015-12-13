@@ -1,4 +1,4 @@
-var JSONPath = require('../'),
+var jsonpath = require('../'),
     testCase = require('nodeunit').testCase
 
 // tests based on examples at http://goessner.net/articles/JsonPath/
@@ -45,7 +45,7 @@ module.exports = testCase({
         test.expect(1);
         var books = json.store.book;
         var expected = [books[0].author, books[1].author, books[2].author, books[3].author];
-        var result = JSONPath({json: json, path: '$.store.book[*].author'});
+        var result = jsonpath({json: json, path: '$.store.book[*].author'});
         test.deepEqual(expected, result);
 
         test.done();
@@ -57,7 +57,7 @@ module.exports = testCase({
         test.expect(1);
         var books = json.store.book;
         var expected = [books[0].author, books[1].author, books[2].author, books[3].author];
-        var result = JSONPath({json: json, path: "$['store']['book'][*]['author']"});
+        var result = jsonpath({json: json, path: "$['store']['book'][*]['author']"});
         test.deepEqual(expected, result);
 
         test.done();
@@ -69,7 +69,7 @@ module.exports = testCase({
         test.expect(1);
         var books = json.store.book;
         var expected = [books[0].author, books[1].author, books[2].author, books[3].author];
-        var result = JSONPath({json: json, path: "$[store][book][*][author]"});
+        var result = jsonpath({json: json, path: "$[store][book][*][author]"});
         test.deepEqual(expected, result);
 
         test.done();
@@ -81,7 +81,7 @@ module.exports = testCase({
         test.expect(1);
         var books = json.store.book;
         var expected = [books[0].author, books[1].author, books[2].author, books[3].author];
-        var result = JSONPath({json: json, path: "$.store.book[*]['author']"});
+        var result = jsonpath({json: json, path: "$.store.book[*]['author']"});
         test.deepEqual(expected, result);
 
         test.done();
@@ -93,7 +93,7 @@ module.exports = testCase({
         test.expect(1);
         var books = json.store.book;
         var expected = [books[0]["application/vnd.wordperfect"]];
-        var result = JSONPath({json: json, path: "$['store']['book'][*]['application/vnd.wordperfect']"});
+        var result = jsonpath({json: json, path: "$['store']['book'][*]['application/vnd.wordperfect']"});
         test.deepEqual(expected, result);
 
         test.done();
@@ -105,7 +105,7 @@ module.exports = testCase({
         test.expect(1);
         var books = json.store.book;
         var expected = [books[0]["application/vnd.wordperfect"]];
-        var result = JSONPath({json: json, path: "$.store.book[*]['application/vnd.wordperfect']"});
+        var result = jsonpath({json: json, path: "$.store.book[*]['application/vnd.wordperfect']"});
         test.deepEqual(expected, result);
 
         test.done();
