@@ -160,7 +160,7 @@ XPath               | JSONPath               | Result                           
 //book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | The last book in order.|
 //book[position()<3]| $..book[0,1]<br>$..book[:2]| The first two books               |
 //book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0 | $..book[0][category,author]| The categories and authors of all books |
-//book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     |
+//book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     | To access a property with a special character, utilize `[?@['...']]` for the filter
 //book[price<10]    | $..book[?(@.price<10)] | Filter all books cheaper than 10     |
 | //\*[name() = 'price' and . != 8.95] | $..\*[?(@property === 'price' && @ !== 8.95)] | Obtain all property values of objects whose property is price and which does not equal 8.95 |
 /                   | $                      | The root of the JSON object (i.e., the whole object itself) |
