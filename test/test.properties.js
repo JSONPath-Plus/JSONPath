@@ -15,7 +15,8 @@ var json = {
   },
   "datafield": [
     {"tag": "035", "subfield": {"@code": "a", "#text": "1879"}},
-    {"@tag": "042", "subfield": {"@code": "a", "#text": "5555"}}
+    {"@tag": "042", "subfield": {"@code": "a", "#text": "5555"}},
+    {"@tag": "045", "045": "secret"}
   ]
 };
 
@@ -35,11 +36,13 @@ module.exports = testCase({
     // ============================================================================
     'At signs within properties': function (test) {
     // ============================================================================
-        test.expect(2);
+        test.expect(3);
         var result = jsonpath({json: json, path: "$.datafield[?(@.tag=='035')]", wrap: false});
         test.deepEqual(json.datafield[0], result);
         result = jsonpath({json: json, path: "$.datafield[?(@['@tag']=='042')]", wrap: false});
         test.deepEqual(json.datafield[1], result);
+        result = jsonpath({json: json, path: "$.datafield[2][(@['@tag'])]", wrap: false});
+        test.deepEqual(json.datafield[2]['045'], result);
 
         test.done();
     }

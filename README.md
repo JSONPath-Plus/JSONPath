@@ -157,7 +157,7 @@ XPath               | JSONPath               | Result                           
 /store/*            | $.store.*              | All things in store, which are its books (a book array) and a red bicycle (a bicycle object).|
 /store//price       | $.store..price         | The price of everything in the store. |
 //book[3]           | $..book[2]             | The third book (book object)          |
-//book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | The last book in order.|
+//book[last()]      | $..book[(@.length-1)]<br>$..book[-1:]  | The last book in order.| To access a property with a special character, utilize `[(@['...'])]` for the filter (this particular feature is not present in the original spec)
 //book[position()<3]| $..book[0,1]<br>$..book[:2]| The first two books               |
 //book/*[self::category\|self::author] or //book/(category,author) in XPath 2.0 | $..book[0][category,author]| The categories and authors of all books |
 //book[isbn]        | $..book[?(@.isbn)]     | Filter all books with an ISBN number     | To access a property with a special character, utilize `[?@['...']]` for the filter (this particular feature is not present in the original spec)
