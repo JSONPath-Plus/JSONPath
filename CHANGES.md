@@ -2,6 +2,7 @@
 - Breaking change: For unwrapped results, return `undefined` instead of `false` upon failure to find path (to allow distinguishing of `undefined`--a non-allowed JSON value--from the valid JSON values, `null` or `false`) and return the exact value upon falsy single results (in order to allow return of `null`)
 - Deprecated: Use of `jsonPath.eval()`; use new class-based API instead
 - Feature: AMD export
+- Feature: By using `self` instead of `window` export, allow JSONPath to be trivially imported into web workers, without breaking compatibility in normal scenarios. See [MDN on self](https://developer.mozilla.org/en-US/docs/Web/API/Window/self)
 - Feature: Offer new class-based API and object-based arguments (with option to run new queries via `evaluate()` method without resupplying config)
 - Feature: Allow new `preventEval=true` and `autostart=false` option
 - Feature: Allow new callback option to allow a callback function to execute as each final result node is obtained
