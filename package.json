@@ -24,15 +24,19 @@
             "email": "brettz9@yahoo.com"
         }
     ],
+    "license": "MIT",
     "version": "0.11.0",
     "repository": {
         "type": "git",
         "url": "git://github.com/s3u/JSONPath.git"
     },
+    "bugs": "https://github.com/s3u/JSONPath/issues/",
+    "homepage": "https://github.com/s3u/JSONPath",
     "main": "./lib/jsonpath",
     "dependencies": {},
     "devDependencies": {
-        "nodeunit": "*"
+        "nodeunit": "0.9.0"
     },
-    "scripts": {"test": "node_modules/nodeunit/bin/nodeunit test/test.*.js"}
+    "keywords": ["json", "jsonpath"],
+    "scripts": {"test": "./node_modules/.bin/nodeunit test"}
 }
