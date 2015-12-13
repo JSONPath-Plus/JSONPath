@@ -17,8 +17,21 @@ module.exports = testCase({
 
         test.done();
     },
+    // ============================================================================
+    'toPathString (stripped)': function (test) {
+    // ============================================================================
+        test.expect(3);
+        var expected = "$['store']['bicycle']['color']";
+        var result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '^']);
+        test.deepEqual(expected, result);
+        result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '@string()']);
+        test.deepEqual(expected, result);
+        result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '~']);
+        test.deepEqual(expected, result);
 
-        // ============================================================================
+        test.done();
+    },
+    // ============================================================================
     'toPathArray': function (test) {
     // ============================================================================
         test.expect(1);

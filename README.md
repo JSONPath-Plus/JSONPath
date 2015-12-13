@@ -47,7 +47,7 @@ The properties that can be supplied on the options object or evaluate method (as
 - ***json*** (**required**) - The JSON object to evaluate (whether of null, boolean, number, string, object, or array type).
 - ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually.
 - ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
-- ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value", "path", "parent", or "parentProperty" to determine respectively whether to return results as the values of the found items, as their absolute paths, as their parent objects, or as their parent's property name. If set to "all", all of these types will be returned on an object with the type as key name.
+- ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value", "path", "pointer", "parent", or "parentProperty" to determine respectively whether to return results as the values of the found items, as their absolute paths, as [JSON Pointers](http://www.rfc-base.org/txt/rfc-6901.txt) to the absolute paths, as their parent objects, or as their parent's property name. If set to "all", all of these types will be returned on an object with the type as key name.
 - ***sandbox*** (**default: {}**) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available to those expressions; see the Syntax section for details.)
 - ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `undefined` will be returned (as opposed to an empty array with `wrap` set to true). If `wrap` is set to false and a single result is found, that result will be the only item returned (not within an array). An array will still be returned if multiple results are found, however.
 - ***preventEval*** (**default: false**) - Although JavaScript evaluation expressions are allowed by default, for security reasons (if one is operating on untrusted user input, for example), one may wish to set this option to `true` to throw exceptions when these expressions are attempted.
@@ -64,7 +64,8 @@ The properties that can be supplied on the options object or evaluate method (as
 
 - ***JSONPath.cache*** - Exposes the cache object for those who wish to preserve and reuse it for optimization purposes.
 - ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or unnormalized path as string and converts to an array: for example, `['$', 'aProperty', 'anotherProperty']`.
-- ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and converts to a normalized path string. The string will be in form like: `$['aProperty']['anotherProperty]`. The terminal constructions `~` and typed operators like `@string()`, as with `$`, get added without enclosing single quotes and brackets.
+- ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and converts to a normalized path string. The string will be in a form like: `$['aProperty']['anotherProperty][0]`. The JSONPath terminal constructions `~` and `^` and type operators like `@string()` are silently stripped.
+- ***JSONPath.toPointer(pathAsArray)*** - Accepts a path array and converts to a [JSON Pointer](http://www.rfc-base.org/txt/rfc-6901.txt). The string will be in a form like: `'/aProperty/anotherProperty/0` (with any `~` and `/` internal characters escaped as per the JSON Pointer spec). The JSONPath terminal constructions `~` and `^` and type operators like `@string()` are silently stripped.
 
 # Syntax through examples
 
