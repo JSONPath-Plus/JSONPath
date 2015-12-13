@@ -18,6 +18,10 @@
         {
             "name": "Robert Krahn",
             "email": "robert.krahn@gmail.com"
+        },
+        {
+            "name": "Brett Zamir",
+            "email": "brettz9@yahoo.com"
         }
     ],
     "license": "MIT",

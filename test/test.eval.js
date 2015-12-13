@@ -1,5 +1,9 @@
-var JSONPath = require('../'),
-    testCase = require('nodeunit').testCase
+/*global require, module*/
+/*jslint vars:true*/
+(function () {'use strict';
+
+var jsonpath = require('../'),
+    testCase = require('nodeunit').testCase;
 
 var json = {
     "store": {
@@ -30,16 +34,18 @@ module.exports = testCase({
         var expected = json.store.books[0];
         var selector = '$..[?('
                      + 'var sum = @.price && @.price[0]+@.price[1];'
-                     + 'sum > 20;)]'
-        var result = JSONPath({json: json, path: selector, wrap: false});
+                     + 'sum > 20;)]';
+        var result = jsonpath({json: json, path: selector, wrap: false});
         test.deepEqual(expected, result);
         test.done();
     },
 
     'accessing current path': function (test) {
         var expected = json.store.books[1];
-        var result = JSONPath({json: json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false});
+        var result = jsonpath({json: json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false});
         test.deepEqual(expected, result);
         test.done();
     }
 });
+
+}());
