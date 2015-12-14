@@ -153,7 +153,7 @@ comparisons or to prevent ambiguity).
 
 XPath               | JSONPath               | Result                                | Notes
 ------------------- | ---------------------- | ------------------------------------- | -----
-/store/book/author  | $.store.book[*].author | The authors of all books in the store |
+/store/book/author  | $.store.book[*].author | The authors of all books in the store | Can also be represented without the `$.` as `store.book[*].author` (though this is not present in the original spec)
 //author            | $..author              | All authors                           |
 /store/*            | $.store.*              | All things in store, which are its books (a book array) and a red bicycle (a bicycle object).|
 /store//price       | $.store..price         | The price of everything in the store. |
@@ -193,7 +193,7 @@ whereas in XPath, they use a single equal sign.
 
 # Ideas
 
-1. Support OR outside of filters (as in XPath `|`).
+1. Support OR outside of filters (as in XPath `|`) and grouping.
 1. Create syntax to work like XPath filters in not selecting children?
 1. Allow option for parentNode equivalent (maintaining entire chain of
     parent-and-parentProperty objects up to root)

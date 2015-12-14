@@ -42,12 +42,14 @@ var json = {"store": {
 module.exports = testCase({
 
     // ============================================================================
-    'wildcards': function (test) {
+    'wildcards (with and without $.)': function (test) {
     // ============================================================================
-        test.expect(1);
+        test.expect(2);
         var books = json.store.book;
         var expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         var result = jsonpath({json: json, path: '$.store.book[*].author'});
+        test.deepEqual(expected, result);
+        result = jsonpath({json: json, path: 'store.book[*].author'});
         test.deepEqual(expected, result);
 
         test.done();
