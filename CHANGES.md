@@ -1,4 +1,7 @@
 ## ?
+
+
+## Dec 13, 2015
 - Breaking change (from version 0.11): Silently strip `~` and `^` operators and type operators such as `@string()` in `JSONPath.toPathString()` calls.
 - Breaking change: Remove `Array.isArray` polyfill as longer supporting IE <= 8
 - Feature: Allow omission of options first argument to `JSONPath`
@@ -6,6 +9,7 @@
 - Fix: Correctly support `callback` and `otherTypeCallback` as numbered arguments to `JSONPath`.
 - Fix: Enhance Node checking to avoid issue reported with angular-mock
 - Fix: Allow for `@` or other special characters in at-sign-prefixed property names (by use of `[?(@['...'])]` or  `[(@['...'])]`).
+- Version 0.13.0
 
 ## Dec 12, 2015 10:39pm
 - Breaking change: Problems with upper-case letters in npm is causing us to rename the package, so have renamed package to "jsonpath-plus" (there are already package with lower-case "jsonpath" or "json-path"). The new name also reflects that
