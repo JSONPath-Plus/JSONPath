@@ -1,7 +1,9 @@
 ## ?
 - Breaking change (from version 0.11): Silently strip `~` and `^` operators and type operators such as `@string()` in `JSONPath.toPathString()` calls.
 - Breaking change: Remove `Array.isArray` polyfill as longer supporting IE <= 8
+- Feature: Allow omission of options first argument to `JSONPath`
 - Feature: Add `JSONPath.toPointer()` and "pointer" `resultType` option.
+- Fix: Correctly support `callback` and `otherTypeCallback` as numbered arguments to `JSONPath`.
 - Fix: Enhance Node checking to avoid issue reported with angular-mock
 - Fix: Allow for `@` or other special characters in at-sign-prefixed property names (by use of `[?(@['...'])]` or  `[(@['...'])]`).
 

@@ -30,7 +30,7 @@ magic necessary:
 An alternative syntax is available as:
 
 ```js
-JSONPath(options, path, obj, callback, otherTypeCallback);
+JSONPath([options,] path, obj, callback, otherTypeCallback);
 ```
 
 The following format is now deprecated:
