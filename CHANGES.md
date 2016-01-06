@@ -1,5 +1,8 @@
 ## ?
 
+## Jan 5, 2016
+- Avoid double-encoding path in results
+- Version 0.13.1
 
 ## Dec 13, 2015
 - Breaking change (from version 0.11): Silently strip `~` and `^` operators and type operators such as `@string()` in `JSONPath.toPathString()` calls.
