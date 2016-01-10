@@ -1,4 +1,8 @@
-## ?
+# JSONPath changes
+
+## Jan 10, 2016
+- Add `@scalar()` type operator (in JavaScript mode, will also include)
+- Version 0.14.0
 
 ## Jan 5, 2016
 - Avoid double-encoding path in results

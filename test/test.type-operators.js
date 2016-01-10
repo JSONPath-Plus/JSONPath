@@ -52,6 +52,17 @@ module.exports = testCase({
     },
 
     // ============================================================================
+    '@scalar()': function (test) {
+    // ============================================================================
+        test.expect(1);
+        var expected = ["red", 19.95];
+        var result = jsonpath({json: json, path: '$.store.bicycle..*@scalar()', flatten: true});
+        test.deepEqual(expected, result);
+
+        test.done();
+    },
+
+    // ============================================================================
     '@other()': function (test) {
     // ============================================================================
         test.expect(1);
