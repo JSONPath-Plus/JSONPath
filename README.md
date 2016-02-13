@@ -1,6 +1,7 @@
 # JSONPath Plus [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 
-Analyse, transform, and selectively extract data from JSON documents (and JavaScript objects).
+Analyse, transform, and selectively extract data from JSON
+documents (and JavaScript objects).
 
 # Install
 
@@ -13,101 +14,161 @@ Analyse, transform, and selectively extract data from JSON documents (and JavaSc
 In node.js:
 
 ```js
-var JSONPath = require('jsonpath-plus');
-JSONPath({json: obj, path: path, callback: callback});
+  var JSONPath = require('jsonpath-plus');
+  JSONPath({json: obj, path: path, callback: callback});
 ```
 
 For browser usage you can directly include `lib/jsonpath.js`, no browserify
 magic necessary:
 
 ```html
-<script src="lib/jsonpath.js"></script>
-<script>
-    JSONPath({path: path, json: obj, callback: callback, otherTypeCallback: otherTypeCallback});
-</script>
+  <script src="lib/jsonpath.js"></script>
+  <script>
+      JSONPath({path: path, json: obj, callback: callback, otherTypeCallback: otherTypeCallback});
+  </script>
 ```
 
 An alternative syntax is available as:
 
 ```js
-JSONPath([options,] path, obj, callback, otherTypeCallback);
+  JSONPath([options,] path, obj, callback, otherTypeCallback);
 ```
 
 The following format is now deprecated:
 
 ```js
-jsonPath.eval(options, obj, path);
+  jsonPath.eval(options, obj, path);
 ```
 
 ## Properties
 
-The properties that can be supplied on the options object or evaluate method (as the first argument) include:
+The properties that can be supplied on the options object or
+evaluate method (as the first argument) include:
 
-- ***path*** (**required**) - The JSONPath expression as a (normalized or unnormalized) string or array
-- ***json*** (**required**) - The JSON object to evaluate (whether of null, boolean, number, string, object, or array type).
-- ***autostart*** (**default: true**) - If this is supplied as `false`, one may call the `evaluate` method manually.
-- ***flatten*** (**default: false**) - Whether the returned array of results will be flattened to a single dimension array.
-- ***resultType*** (**default: "value"**) - Can be case-insensitive form of "value", "path", "pointer", "parent", or "parentProperty" to determine respectively whether to return results as the values of the found items, as their absolute paths, as [JSON Pointers](http://www.rfc-base.org/txt/rfc-6901.txt) to the absolute paths, as their parent objects, or as their parent's property name. If set to "all", all of these types will be returned on an object with the type as key name.
-- ***sandbox*** (**default: {}**) - Key-value map of variables to be available to code evaluations such as filtering expressions. (Note that the current path and value will also be available to those expressions; see the Syntax section for details.)
-- ***wrap*** (**default: true**) - Whether or not to wrap the results in an array. If `wrap` is set to false, and no results are found, `undefined` will be returned (as opposed to an empty array with `wrap` set to true). If `wrap` is set to false and a single result is found, that result will be the only item returned (not within an array). An array will still be returned if multiple results are found, however.
-- ***preventEval*** (**default: false**) - Although JavaScript evaluation expressions are allowed by default, for security reasons (if one is operating on untrusted user input, for example), one may wish to set this option to `true` to throw exceptions when these expressions are attempted.
-- ***parent*** (**default: null**) - In the event that a query could be made to return the root node, this allows the parent of that root node to be returned within results.
-- ***parentProperty*** (**default: null**) - In the event that a query could be made to return the root node, this allows the parentProperty of that root node to be returned within results.
-- ***callback*** (**default: (none)**) - If supplied, a callback will be called immediately upon retrieval of an end point value. The three arguments supplied will be the value of the payload (according to `resultType`), the type of the payload (whether it is a normal "value" or a "property" name), and a full payload object (with all `resultType`s).
-- ***otherTypeCallback*** (**default: \<A function that throws an error when @other() is encountered\>**) - In the current absence of JSON Schema support, one can determine types beyond the built-in types by adding the operator `@other()` at the end of one's query. If such a path is encountered, the `otherTypeCallback` will be invoked with the value of the item, its path, its parent, and its parent's property name, and it should return a boolean indicating whether the supplied value belongs to the "other" type or not (or it may handle transformations and return false).
+- ***path*** (**required**) - The JSONPath expression as a (normalized
+  or unnormalized) string or array
+- ***json*** (**required**) - The JSON object to evaluate (whether of
+  null, boolean, number, string, object, or array type).
+- ***autostart*** (**default: true**) - If this is supplied as `false`,
+  one may call the `evaluate` method manually.
+- ***flatten*** (**default: false**) - Whether the returned array of results
+  will be flattened to a single dimension array.
+- ***resultType*** (**default: "value"**) - Can be case-insensitive form of
+  "value", "path", "pointer", "parent", or "parentProperty" to determine
+  respectively whether to return results as the values of the found items,
+  as their absolute paths, as [JSON Pointers](http://www.rfc-base.org/txt/rfc-6901.txt)
+  to the absolute paths, as their parent objects, or as their parent's
+  property name. If set to "all", all of these types will be returned on
+  an object with the type as key name.
+- ***sandbox*** (**default: {}**) - Key-value map of variables to be
+  available to code evaluations such as filtering expressions. (Note
+  that the current path and value will also be available to those
+  expressions; see the Syntax section for details.)
+- ***wrap*** (**default: true**) - Whether or not to wrap the results
+  in an array. If `wrap` is set to false, and no results are found,
+  `undefined` will be returned (as opposed to an empty array with
+  `wrap` set to true). If `wrap` is set to false and a single result
+  is found, that result will be the only item returned (not within
+  an array). An array will still be returned if multiple results are
+  found, however.
+- ***preventEval*** (**default: false**) - Although JavaScript evaluation
+  expressions are allowed by default, for security reasons (if one is
+  operating on untrusted user input, for example), one may wish to
+  set this option to `true` to throw exceptions when these expressions
+  are attempted.
+- ***parent*** (**default: null**) - In the event that a query could be
+  made to return the root node, this allows the parent of that root node
+  to be returned within results.
+- ***parentProperty*** (**default: null**) - In the event that a query
+  could be made to return the root node, this allows the `parentProperty`
+  of that root node to be returned within results.
+- ***callback*** (**default: (none)**) - If supplied, a callback will be
+  called immediately upon retrieval of an end point value. The three arguments
+  supplied will be the value of the payload (according to `resultType`),
+  the type of the payload (whether it is a normal "value" or a "property"
+  name), and a full payload object (with all `resultType`s).
+- ***otherTypeCallback*** (**default: \<A function that throws an error**
+  **when @other() is encountered\>**) - In the current absence of JSON
+  Schema support, one can determine types beyond the built-in types by
+  adding the operator `@other()` at the end of one's query. If such a
+  path is encountered, the `otherTypeCallback` will be invoked with the
+  value of the item, its path, its parent, and its parent's property name,
+  and it should return a boolean indicating whether the supplied value
+  belongs to the "other" type or not (or it may handle transformations and
+  return false).
 
 ## Instance methods
 
-- ***evaluate(path, json, callback, otherTypeCallback)*** OR ***evaluate({path: \<path\>, json: \<json object\>, callback: \<callback function\>, otherTypeCallback: \<otherTypeCallback function\>})*** - This method is only necessary if the `autostart` property is set to `false`. It can be used for repeated evaluations using the same configuration. Besides the listed properties, the latter method pattern can accept any of the other allowed instance properties (except for `autostart` which would have no relevance here).
+- ***evaluate(path, json, callback, otherTypeCallback)*** OR
+  ***evaluate({path: \<path\>, json: \<json object\>, callback:***
+  ***\<callback function\>, otherTypeCallback:***
+  ***\<otherTypeCallback function\>})*** - This method is only
+  necessary if the `autostart` property is set to `false`. It
+  can be used for repeated evaluations using the same configuration.
+  Besides the listed properties, the latter method pattern can
+  accept any of the other allowed instance properties (except
+  for `autostart` which would have no relevance here).
 
 ## Class properties and methods
 
-- ***JSONPath.cache*** - Exposes the cache object for those who wish to preserve and reuse it for optimization purposes.
-- ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or unnormalized path as string and converts to an array: for example, `['$', 'aProperty', 'anotherProperty']`.
-- ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and converts to a normalized path string. The string will be in a form like: `$['aProperty']['anotherProperty][0]`. The JSONPath terminal constructions `~` and `^` and type operators like `@string()` are silently stripped.
-- ***JSONPath.toPointer(pathAsArray)*** - Accepts a path array and converts to a [JSON Pointer](http://www.rfc-base.org/txt/rfc-6901.txt). The string will be in a form like: `'/aProperty/anotherProperty/0` (with any `~` and `/` internal characters escaped as per the JSON Pointer spec). The JSONPath terminal constructions `~` and `^` and type operators like `@string()` are silently stripped.
+- ***JSONPath.cache*** - Exposes the cache object for those who wish
+  to preserve and reuse it for optimization purposes.
+- ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or
+  unnormalized path as string and converts to an array: for
+  example, `['$', 'aProperty', 'anotherProperty']`.
+- ***JSONPath.toPathString(pathAsArray)*** - Accepts a path array and
+  converts to a normalized path string. The string will be in a form
+  like: `$['aProperty']['anotherProperty][0]`. The JSONPath terminal
+  constructions `~` and `^` and type operators like `@string()` are
+  silently stripped.
+- ***JSONPath.toPointer(pathAsArray)*** - Accepts a path array and
+  converts to a [JSON Pointer](http://www.rfc-base.org/txt/rfc-6901.txt).
+  The string will be in a form like: `'/aProperty/anotherProperty/0`
+  (with any `~` and `/` internal characters escaped as per the JSON
+  Pointer spec). The JSONPath terminal constructions `~` and `^` and
+  type operators like `@string()` are silently stripped.
 
 # Syntax through examples
 
-Given the following JSON, taken from http://goessner.net/articles/JsonPath/ :
+Given the following JSON, taken from <http://goessner.net/articles/JsonPath/>:
 
 ```json
-{
-  "store": {
-    "book": [
-      {
-        "category": "reference",
-        "author": "Nigel Rees",
-        "title": "Sayings of the Century",
-        "price": 8.95
-      },
-      {
-        "category": "fiction",
-        "author": "Evelyn Waugh",
-        "title": "Sword of Honour",
-        "price": 12.99
-      },
-      {
-        "category": "fiction",
-        "author": "Herman Melville",
-        "title": "Moby Dick",
-        "isbn": "0-553-21311-3",
-        "price": 8.99
-      },
-      {
-        "category": "fiction",
-        "author": "J. R. R. Tolkien",
-        "title": "The Lord of the Rings",
-        "isbn": "0-395-19395-8",
-        "price": 22.99
+  {
+    "store": {
+      "book": [
+        {
+          "category": "reference",
+          "author": "Nigel Rees",
+          "title": "Sayings of the Century",
+          "price": 8.95
+        },
+        {
+          "category": "fiction",
+          "author": "Evelyn Waugh",
+          "title": "Sword of Honour",
+          "price": 12.99
+        },
+        {
+          "category": "fiction",
+          "author": "Herman Melville",
+          "title": "Moby Dick",
+          "isbn": "0-553-21311-3",
+          "price": 8.99
+        },
+        {
+          "category": "fiction",
+          "author": "J. R. R. Tolkien",
+          "title": "The Lord of the Rings",
+          "isbn": "0-395-19395-8",
+          "price": 22.99
+        }
+      ],
+      "bicycle": {
+        "color": "red",
+        "price": 19.95
       }
-    ],
-    "bicycle": {
-      "color": "red",
-      "price": 19.95
     }
   }
-}
 ```
 
 and the following XML representation:
@@ -177,8 +238,9 @@ XPath               | JSONPath               | Result                           
 //book[count(preceding-sibling::\*) != 0]/\*/text() | $..book.*[?(@parentProperty !== 0)]  | Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0 | @parentProperty is not present in the original spec
 //book/../\*\[. instance of element(\*, xs:decimal)\] (in XPath 2.0) | $..book..\*@number() | Get the numeric values within the book array | @number(), the other basic types (@boolean(), @string()), other low-level derived types (@null(), @object(), @array()), the JSONSchema-added type, @integer(), the compound type @scalar() (which also accepts `undefined` and non-finite numbers for JavaScript objects as well as all of the basic non-object/non-function types), the type, @other(), to be used in conjunction with a user-defined callback (see `otherTypeCallback`) and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (@undefined(), @function(), @nonFinite()) are not present in the original spec
 
-
-Any additional variables supplied as properties on the optional "sandbox" object option are also available to (parenthetical-based) evaluations.
+Any additional variables supplied as properties on the optional "sandbox"
+object option are also available to (parenthetical-based)
+evaluations.
 
 # Potential sources of confusion for XPath users
 
@@ -202,16 +264,15 @@ whereas in XPath, they use a single equal sign.
 
 Running the tests on node: `npm test`. For in-browser tests:
 
-* Ensure that nodeunit is browser-compiled: `cd node_modules/nodeunit; make browser;`
-* Serve the js/html files:
+- Ensure that nodeunit is browser-compiled: `cd node_modules/nodeunit; make browser;`
+- Serve the js/html files:
 
 ```sh
-    node -e "require('http').createServer(function(req,res) { \
-        var s = require('fs').createReadStream('.' + req.url); \
-        s.pipe(res); s.on('error', function() {}); }).listen(8082);"
+  node -e "require('http').createServer(function(req,res) { \
+      var s = require('fs').createReadStream('.' + req.url); \
+      s.pipe(res); s.on('error', function() {}); }).listen(8082);"
 ```
-* To run the tests visit [http://localhost:8082/test/test.html]().
-
+- To run the tests visit [http://localhost:8082/test/test.html]().
 
 # License
 
