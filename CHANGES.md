@@ -1,5 +1,8 @@
 # JSONPath changes
 
+## ?
+- Use `this` if present for global export
+
 ## Jan 10, 2016
 - Add `@scalar()` type operator (in JavaScript mode, will also include)
 - Version 0.14.0
