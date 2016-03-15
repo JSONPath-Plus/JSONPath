@@ -1,5 +1,9 @@
 # JSONPath changes
 
+## Undetermined
+
+- Dev testing: Rename test file
+
 ## 0.15.0 (Mar 15, 2016)
 
 - Fix: Fixing support for sandbox in the case of functions

@@ -289,7 +289,7 @@ For in-browser tests:
 npm run browser-test
 ```
 
-- Visit [http://localhost:8082/test/test.html](http://localhost:8082/test/test.html).
+- Visit [http://localhost:8082/test/](http://localhost:8082/test/).
 
 # License
 
