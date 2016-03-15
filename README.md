@@ -33,6 +33,14 @@ An alternative syntax is available as:
 ```js
   JSONPath([options,] path, obj, callback, otherTypeCallback);
 ```
+In the example above, callback will be sent the results and called 0 to N times depending on the number of results.
+
+Another alternative:
+
+```js
+    var result = JSONPath([options,] path, obj);
+```
+This example will pass the result to the `result` variable.
 
 The following format is now deprecated:
 
