@@ -1,18 +1,18 @@
 /*global loadJS, nodeunit, suites*/
 [
+    'test.all.js',
     'test.arr.js',
     'test.at_and_dollar.js',
+    'test.callback.js',
+    'test.custom-properties.js',
     'test.eval.js',
     'test.examples.js',
     'test.intermixed.arr.js',
     'test.parent-selector.js',
     'test.path_expressions.js',
     'test.pointer.js',
-    'test.all.js',
     'test.properties.js',
-    'test.custom-properties.js',
     'test.return.js',
-    'test.callback.js',
     'test.toPath.js',
     'test.toPointer.js',
     'test.type-operators.js'
