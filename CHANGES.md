@@ -1,20 +1,28 @@
 # JSONPath changes
 
-## Unreleased
+## 0.15.0 (Mar 15, 2016)
 
-- Use `this` if present for global export
+- Fix: Fixing support for sandbox in the case of functions
+- Feature: Use `this` if present for global export
+- Docs: Clarify function signature
+- Docs: Update testing section
+- Dev testing: Add in missing test for browser testing
+- Dev testing: Add remark linting to testing process (#70)
+- Dev testing: Lint JS test support files
+- Dev testing: Split out tests into `eslint`, `remark`, `lint`, `nodeunit`
+- Dev testing: Remove need for nodeunit build step
+- Dev testing: Simplify nodeunit usage and make available
+  as `npm run browser-test`
 
-## Jan 10, 2016
+## 0.14.0 (Jan 10, 2016)
 
 - Add `@scalar()` type operator (in JavaScript mode, will also include)
-- Version 0.14.0
 
-## Jan 5, 2016
+## 0.13.1 (Jan 5, 2016)
 
 - Avoid double-encoding path in results
-- Version 0.13.1
 
-## Dec 13, 2015
+## 0.13.0 (Dec 13, 2015)
 
 - Breaking change (from version 0.11): Silently strip `~` and `^` operators
   and type operators such as `@string()` in `JSONPath.toPathString()` calls.
@@ -27,32 +35,28 @@
 - Fix: Enhance Node checking to avoid issue reported with angular-mock
 - Fix: Allow for `@` or other special characters in at-sign-prefixed
   property names (by use of `[?(@['...'])]` or  `[(@['...'])]`).
-- Version 0.13.0
 
-## Dec 12, 2015 10:39pm
+## 0.12.0 (Dec 12, 2015 10:39pm)
 
 - Breaking change: Problems with upper-case letters in npm is causing
   us to rename the package, so have renamed package to "jsonpath-plus"
   (there are already package with lower-case "jsonpath" or "json-path").
   The new name also reflects that there have been changes to the
   original spec.
-- Version 0.12.0
 
-## Dec 12, 2015 10:36pm
+## 0.11.2 (Dec 12, 2015 10:36pm)
 
 - Actually add the warning in the README that problems in npm
   with upper-case letters is causing us to rename to "jsonpath-plus"
   (next version will actually apply the change).
-- Version 0.11.2
 
-## Dec 12, 2015 10:11pm
+## 0.11.1 (Dec 12, 2015 10:11pm)
 
 - Give warning in README that problems in npm with upper-case letters
   is causing us to rename to "jsonpath-plus" (next version will actually
   apply the change).
-- Version 0.11.1
 
-## Dec 12, 2015
+## 0.11.0 (Dec 12, 2015)
 
 - Breaking change: For unwrapped results, return `undefined` instead
   of `false` upon failure to find path (to allow distinguishing of
@@ -92,18 +96,15 @@
 - Fix: Allow `^` as property name
 - Fix: Support `.` within properties
 - Fix: `@path` in index/property evaluations
-- Version 0.11
 
-## Oct 23, 2013
+## 0.10.0 (Oct 23, 2013)
 
 - Support for parent selection via `^`
 - Access current path via `@path` in test statements
 - Allowing for multi-statement evals
 - Performance improvements
-- Version 0.10
 
-## Mar 28, 2012
+## 0.9.0 (Mar 28, 2012)
 
 - Support a sandbox arg to eval
 - Use vm.runInNewContext in place of eval
-- Version 0.9.0
