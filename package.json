@@ -52,6 +52,7 @@
     "jsonpath"
   ],
   "scripts": {
-    "test": "./node_modules/.bin/eslint test lib && \"./node_modules/.bin/nodeunit\" test"
+    "test": "./node_modules/.bin/eslint test lib && \"./node_modules/.bin/nodeunit\" test",
+    "browser-test": "node ./test-helpers/nodeunit-server"
   }
 }
