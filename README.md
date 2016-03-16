@@ -83,7 +83,9 @@ evaluate method (as the first argument) include:
   `wrap` is set to true). If `wrap` is set to false and a single result
   is found, that result will be the only item returned (not within
   an array). An array will still be returned if multiple results are
-  found, however.
+  found, however. To avoid ambiguities (in the case where it is necessary
+  to distinguish between a result which is a failure and one which is an
+  empty array), it is recommended to switch the default to `false`.
 - ***preventEval*** (**default: false**) - Although JavaScript evaluation
   expressions are allowed by default, for security reasons (if one is
   operating on untrusted user input, for example), one may wish to
