@@ -79,8 +79,8 @@ evaluate method (as the first argument) include:
   expressions; see the Syntax section for details.)
 - ***wrap*** (**default: true**) - Whether or not to wrap the results
   in an array. If `wrap` is set to false, and no results are found,
-  `undefined` will be returned (as opposed to an empty array with
-  `wrap` set to true). If `wrap` is set to false and a single result
+  `undefined` will be returned (as opposed to an empty array when
+  `wrap` is set to true). If `wrap` is set to false and a single result
   is found, that result will be the only item returned (not within
   an array). An array will still be returned if multiple results are
   found, however.
