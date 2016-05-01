@@ -3,6 +3,12 @@
 Analyse, transform, and selectively extract data from JSON
 documents (and JavaScript objects).
 
+**Note that `jsonpath-plus` is currently suffering from [performance problems](https://github.com/s3u/JSONPath/issues/14)
+and the maintainers are not currently able to work on resolving.
+You may wish to use [jsonpath](https://www.npmjs.com/package/jsonpath)
+to avoid this problem (though noting that it does not include the
+proprietary features added to `jsonpath-plus`).**
+
 # Install
 
 ```shell
