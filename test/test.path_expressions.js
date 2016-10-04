@@ -102,7 +102,7 @@ module.exports = testCase({
     },
 
     // ============================================================================
-    'mixed notation continaing dots': function (test) {
+    'mixed notation containing dots': function (test) {
     // ============================================================================
         test.expect(1);
         var books = json.store.book;
