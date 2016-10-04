@@ -41,7 +41,7 @@ module.exports = testCase({
         test.expect(1);
         var start = Date.now();
         jsonpath({json: json, path: '$.results[*].groups[*].items[42]'});
-        test.strictEqual((Date.now() - start) < 2000, true);
+        test.strictEqual((Date.now() - start) < 2500, true);
         test.done();
     }
 });
