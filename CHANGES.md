@@ -1,7 +1,8 @@
-# JSONPath changes
+# jsonpath-plus changes
 
 ## Undetermined
 
+- Improvements: Performance optimizations
 - Dev testing: Rename test file
 
 ## 0.15.0 (Mar 15, 2016)
@@ -20,11 +21,11 @@
 
 ## 0.14.0 (Jan 10, 2016)
 
-- Add `@scalar()` type operator (in JavaScript mode, will also include)
+- Feature: Add `@scalar()` type operator (in JavaScript mode, will also include)
 
 ## 0.13.1 (Jan 5, 2016)
 
-- Avoid double-encoding path in results
+- Fix: Avoid double-encoding path in results
 
 ## 0.13.0 (Dec 13, 2015)
 
@@ -50,13 +51,13 @@
 
 ## 0.11.2 (Dec 12, 2015 10:36pm)
 
-- Actually add the warning in the README that problems in npm
+- Docs: Actually add the warning in the README that problems in npm
   with upper-case letters is causing us to rename to "jsonpath-plus"
   (next version will actually apply the change).
 
 ## 0.11.1 (Dec 12, 2015 10:11pm)
 
-- Give warning in README that problems in npm with upper-case letters
+- Docs: Give warning in README that problems in npm with upper-case letters
   is causing us to rename to "jsonpath-plus" (next version will actually
   apply the change).
 
@@ -103,12 +104,12 @@
 
 ## 0.10.0 (Oct 23, 2013)
 
-- Support for parent selection via `^`
-- Access current path via `@path` in test statements
-- Allowing for multi-statement evals
-- Performance improvements
+- Feature: Support for parent selection via `^`
+- Feature: Access current path via `@path` in test statements
+- Feature: Allowing for multi-statement evals
+- Improvements: Performance
 
 ## 0.9.0 (Mar 28, 2012)
 
-- Support a sandbox arg to eval
-- Use vm.runInNewContext in place of eval
+- Feature: Support a sandbox arg to eval
+- Improvements: Use `vm.runInNewContext` in place of eval
