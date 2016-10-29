@@ -59,6 +59,7 @@
     "lint": "npm run eslint && npm run remark",
     "nodeunit": "./node_modules/.bin/nodeunit test",
     "test": "npm run lint && npm run nodeunit",
-    "browser-test": "npm run lint && node ./test-helpers/nodeunit-server"
+    "browser-test": "npm run lint && node ./test-helpers/nodeunit-server",
+    "start": "npm run browser-test"
   }
 }

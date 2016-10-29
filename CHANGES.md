@@ -21,7 +21,8 @@
 
 ## 0.14.0 (Jan 10, 2016)
 
-- Feature: Add `@scalar()` type operator (in JavaScript mode, will also include)
+- Feature: Add `@scalar()` type operator (in JavaScript mode, will also
+    include)
 
 ## 0.13.1 (Jan 5, 2016)
 
