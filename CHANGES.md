@@ -2,6 +2,11 @@
 
 ## Undetermined
 
+- Breaking change: Give preference to treating special chars in a property
+    as special
+- Breaking feature: Add custom \` operator to allow unambiguous literal
+    sequences (if an initial backtick is needed, an additional one must
+    now be added)
 - Improvements: Performance optimizations
 - Dev testing: Rename test file
 

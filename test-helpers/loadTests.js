@@ -5,6 +5,7 @@
     'test.at_and_dollar.js',
     'test.callback.js',
     'test.custom-properties.js',
+    'test.escaping.js',
     'test.eval.js',
     'test.examples.js',
     'test.intermixed.arr.js',
