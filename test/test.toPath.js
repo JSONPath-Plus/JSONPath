@@ -50,6 +50,30 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         test.done();
+    },
+
+    'toPathArray (avoid cache reference issue #78)': function (test) {
+        test.expect(3);
+
+        const originalPath = "$['foo']['bar']";
+        const json = { foo: { bar: 'baz' } };
+        const pathArr = jsonpath.toPathArray(originalPath);
+
+        test.equal(pathArr.length, 3);
+
+        // Shouldn't manipulate pathArr values
+        jsonpath({
+          json: json,
+          path: originalPath,
+          wrap: false,
+          resultType: 'value'
+        });
+
+        test.equal(pathArr.length, 3);
+        const path = jsonpath.toPathString(pathArr);
+
+        test.equal(path, originalPath);
+        test.done();
     }
 });
 }());
