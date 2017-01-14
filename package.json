@@ -29,7 +29,7 @@
     }
   ],
   "license": "MIT",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/s3u/JSONPath.git"

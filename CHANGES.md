@@ -1,12 +1,13 @@
 # jsonpath-plus changes
 
-## Undetermined
+## 0.16.0 (January 14, 2017)
 
 - Breaking change: Give preference to treating special chars in a property
-    as special
+    as special (override with backtick operator)
 - Breaking feature: Add custom \` operator to allow unambiguous literal
     sequences (if an initial backtick is needed, an additional one must
     now be added)
+- Fix: `toPathArray` caching bug
 - Improvements: Performance optimizations
 - Dev testing: Rename test file
 
