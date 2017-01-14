@@ -55,9 +55,9 @@ module.exports = testCase({
     'toPathArray (avoid cache reference issue #78)': function (test) {
         test.expect(3);
 
-        const originalPath = "$['foo']['bar']";
-        const json = { foo: { bar: 'baz' } };
-        const pathArr = jsonpath.toPathArray(originalPath);
+        var originalPath = "$['foo']['bar']";
+        var json = { foo: { bar: 'baz' } };
+        var pathArr = jsonpath.toPathArray(originalPath);
 
         test.equal(pathArr.length, 3);
 
@@ -70,7 +70,7 @@ module.exports = testCase({
         });
 
         test.equal(pathArr.length, 3);
-        const path = jsonpath.toPathString(pathArr);
+        var path = jsonpath.toPathString(pathArr);
 
         test.equal(path, originalPath);
         test.done();
