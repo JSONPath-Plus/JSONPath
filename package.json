@@ -41,6 +41,9 @@
   "engines": {
     "node": ">=0.8"
   },
+  "react-native": {
+    "vm": false
+  },
   "devDependencies": {
     "eslint": "^1.10.3",
     "eslint-config-standard": "^4.4.0",
