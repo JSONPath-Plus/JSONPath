@@ -231,7 +231,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
             isParentSelector: true
         } : [];
     } else if (loc === '~') { // property name
-        retObj = {path: push(path, loc), value: parentPropName, parent: parent, parentProperty: null};
+        retObj = {path: push(path, loc), value: parentPropName, parent, parentProperty: null};
         this._handleCallback(retObj, callback, 'property');
         return retObj;
     } else if (loc === '$') { // root only
@@ -302,7 +302,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
             break;
         }
         if (addType) {
-            retObj = {path: path, value: val, parent: parent, parentProperty: parentPropName};
+            retObj = {path, value: val, parent, parentProperty: parentPropName};
             this._handleCallback(retObj, callback, 'value');
             return retObj;
         }
