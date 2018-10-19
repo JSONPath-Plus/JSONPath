@@ -2,11 +2,18 @@
 
 const allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
 
+/**
+ * Copy items out of one array into another
+ * @param {Array} source Array with items to copy
+ * @param {Array} target Array to which to copy
+ * @param {function} conditionCb Callback passed the current item; will move item if evaluates to `true`
+ * @returns {undefined}
+ */
 const moveToAnotherArray = function (source, target, conditionCb) {
-    const kl = source.length;
-    for (let i = 0; i < kl; i++) {
-        const key = source[i];
-        if (conditionCb(key)) {
+    const il = source.length;
+    for (let i = 0; i < il; i++) {
+        const item = source[i];
+        if (conditionCb(item)) {
             target.push(source.splice(i--, 1)[0]);
         }
     }
@@ -14,6 +21,11 @@ const moveToAnotherArray = function (source, target, conditionCb) {
 
 const vm = typeof module !== 'undefined'
     ? require('vm') : {
+        /**
+         * @param {string} expr Expression to evaluate
+         * @param {object} context Object whose items will be added to evaluation
+         * @returns {*} Result of evaluated code
+         */
         runInNewContext (expr, context) {
             const keys = Object.keys(context);
             const funcs = [];
@@ -36,14 +48,55 @@ const vm = typeof module !== 'undefined'
         }
     };
 
-function push (arr, elem) { arr = arr.slice(); arr.push(elem); return arr; }
-function unshift (elem, arr) { arr = arr.slice(); arr.unshift(elem); return arr; }
-function NewError (value) {
-    this.avoidNew = true;
-    this.value = value;
-    this.message = 'JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)';
+/**
+ * Copies array and then pushes item into it
+ * @param {array} arr Array to copy and into which to push
+ * @param {*} item Array item to add (to end)
+ * @returns {array} Copy of the original array
+ */
+function push (arr, item) {
+    arr = arr.slice();
+    arr.push(item);
+    return arr;
+}
+/**
+ * Copies array and then unshifts item into it
+ * @param {*} item Array item to add (to beginning)
+ * @param {array} arr Array to copy and into which to unshift
+ * @returns {array} Copy of the original array
+ */
+function unshift (item, arr) {
+    arr = arr.slice();
+    arr.unshift(item);
+    return arr;
 }
 
+/**
+ * Caught when JSONPath is used without `new` but rethrown if with `new`
+ * @extends Error
+ */
+class NewError extends Error {
+    /**
+     * @param {*} value The evaluated scalar value
+     */
+    constructor (value) {
+        super('JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)');
+        this.avoidNew = true;
+        this.value = value;
+    }
+}
+
+/**
+ * @param {object} [opts] If present, must be an object
+ * @param {string} expr JSON path to evaluate
+ * @param {JSON} obj JSON object to evaluate against
+ * @param {function} callback Passed 3 arguments: 1) desired payload per `resultType`, 2) `"value"|"property"`, 3) Full returned object with all payloads
+ * @param {function} otherTypeCallback If `@other()` is at the end of one's query, this
+ *  will be invoked with the value of the item, its path, its parent, and its parent's
+ *  property name, and it should return a boolean indicating whether the supplied value
+ *  belongs to the "other" type or not (or it may handle transformations and return `false`).
+ * @constructor
+ */
 function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
     if (!(this instanceof JSONPath)) {
         try {
@@ -415,6 +468,10 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
 // Could store the cache object itself
 JSONPath.cache = {};
 
+/**
+ * @param {string[]} pathArr Array to convert
+ * @returns {string} The path string
+ */
 JSONPath.toPathString = function (pathArr) {
     const x = pathArr, n = x.length;
     let p = '$';
@@ -426,6 +483,10 @@ JSONPath.toPathString = function (pathArr) {
     return p;
 };
 
+/**
+ * @param {string} pointer JSON Path
+ * @returns {string} JSON Pointer
+ */
 JSONPath.toPointer = function (pointer) {
     const x = pointer, n = x.length;
     let p = '';
@@ -439,6 +500,10 @@ JSONPath.toPointer = function (pointer) {
     return p;
 };
 
+/**
+ * @param {string} expr Expression to convert
+ * @returns {string[]}
+ */
 JSONPath.toPathArray = function (expr) {
     const {cache} = JSONPath;
     if (cache[expr]) { return cache[expr].concat(); }
