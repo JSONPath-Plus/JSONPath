@@ -1,16 +1,6 @@
 {
   "plugins": {
-    "lint": {
-        "no-multiple-toplevel-headings": false,
-        "no-consecutive-blank-lines": false,
-        "code-block-style": "fenced",
-        "no-html": false,
-        "ordered-list-marker-value": "one",
-        "list-item-spacing": false,
-        "list-item-indent": false,
-        "table-pipes": false,
-        "table-pipe-alignment": false,
-        "table-cell-padding": false
-    }
+    "lint-code-block-style": "fenced",
+    "lint-ordered-list-marker-value": "one"
   }
 }

@@ -54,6 +54,9 @@
     "node-static": "^0.7.11",
     "nodeunit": "0.11.3",
     "opn-cli": "^3.1.0",
+    "remark-cli": "^5.0.0",
+    "remark-lint-code-block-style": "^1.0.2",
+    "remark-lint-ordered-list-marker-value": "^1.0.2",
     "rollup": "0.66.6",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-terser": "^3.0.0"
@@ -63,6 +66,7 @@
     "jsonpath"
   ],
   "scripts": {
+    "remark": "remark -q -f .",
     "rollup": "rollup -c",
     "eslint": "eslint .",
     "nodeunit": "nodeunit test",
