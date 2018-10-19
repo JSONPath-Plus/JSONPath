@@ -1,4 +1,4 @@
-/*global loadJS, nodeunit, suites*/
+/* globals loadJS, nodeunit, suites */
 [
     'test.all.js',
     'test.arr.js',

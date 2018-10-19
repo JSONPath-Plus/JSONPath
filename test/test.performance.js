@@ -1,27 +1,27 @@
-/*global require, module*/
-/*eslint-disable quotes*/
-(function () {'use strict';
+/* eslint-disable quotes */
+(function () {
+'use strict';
 
-var jsonpath = require('../'),
+const jsonpath = require('../').JSONPath,
     testCase = require('nodeunit').testCase;
 
-var arraySize = 12333,
+const arraySize = 12333,
     resultCount = 1150,
     itemCount = 150,
     groupCount = 245;
 
-var json = {
+const json = {
     results: []
 };
 
-var i, j;
+let i, j;
 
-var bigArray = [];
+const bigArray = [];
 for (i = 0; i < arraySize; i++) {
     bigArray[i] = 1;
 }
 
-var items = [];
+const items = [];
 for (i = 0; i < itemCount; i++) {
     items[i] = JSON.parse(JSON.stringify({a: {b: 0, c: 0}, s: {b: {c: bigArray}}}));
 }
@@ -35,12 +35,10 @@ for (i = 0; i < resultCount; i++) {
 }
 
 module.exports = testCase({
-    // ============================================================================
-    'performance': function (test) {
-    // ============================================================================
+    'performance' (test) {
         test.expect(1);
-        var start = Date.now();
-        jsonpath({json: json, path: '$.results[*].groups[*].items[42]'});
+        const start = Date.now();
+        jsonpath({json, path: '$.results[*].groups[*].items[42]'});
         test.strictEqual((Date.now() - start) < 2500, true);
         test.done();
     }

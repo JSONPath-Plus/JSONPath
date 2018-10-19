@@ -1,28 +1,23 @@
-/*global require, module*/
-/*eslint-disable quotes*/
-(function () {'use strict';
+/* eslint-disable quotes */
+(function () {
+'use strict';
 
-var jsonpath = require('../'),
+const jsonpath = require('../').JSONPath,
     testCase = require('nodeunit').testCase;
 
 module.exports = testCase({
-
-    // ============================================================================
-    'toPathString': function (test) {
-    // ============================================================================
+    'toPathString' (test) {
         test.expect(1);
-        var expected = "$['store']['bicycle']['color']";
-        var result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color']);
+        const expected = "$['store']['bicycle']['color']";
+        const result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color']);
         test.strictEqual(expected, result);
 
         test.done();
     },
-    // ============================================================================
-    'toPathString (stripped)': function (test) {
-    // ============================================================================
+    'toPathString (stripped)' (test) {
         test.expect(3);
-        var expected = "$['store']['bicycle']['color']";
-        var result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '^']);
+        const expected = "$['store']['bicycle']['color']";
+        let result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '^']);
         test.deepEqual(expected, result);
         result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '@string()']);
         test.deepEqual(expected, result);
@@ -31,46 +26,43 @@ module.exports = testCase({
 
         test.done();
     },
-    // ============================================================================
-    'toPathArray': function (test) {
-    // ============================================================================
+    'toPathArray' (test) {
         test.expect(1);
-        var expected = ['$', 'store', 'bicycle', 'color'];
-        var result = jsonpath.toPathArray("$['store']['bicycle']['color']");
+        const expected = ['$', 'store', 'bicycle', 'color'];
+        const result = jsonpath.toPathArray("$['store']['bicycle']['color']");
         test.deepEqual(expected, result);
 
         test.done();
     },
 
-    'toPathArray (unnormalized)': function (test) {
-    // ============================================================================
+    'toPathArray (unnormalized)' (test) {
         test.expect(1);
-        var expected = ['$', 'store', 'bicycle', 'color'];
-        var result = jsonpath.toPathArray("$.store['bicycle'].color");
+        const expected = ['$', 'store', 'bicycle', 'color'];
+        const result = jsonpath.toPathArray("$.store['bicycle'].color");
         test.deepEqual(expected, result);
 
         test.done();
     },
 
-    'toPathArray (avoid cache reference issue #78)': function (test) {
+    'toPathArray (avoid cache reference issue #78)' (test) {
         test.expect(3);
 
-        var originalPath = "$['foo']['bar']";
-        var json = { foo: { bar: 'baz' } };
-        var pathArr = jsonpath.toPathArray(originalPath);
+        const originalPath = "$['foo']['bar']";
+        const json = {foo: {bar: 'baz'}};
+        const pathArr = jsonpath.toPathArray(originalPath);
 
         test.equal(pathArr.length, 3);
 
         // Shouldn't manipulate pathArr values
         jsonpath({
-          json: json,
-          path: originalPath,
-          wrap: false,
-          resultType: 'value'
+            json,
+            path: originalPath,
+            wrap: false,
+            resultType: 'value'
         });
 
         test.equal(pathArr.length, 3);
-        var path = jsonpath.toPathString(pathArr);
+        const path = jsonpath.toPathString(pathArr);
 
         test.equal(path, originalPath);
         test.done();

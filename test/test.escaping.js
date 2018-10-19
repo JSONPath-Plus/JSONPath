@@ -1,25 +1,25 @@
-/*global require, module*/
-/*eslint-disable quotes*/
-(function () {'use strict';
+/* eslint-disable quotes */
+(function () {
+'use strict';
 
-var jsonpath = require('../'),
+const jsonpath = require('../').JSONPath,
     testCase = require('nodeunit').testCase;
 
-var json = {
+const json = {
     '*': 'star',
     'rest': 'rest',
     'foo': 'bar'
 };
 
-var jsonMissingSpecial = {
+const jsonMissingSpecial = {
     'rest': 'rest',
     'foo': 'bar'
 };
 
 module.exports = testCase({
-    'escape *': function (test) {
-        var expected = ['star'];
-        var result = jsonpath({json: json, path: "$['`*']"});
+    'escape *' (test) {
+        let expected = ['star'];
+        let result = jsonpath({json, path: "$['`*']"});
         test.deepEqual(expected, result);
 
         expected = [];
@@ -27,11 +27,11 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         expected = ['star', 'rest'];
-        result = jsonpath({json: json, path: "$[`*,rest]"});
+        result = jsonpath({json, path: "$[`*,rest]"});
         test.deepEqual(expected, result);
 
         expected = ['star'];
-        result = jsonpath({json: json, path: "$.`*"});
+        result = jsonpath({json, path: "$.`*"});
         test.deepEqual(expected, result);
 
         expected = [];
@@ -39,7 +39,7 @@ module.exports = testCase({
         test.deepEqual(expected, result);
 
         expected = ['star', 'rest', 'bar'];
-        result = jsonpath({json: json, path: "$['*']"});
+        result = jsonpath({json, path: "$['*']"});
         test.deepEqual(expected, result);
 
         expected = ['rest', 'bar'];

@@ -1,51 +1,45 @@
-/*global require, module*/
-/*eslint-disable quotes*/
-(function () {'use strict';
+/* eslint-disable quotes */
+(function () {
+'use strict';
 
-var jsonpath = require('../'),
+const jsonpath = require('../').JSONPath,
     testCase = require('nodeunit').testCase;
 
-var json = {
-  "test1": {
-    "test2": {
-      "test3.test4.test5": {
-        "test7": "value"
-      }
-    }
-  },
-  "datafield": [
-    {"tag": "035", "subfield": {"@code": "a", "#text": "1879"}},
-    {"@tag": "042", "subfield": {"@code": "a", "#text": "5555"}},
-    {"@tag": "045", "045": "secret"}
-  ]
+const json = {
+    "test1": {
+        "test2": {
+            "test3.test4.test5": {
+                "test7": "value"
+            }
+        }
+    },
+    "datafield": [
+        {"tag": "035", "subfield": {"@code": "a", "#text": "1879"}},
+        {"@tag": "042", "subfield": {"@code": "a", "#text": "5555"}},
+        {"@tag": "045", "045": "secret"}
+    ]
 };
 
 module.exports = testCase({
-
-    // ============================================================================
-    'Periods within properties': function (test) {
-    // ============================================================================
+    'Periods within properties' (test) {
         test.expect(1);
-        var expected = {"test7": "value"};
-        var result = jsonpath({json: json, path: "$.test1.test2['test3.test4.test5']", wrap: false});
+        const expected = {"test7": "value"};
+        const result = jsonpath({json, path: "$.test1.test2['test3.test4.test5']", wrap: false});
         test.deepEqual(expected, result);
 
         test.done();
     },
 
-    // ============================================================================
-    'At signs within properties': function (test) {
-    // ============================================================================
+    'At signs within properties' (test) {
         test.expect(3);
-        var result = jsonpath({json: json, path: "$.datafield[?(@.tag=='035')]", wrap: false});
+        let result = jsonpath({json, path: "$.datafield[?(@.tag=='035')]", wrap: false});
         test.deepEqual(json.datafield[0], result);
-        result = jsonpath({json: json, path: "$.datafield[?(@['@tag']=='042')]", wrap: false});
+        result = jsonpath({json, path: "$.datafield[?(@['@tag']=='042')]", wrap: false});
         test.deepEqual(json.datafield[1], result);
-        result = jsonpath({json: json, path: "$.datafield[2][(@['@tag'])]", wrap: false});
+        result = jsonpath({json, path: "$.datafield[2][(@['@tag'])]", wrap: false});
         test.deepEqual(json.datafield[2]['045'], result);
 
         test.done();
     }
-
 });
 }());

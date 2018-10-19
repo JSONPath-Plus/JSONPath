@@ -1,5 +1,23 @@
 # jsonpath-plus changes
 
+## 0.17.0 (October 19, 2018)
+
+- Breaking change: With Node use, must now use
+    `require('jsonpath-plus').JSONPath`.
+- Breaking change: Stop including polyfills for array and string `includes`
+    (can get with `@babel/polyfill` or own)
+- Breaking change: Remove deprecated `JSONPath.eval`
+- License: Remove old and unneeded license portion from within source file
+    (already have external file)
+- Fix: Support object shorthand functions on sandbox objects
+    (`toString()` had not been working properly with them)
+- Enhancement: Add Rollup/Babel/Terser and `module` in `package.json`
+- Refactoring: Use ES6 features such as object shorthand
+- Linting: prefer const and no var
+- Testing: Replace custom server code with `node-static` and add `opn-cli`;
+    mostly switch to ESM
+- npm: Update devDeps; add `package-lock.json`; remove non-functioning remark
+
 ## 0.16.0 (January 14, 2017)
 
 - Breaking change: Give preference to treating special chars in a property

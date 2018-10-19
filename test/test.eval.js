@@ -1,11 +1,11 @@
-/*global require, module*/
-/*eslint-disable quotes*/
-(function () {'use strict';
+/* eslint-disable quotes */
+(function () {
+'use strict';
 
-var jsonpath = require('../'),
+const jsonpath = require('../').JSONPath,
     testCase = require('nodeunit').testCase;
 
-var json = {
+const json = {
     "store": {
         "book": {
             "category": "reference",
@@ -29,27 +29,27 @@ var json = {
 };
 
 module.exports = testCase({
-    'multi statement eval': function (test) {
-        var expected = json.store.books[0];
-        var selector = '$..[?(' +
+    'multi statement eval' (test) {
+        const expected = json.store.books[0];
+        const selector = '$..[?(' +
                      'var sum = @.price && @.price[0]+@.price[1];' +
                      'sum > 20;)]';
-        var result = jsonpath({json: json, path: selector, wrap: false});
+        const result = jsonpath({json, path: selector, wrap: false});
         test.deepEqual(expected, result);
         test.done();
     },
 
-    'accessing current path': function (test) {
-        var expected = json.store.books[1];
-        var result = jsonpath({json: json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false});
+    'accessing current path' (test) {
+        const expected = json.store.books[1];
+        const result = jsonpath({json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false});
         test.deepEqual(expected, result);
         test.done();
     },
 
-    'sandbox': function (test) {
-        var expected = json.store.book;
-        var result = jsonpath({
-            json: json,
+    'sandbox' (test) {
+        const expected = json.store.book;
+        const result = jsonpath({
+            json,
             sandbox: {category: 'reference'},
             path: "$..[?(@.category === category)]", wrap: false
         });
@@ -57,13 +57,15 @@ module.exports = testCase({
         test.done();
     },
 
-    'sandbox (with parsing function)': function (test) {
-        var expected = json.store.book;
-        var result = jsonpath({
-            json: json,
-            sandbox: {filter: function (arg) {
-                return arg.category === 'reference';
-            }},
+    'sandbox (with parsing function)' (test) {
+        const expected = json.store.book;
+        const result = jsonpath({
+            json,
+            sandbox: {
+                filter (arg) {
+                    return arg.category === 'reference';
+                }
+            },
             path: "$..[?(filter(@))]", wrap: false
         });
         test.deepEqual(expected, result);

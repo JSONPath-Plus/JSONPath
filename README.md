@@ -12,7 +12,7 @@ proprietary features added to `jsonpath-plus`).**
 # Install
 
 ```shell
-  npm install jsonpath-plus
+npm install jsonpath-plus
 ```
 
 # Usage
@@ -22,24 +22,40 @@ proprietary features added to `jsonpath-plus`).**
 In Node.js:
 
 ```js
-  var JSONPath = require('jsonpath-plus');
-  var result = JSONPath({json: obj, path: path});
+const {JSONPath} = require('jsonpath-plus');
+const result = JSONPath({path: '...', json: ...});
 ```
 
-For browser usage you can directly include `lib/jsonpath.js`; no Browserify
+For browser usage you can directly include `dist/index-umd.js`; no Browserify
 magic is necessary:
 
 ```html
-  <script src="lib/jsonpath.js"></script>
-  <script>
-      var result = JSONPath({path: path, json: obj});
-  </script>
+<script src="dist/index-umd.js"></script>
+<script>
+const result = JSONPath({path: '...', json: ...});
+</script>
+```
+
+You may also use ES6 Module imports (for modern browsers):
+
+```html
+<script type="module">
+import JSONPath from './node_modules/jsonpath-plus/dist/index-es.js';
+const result = JSONPath({path: '...', json: ...});
+</script>
+```
+
+Or if you are bundling your JavaScript (e.g., with Rollup), just use:
+
+```js
+import JSONPath from 'jsonpath-plus';
+const result = JSONPath({path: '...', json: ...});
 ```
 
 The full signature available is:
 
 ```js
-    var result = JSONPath([options,] path, json, callback, otherTypeCallback);
+const result = JSONPath([options,] path, json, callback, otherTypeCallback);
 ```
 
 The arguments `path`, `json`, `callback`, and `otherTypeCallback`
@@ -52,12 +68,6 @@ wish to perform some operation as each item is discovered, with
 the callback function being executed 0 to N times depending
 on the number of independent items to be found in the result.
 See the docs below for more on `JSONPath`'s available arguments.
-
-The following format is now deprecated:
-
-```js
-  jsonPath.eval(options, json, path);
-```
 
 ## Properties
 
@@ -154,42 +164,42 @@ evaluate method (as the first argument) include:
 Given the following JSON, taken from <http://goessner.net/articles/JsonPath/>:
 
 ```json
-  {
-    "store": {
-      "book": [
-        {
-          "category": "reference",
-          "author": "Nigel Rees",
-          "title": "Sayings of the Century",
-          "price": 8.95
-        },
-        {
-          "category": "fiction",
-          "author": "Evelyn Waugh",
-          "title": "Sword of Honour",
-          "price": 12.99
-        },
-        {
-          "category": "fiction",
-          "author": "Herman Melville",
-          "title": "Moby Dick",
-          "isbn": "0-553-21311-3",
-          "price": 8.99
-        },
-        {
-          "category": "fiction",
-          "author": "J. R. R. Tolkien",
-          "title": "The Lord of the Rings",
-          "isbn": "0-395-19395-8",
-          "price": 22.99
-        }
-      ],
-      "bicycle": {
-        "color": "red",
-        "price": 19.95
-      }
+{
+"store": {
+  "book": [
+    {
+      "category": "reference",
+      "author": "Nigel Rees",
+      "title": "Sayings of the Century",
+      "price": 8.95
+    },
+    {
+      "category": "fiction",
+      "author": "Evelyn Waugh",
+      "title": "Sword of Honour",
+      "price": 12.99
+    },
+    {
+      "category": "fiction",
+      "author": "Herman Melville",
+      "title": "Moby Dick",
+      "isbn": "0-553-21311-3",
+      "price": 8.99
+    },
+    {
+      "category": "fiction",
+      "author": "J. R. R. Tolkien",
+      "title": "The Lord of the Rings",
+      "isbn": "0-395-19395-8",
+      "price": 22.99
     }
+  ],
+  "bicycle": {
+    "color": "red",
+    "price": 19.95
   }
+}
+}
 ```
 
 and the following XML representation:

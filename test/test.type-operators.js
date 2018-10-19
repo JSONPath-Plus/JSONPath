@@ -1,13 +1,13 @@
-/*global require, module*/
-/*eslint-disable quotes*/
-(function () {'use strict';
+/* eslint-disable quotes */
+(function () {
+'use strict';
 
-var jsonpath = require('../'),
+const jsonpath = require('../').JSONPath,
     testCase = require('nodeunit').testCase;
 
 // tests based on examples at http://goessner.net/articles/jsonpath/
 
-var json = {"store": {
+const json = {"store": {
     "book": [
         {"category": "reference",
             "author": "Nigel Rees",
@@ -40,37 +40,31 @@ var json = {"store": {
 };
 
 module.exports = testCase({
-    // ============================================================================
-    '@number()': function (test) {
-    // ============================================================================
+    '@number()' (test) {
         test.expect(1);
-        var expected = [8.95, 8.94, 8.93, 12.99, 8.99, 22.99];
-        var result = jsonpath({json: json, path: '$.store.book..*@number()', flatten: true});
+        const expected = [8.95, 8.94, 8.93, 12.99, 8.99, 22.99];
+        const result = jsonpath({json, path: '$.store.book..*@number()', flatten: true});
         test.deepEqual(expected, result);
 
         test.done();
     },
 
-    // ============================================================================
-    '@scalar()': function (test) {
-    // ============================================================================
+    '@scalar()' (test) {
         test.expect(1);
-        var expected = ["red", 19.95];
-        var result = jsonpath({json: json, path: '$.store.bicycle..*@scalar()', flatten: true});
+        const expected = ["red", 19.95];
+        const result = jsonpath({json, path: '$.store.bicycle..*@scalar()', flatten: true});
         test.deepEqual(expected, result);
 
         test.done();
     },
 
-    // ============================================================================
-    '@other()': function (test) {
-    // ============================================================================
+    '@other()' (test) {
         test.expect(1);
-        var expected = [12.99, 8.99, 22.99];
+        const expected = [12.99, 8.99, 22.99];
         function endsIn99 (val, path, parent, parentPropName) {
             return !!val.toString().match(/\.99/);
         }
-        var result = jsonpath({json: json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
+        const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
         test.deepEqual(expected, result);
 
         test.done();

@@ -1,13 +1,13 @@
-/*global require, module*/
-/*eslint-disable quotes*/
-(function () {'use strict';
+/* eslint-disable quotes */
+(function () {
+'use strict';
 
-var jsonpath = require('../'),
+const jsonpath = require('../').JSONPath,
     testCase = require('nodeunit').testCase;
 
 // tests based on examples at http://goessner.net/articles/jsonpath/
 
-var json = {"store": {
+const json = {"store": {
     "book": [
         {"category": "reference",
             "author": "Nigel Rees",
@@ -40,15 +40,12 @@ var json = {"store": {
 };
 
 module.exports = testCase({
-
-    // ============================================================================
-    'all sub properties, entire tree': function (test) {
-        // ============================================================================
+    'all sub properties, entire tree' (test) {
         test.expect(1);
-        var books = json.store.book;
-        var expected = [books[1].price, books[2].price, books[3].price, json.store.bicycle.price];
+        const books = json.store.book;
+        let expected = [books[1].price, books[2].price, books[3].price, json.store.bicycle.price];
         expected = books[0].price.concat(expected);
-        var result = jsonpath({json: json, path: '$.store..price', flatten: true});
+        const result = jsonpath({json, path: '$.store..price', flatten: true});
         test.deepEqual(expected, result);
 
         test.done();
