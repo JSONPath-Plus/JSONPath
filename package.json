@@ -39,7 +39,7 @@
   "bugs": "https://github.com/s3u/JSONPath/issues/",
   "homepage": "https://github.com/s3u/JSONPath",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=6.0"
   },
   "dependencies": {},
   "devDependencies": {
