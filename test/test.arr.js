@@ -13,14 +13,12 @@ const json = {
             "title": "Sayings of the Century",
             "price": [8.95, 8.94, 8.93]
         },
-        "books": [
-            {
-                "category": "reference",
-                "author": "Nigel Rees",
-                "title": "Sayings of the Century",
-                "price": [8.95, 8.94, 8.93]
-            }
-        ]
+        "books": [{
+            "category": "reference",
+            "author": "Nigel Rees",
+            "title": "Sayings of the Century",
+            "price": [8.95, 8.94, 8.93]
+        }]
     }
 };
 
