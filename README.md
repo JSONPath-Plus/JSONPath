@@ -245,7 +245,7 @@ comparisons or to prevent ambiguity).
 
 | XPath             | JSONPath               | Result                                | Notes |
 | ----------------- | ---------------------- | ------------------------------------- | ----- |
-/store/book/author  | $.store.book\[*].author | The authors of all books in the store | Can also be represented without the `$.` as `store.book[*].author` (though this is not present in the original spec)
+/store/book/author  | $.store.book\[*].author | The authors of all books in the store | Can also be represented without the `$.` as `store.book[*].author` (though this is not present in the original spec); note that some character literals (`$` and `@`) require escaping, however
 //author            | $..author              | All authors                           |
 /store/*            | $.store.*              | All things in store, which are its books (a book array) and a red bicycle (a bicycle object).|
 /store//price       | $.store..price         | The price of everything in the store. |
@@ -256,7 +256,7 @@ comparisons or to prevent ambiguity).
 //book\[isbn]        | $..book\[?(@.isbn)]     | Filter all books with an ISBN number     | To access a property with a special character, utilize `[?@['...']]` for the filter (this particular feature is not present in the original spec)
 //book\[price<10]    | $..book\[?(@.price<10)] | Filter all books cheaper than 10     |
 | //\*\[name() = 'price' and . != 8.95] | $..\*\[?(@property === 'price' && @ !== 8.95)] | Obtain all property values of objects whose property is price and which does not equal 8.95 |
-/                   | $                      | The root of the JSON object (i.e., the whole object itself) |
+/                   | $                      | The root of the JSON object (i.e., the whole object itself) | To get a literal `$` (by itself or anywhere in the path), you must use the backtick escape
 //\*/\*\|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
 //*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
 //*\[price>19]/..    | $..\[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not documented in the original spec
@@ -268,7 +268,7 @@ comparisons or to prevent ambiguity).
 /store/\*/\*\[name(parent::*) != 'book'] | $.store.*\[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
 //book\[count(preceding-sibling::\*) != 0]/\*/text() | $..book.*\[?(@parentProperty !== 0)]  | Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0 | @parentProperty is not present in the original spec
 //book/../\*\[. instance of element(\*, xs:decimal)\] (in XPath 2.0) | $..book..\*@number() | Get the numeric values within the book array | @number(), the other basic types (@boolean(), @string()), other low-level derived types (@null(), @object(), @array()), the JSONSchema-added type, @integer(), the compound type @scalar() (which also accepts `undefined` and non-finite numbers for JavaScript objects as well as all of the basic non-object/non-function types), the type, @other(), to be used in conjunction with a user-defined callback (see `otherTypeCallback`) and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (@undefined(), @function(), @nonFinite()) are not present in the original spec
-| | `` ` `` (e.g., `` `$`` to match a property literally named `$`) | Escapes the entire sequence following (to be treated as a literal) | `\`` is not present in the original spec
+| | `` ` `` (e.g., `` `$`` to match a property literally named `$`) | Escapes the entire sequence following (to be treated as a literal) | `\`` is not present in the original spec; to get a literal backtick, use an additional backtick to escape
 
 Any additional variables supplied as properties on the optional "sandbox"
 object option are also available to (parenthetical-based)
