@@ -135,6 +135,7 @@ function _possibleConstructorReturn(self, call) {
 
 /* eslint-disable no-eval */
 var globalEval = eval;
+var supportsNodeVM = typeof module !== 'undefined' && !!module.exports && !(typeof navigator !== 'undefined' && navigator.product === 'ReactNative');
 var allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 /**
@@ -158,7 +159,7 @@ var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb
   }
 };
 
-var vm = typeof module !== 'undefined' ? require('vm') : {
+var vm = supportsNodeVM ? require('vm') : {
   /**
    * @param {string} expr Expression to evaluate
    * @param {object} context Object whose items will be added to evaluation

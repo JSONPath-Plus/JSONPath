@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "main": "dist/index-umd.js",
   "module": "dist/index-es.js",
   "description": "A JS implementation of JSONPath with some additional operators",
@@ -40,6 +40,9 @@
   "homepage": "https://github.com/s3u/JSONPath",
   "engines": {
     "node": ">=6.0"
+  },
+  "react-native": {
+    "vm": false
   },
   "dependencies": {},
   "devDependencies": {

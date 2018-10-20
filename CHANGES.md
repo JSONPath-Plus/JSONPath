@@ -1,8 +1,10 @@
 # jsonpath-plus changes
 
-## ?
+## 0.18.0 (October 20, 2018)
 
 - Security enhancement: Use global eval instead of regular eval
+- Fix: Handle React-Native environment's lack of support for
+    Node vm (@simon-scherzinger); closes #87
 - Refactoring: Use arrow functions, for-of, declare block scope vars
     closer to block
 - Docs: Clarify current `wrap` behavior

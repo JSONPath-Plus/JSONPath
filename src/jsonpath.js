@@ -1,6 +1,8 @@
 /* eslint-disable no-eval */
 
 const globalEval = eval;
+const supportsNodeVM = typeof module !== 'undefined' && !!module.exports &&
+    !(typeof navigator !== 'undefined' && navigator.product === 'ReactNative');
 const allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
 const {hasOwnProperty} = Object.prototype;
 
@@ -22,7 +24,7 @@ const moveToAnotherArray = function (source, target, conditionCb) {
     }
 };
 
-const vm = typeof module !== 'undefined'
+const vm = supportsNodeVM
     ? require('vm') : {
         /**
          * @param {string} expr Expression to evaluate
