@@ -262,7 +262,7 @@ JSONPath.prototype._trace = function (
     const ret = [];
     function addRet (elems) {
         if (Array.isArray(elems)) {
-            // This was too slow with Babel against our performance test: ret.push(...elems);
+            // This was causing excessive stack size in Node (with or without Babel) against our performance test: `ret.push(...elems);`
             elems.forEach((t) => {
                 ret.push(t);
             });
@@ -441,7 +441,7 @@ JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropNa
     for (let i = start; i < end; i += step) {
         const tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback);
         if (Array.isArray(tmp)) {
-            // This was too slow with Babel against our performance test: ret.push(...tmp);
+            // This was causing excessive stack size in Node (with or without Babel) against our performance test: `ret.push(...tmp);`
             tmp.forEach((t) => {
                 ret.push(t);
             });
