@@ -52,7 +52,7 @@ module.exports = testCase({
             }
             result.push(type, data, fullData);
         }
-        jsonpath({json, path: '$.store.bicycle', resultType: 'value', wrap: false, callback: callback});
+        jsonpath({json, path: '$.store.bicycle', resultType: 'value', wrap: false, callback});
         test.deepEqual(expected, result);
 
         test.done();

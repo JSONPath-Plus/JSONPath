@@ -30,7 +30,7 @@ for (i = 0; i < resultCount; i++) {
     json.results[i] = {groups: [], v: {v: [1, 2, 3, 4, 5, 6, 7, 8]}};
     json.results[i].groups = [];
     for (j = 0; j < groupCount; j++) {
-        json.results[i].groups[j] = {items: items, a: "121212"};
+        json.results[i].groups[j] = {items, a: "121212"};
     }
 }
 
