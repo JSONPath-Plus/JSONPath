@@ -94,14 +94,15 @@ evaluate method (as the first argument) include:
   that the current path and value will also be available to those
   expressions; see the Syntax section for details.)
 - ***wrap*** (**default: true**) - Whether or not to wrap the results
-  in an array. If `wrap` is set to false, and no results are found,
+  in an array. If `wrap` is set to `false`, and no results are found,
   `undefined` will be returned (as opposed to an empty array when
-  `wrap` is set to true). If `wrap` is set to false and a single result
-  is found, that result will be the only item returned (not within
-  an array). An array will still be returned if multiple results are
-  found, however. To avoid ambiguities (in the case where it is necessary
-  to distinguish between a result which is a failure and one which is an
-  empty array), it is recommended to switch the default to `false`.
+  `wrap` is set to true). If `wrap` is set to `false` and a single
+  non-array result is found, that result will be the only item returned
+  (not within an array). An array will still be returned if multiple
+  results are found, however. To avoid ambiguities (in the case where
+  it is necessary to distinguish between a result which is a failure
+  and one which is an empty array), it is recommended to switch the
+  default to `false`.
 - ***preventEval*** (**default: false**) - Although JavaScript evaluation
   expressions are allowed by default, for security reasons (if one is
   operating on untrusted user input, for example), one may wish to

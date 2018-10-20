@@ -5,6 +5,7 @@
 - Security enhancement: Use global eval instead of regular eval
 - Refactoring: Use arrow functions, for-of, declare block scope vars
     closer to block
+- Docs: Clarify current `wrap` behavior
 - npm: Add Rollup to test scripts
 
 ## 0.17.0 (October 19, 2018)
