@@ -18,22 +18,158 @@
     return _typeof(obj);
   }
 
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) _setPrototypeOf(subClass, superClass);
+  }
+
+  function _getPrototypeOf(o) {
+    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+      o.__proto__ = p;
+      return o;
+    };
+
+    return _setPrototypeOf(o, p);
+  }
+
+  function isNativeReflectConstruct() {
+    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+    if (Reflect.construct.sham) return false;
+    if (typeof Proxy === "function") return true;
+
+    try {
+      Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function _construct(Parent, args, Class) {
+    if (isNativeReflectConstruct()) {
+      _construct = Reflect.construct;
+    } else {
+      _construct = function _construct(Parent, args, Class) {
+        var a = [null];
+        a.push.apply(a, args);
+        var Constructor = Function.bind.apply(Parent, a);
+        var instance = new Constructor();
+        if (Class) _setPrototypeOf(instance, Class.prototype);
+        return instance;
+      };
+    }
+
+    return _construct.apply(null, arguments);
+  }
+
+  function _isNativeFunction(fn) {
+    return Function.toString.call(fn).indexOf("[native code]") !== -1;
+  }
+
+  function _wrapNativeSuper(Class) {
+    var _cache = typeof Map === "function" ? new Map() : undefined;
+
+    _wrapNativeSuper = function _wrapNativeSuper(Class) {
+      if (Class === null || !_isNativeFunction(Class)) return Class;
+
+      if (typeof Class !== "function") {
+        throw new TypeError("Super expression must either be null or a function");
+      }
+
+      if (typeof _cache !== "undefined") {
+        if (_cache.has(Class)) return _cache.get(Class);
+
+        _cache.set(Class, Wrapper);
+      }
+
+      function Wrapper() {
+        return _construct(Class, arguments, _getPrototypeOf(this).constructor);
+      }
+
+      Wrapper.prototype = Object.create(Class.prototype, {
+        constructor: {
+          value: Wrapper,
+          enumerable: false,
+          writable: true,
+          configurable: true
+        }
+      });
+      return _setPrototypeOf(Wrapper, Class);
+    };
+
+    return _wrapNativeSuper(Class);
+  }
+
+  function _assertThisInitialized(self) {
+    if (self === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return self;
+  }
+
+  function _possibleConstructorReturn(self, call) {
+    if (call && (typeof call === "object" || typeof call === "function")) {
+      return call;
+    }
+
+    return _assertThisInitialized(self);
+  }
+
   /* eslint-disable no-eval */
+  var globalEval = eval;
   var allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
+  var hasOwnProperty = Object.prototype.hasOwnProperty;
+  /**
+   * Copy items out of one array into another
+   * @param {Array} source Array with items to copy
+   * @param {Array} target Array to which to copy
+   * @param {function} conditionCb Callback passed the current item; will move
+   *     item if evaluates to `true`
+   * @returns {undefined}
+   */
 
   var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb) {
-    var kl = source.length;
+    var il = source.length;
 
-    for (var i = 0; i < kl; i++) {
-      var key = source[i];
+    for (var i = 0; i < il; i++) {
+      var item = source[i];
 
-      if (conditionCb(key)) {
+      if (conditionCb(item)) {
         target.push(source.splice(i--, 1)[0]);
       }
     }
   };
 
   var vm = typeof module !== 'undefined' ? require('vm') : {
+    /**
+     * @param {string} expr Expression to evaluate
+     * @param {object} context Object whose items will be added to evaluation
+     * @returns {*} Result of evaluated code
+     */
     runInNewContext: function runInNewContext(expr, context) {
       var keys = Object.keys(context);
       var funcs = [];
@@ -49,32 +185,79 @@
 
         return 'var ' + func + '=' + fString + ';' + s;
       }, '') + keys.reduce(function (s, vr) {
-        return 'var ' + vr + '=' + JSON.stringify(context[vr]).replace(/\u2028|\u2029/g, function (m) {
-          // http://www.thespanner.co.uk/2011/07/25/the-json-specification-is-now-wrong/
+        return 'var ' + vr + '=' + JSON.stringify(context[vr]).replace( // http://www.thespanner.co.uk/2011/07/25/the-json-specification-is-now-wrong/
+        /\u2028|\u2029/g, function (m) {
           return "\\u202" + (m === "\u2028" ? '8' : '9');
         }) + ';' + s;
       }, expr);
-      return eval(code);
+      return globalEval(code);
     }
   };
+  /**
+   * Copies array and then pushes item into it
+   * @param {array} arr Array to copy and into which to push
+   * @param {*} item Array item to add (to end)
+   * @returns {array} Copy of the original array
+   */
 
-  function push(arr, elem) {
+  function push(arr, item) {
     arr = arr.slice();
-    arr.push(elem);
+    arr.push(item);
     return arr;
   }
+  /**
+   * Copies array and then unshifts item into it
+   * @param {*} item Array item to add (to beginning)
+   * @param {array} arr Array to copy and into which to unshift
+   * @returns {array} Copy of the original array
+   */
 
-  function unshift(elem, arr) {
+
+  function unshift(item, arr) {
     arr = arr.slice();
-    arr.unshift(elem);
+    arr.unshift(item);
     return arr;
   }
+  /**
+   * Caught when JSONPath is used without `new` but rethrown if with `new`
+   * @extends Error
+   */
 
-  function NewError(value) {
-    this.avoidNew = true;
-    this.value = value;
-    this.message = 'JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)';
-  }
+
+  var NewError =
+  /*#__PURE__*/
+  function (_Error) {
+    _inherits(NewError, _Error);
+
+    /**
+     * @param {*} value The evaluated scalar value
+     */
+    function NewError(value) {
+      var _this;
+
+      _classCallCheck(this, NewError);
+
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(NewError).call(this, 'JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)'));
+      _this.avoidNew = true;
+      _this.value = value;
+      return _this;
+    }
+
+    return NewError;
+  }(_wrapNativeSuper(Error));
+  /**
+   * @param {object} [opts] If present, must be an object
+   * @param {string} expr JSON path to evaluate
+   * @param {JSON} obj JSON object to evaluate against
+   * @param {function} callback Passed 3 arguments: 1) desired payload per `resultType`,
+   *     2) `"value"|"property"`, 3) Full returned object with all payloads
+   * @param {function} otherTypeCallback If `@other()` is at the end of one's query, this
+   *  will be invoked with the value of the item, its path, its parent, and its parent's
+   *  property name, and it should return a boolean indicating whether the supplied value
+   *  belongs to the "other" type or not (or it may handle transformations and return `false`).
+   * @constructor
+   */
+
 
   function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
     if (!(this instanceof JSONPath)) {
@@ -261,19 +444,17 @@
 
     var ret = [];
 
-    function retPush(elem) {
-      ret.push(elem);
-    }
-
     function addRet(elems) {
       if (Array.isArray(elems)) {
-        elems.forEach(retPush);
+        elems.forEach(function (t) {
+          ret.push(t);
+        });
       } else {
         ret.push(elems);
       }
     }
 
-    if ((typeof loc !== 'string' || literalPriority) && val && Object.prototype.hasOwnProperty.call(val, loc)) {
+    if ((typeof loc !== 'string' || literalPriority) && val && hasOwnProperty.call(val, loc)) {
       // simple case--directly follow property
       addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback));
     } else if (loc === '*') {
@@ -424,18 +605,37 @@
 
         return retObj;
       }
-    } else if (loc[0] === '`' && val && Object.prototype.hasOwnProperty.call(val, loc.slice(1))) {
+    } else if (loc[0] === '`' && val && hasOwnProperty.call(val, loc.slice(1))) {
       // `-escaped property
       var locProp = loc.slice(1);
       addRet(this._trace(x, val[locProp], push(path, locProp), val, locProp, callback, true));
     } else if (loc.includes(',')) {
       // [name1,name2,...]
       var parts = loc.split(',');
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-      for (var i = 0; i < parts.length; i++) {
-        addRet(this._trace(unshift(parts[i], x), val, path, parent, parentPropName, callback));
+      try {
+        for (var _iterator = parts[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var part = _step.value;
+          addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback));
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
-    } else if (!literalPriority && val && Object.prototype.hasOwnProperty.call(val, loc)) {
+    } else if (!literalPriority && val && hasOwnProperty.call(val, loc)) {
       // simple case--directly follow property
       addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, true));
     } // We check the resulting values for parent selections. For parent
@@ -469,15 +669,15 @@
   };
 
   JSONPath.prototype._walk = function (loc, expr, val, path, parent, parentPropName, callback, f) {
-    var i, n, m;
-
     if (Array.isArray(val)) {
-      for (i = 0, n = val.length; i < n; i++) {
+      var n = val.length;
+
+      for (var i = 0; i < n; i++) {
         f(i, loc, expr, val, path, parent, parentPropName, callback);
       }
     } else if (_typeof(val) === 'object') {
-      for (m in val) {
-        if (Object.prototype.hasOwnProperty.call(val, m)) {
+      for (var m in val) {
+        if (hasOwnProperty.call(val, m)) {
           f(m, loc, expr, val, path, parent, parentPropName, callback);
         }
       }
@@ -492,14 +692,13 @@
     var len = val.length,
         parts = loc.split(':'),
         step = parts[2] && parseInt(parts[2], 10) || 1;
-    var i,
-        start = parts[0] && parseInt(parts[0], 10) || 0,
+    var start = parts[0] && parseInt(parts[0], 10) || 0,
         end = parts[1] && parseInt(parts[1], 10) || len;
     start = start < 0 ? Math.max(0, start + len) : Math.min(len, start);
     end = end < 0 ? Math.max(0, end + len) : Math.min(len, end);
     var ret = [];
 
-    for (i = start; i < end; i += step) {
+    for (var i = start; i < end; i += step) {
       var tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback);
 
       if (Array.isArray(tmp)) {
@@ -555,6 +754,10 @@
 
 
   JSONPath.cache = {};
+  /**
+   * @param {string[]} pathArr Array to convert
+   * @returns {string} The path string
+   */
 
   JSONPath.toPathString = function (pathArr) {
     var x = pathArr,
@@ -569,6 +772,11 @@
 
     return p;
   };
+  /**
+   * @param {string} pointer JSON Path
+   * @returns {string} JSON Pointer
+   */
+
 
   JSONPath.toPointer = function (pointer) {
     var x = pointer,
@@ -583,6 +791,11 @@
 
     return p;
   };
+  /**
+   * @param {string} expr Expression to convert
+   * @returns {string[]}
+   */
+
 
   JSONPath.toPathArray = function (expr) {
     var cache = JSONPath.cache;
@@ -593,7 +806,8 @@
 
     var subx = [];
     var normalized = expr // Properties
-    .replace(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/g, ';$&;') // Parenthetical evaluations (filtering and otherwise), directly within brackets or single quotes
+    .replace(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/g, ';$&;') // Parenthetical evaluations (filtering and otherwise), directly
+    //   within brackets or single quotes
     .replace(/[['](\??\(.*?\))[\]']/g, function ($0, $1) {
       return '[#' + (subx.push($1) - 1) + ']';
     }) // Escape periods and tildes within properties

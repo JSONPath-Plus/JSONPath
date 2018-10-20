@@ -70,8 +70,8 @@
     "rollup": "rollup -c",
     "eslint": "eslint .",
     "nodeunit": "nodeunit test",
-    "test": "npm run eslint && npm run nodeunit",
-    "browser-test": "npm run eslint && opn http://localhost:8084/test/ && static -p 8084",
+    "test": "npm run eslint && npm run rollup && npm run nodeunit",
+    "browser-test": "npm run eslint && npm run rollup && opn http://localhost:8084/test/ && static -p 8084",
     "start": "npm run browser-test"
   }
 }

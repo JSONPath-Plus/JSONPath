@@ -1,12 +1,15 @@
 /* eslint-disable no-eval */
 
+const globalEval = eval;
 const allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
+const {hasOwnProperty} = Object.prototype;
 
 /**
  * Copy items out of one array into another
  * @param {Array} source Array with items to copy
  * @param {Array} target Array to which to copy
- * @param {function} conditionCb Callback passed the current item; will move item if evaluates to `true`
+ * @param {function} conditionCb Callback passed the current item; will move
+ *     item if evaluates to `true`
  * @returns {undefined}
  */
 const moveToAnotherArray = function (source, target, conditionCb) {
@@ -32,19 +35,21 @@ const vm = typeof module !== 'undefined'
             moveToAnotherArray(keys, funcs, (key) => {
                 return typeof context[key] === 'function';
             });
-            const code = funcs.reduce(function (s, func) {
+            const code = funcs.reduce((s, func) => {
                 let fString = context[func].toString();
                 if (!(/function/).exec(fString)) {
                     fString = 'function ' + fString;
                 }
                 return 'var ' + func + '=' + fString + ';' + s;
-            }, '') + keys.reduce(function (s, vr) {
-                return 'var ' + vr + '=' + JSON.stringify(context[vr]).replace(/\u2028|\u2029/g, function (m) {
+            }, '') + keys.reduce((s, vr) => {
+                return 'var ' + vr + '=' + JSON.stringify(context[vr]).replace(
                     // http://www.thespanner.co.uk/2011/07/25/the-json-specification-is-now-wrong/
-                    return '\\u202' + (m === '\u2028' ? '8' : '9');
-                }) + ';' + s;
+                    /\u2028|\u2029/g, (m) => {
+                        return '\\u202' + (m === '\u2028' ? '8' : '9');
+                    }
+                ) + ';' + s;
             }, expr);
-            return eval(code);
+            return globalEval(code);
         }
     };
 
@@ -90,7 +95,8 @@ class NewError extends Error {
  * @param {object} [opts] If present, must be an object
  * @param {string} expr JSON path to evaluate
  * @param {JSON} obj JSON object to evaluate against
- * @param {function} callback Passed 3 arguments: 1) desired payload per `resultType`, 2) `"value"|"property"`, 3) Full returned object with all payloads
+ * @param {function} callback Passed 3 arguments: 1) desired payload per `resultType`,
+ *     2) `"value"|"property"`, 3) Full returned object with all payloads
  * @param {function} otherTypeCallback If `@other()` is at the end of one's query, this
  *  will be invoked with the value of the item, its path, its parent, and its parent's
  *  property name, and it should return a boolean indicating whether the supplied value
@@ -228,12 +234,16 @@ JSONPath.prototype._getPreferredOutput = function (ea) {
 JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
     if (callback) {
         const preferredOutput = this._getPreferredOutput(fullRetObj);
-        fullRetObj.path = typeof fullRetObj.path === 'string' ? fullRetObj.path : JSONPath.toPathString(fullRetObj.path);
+        fullRetObj.path = typeof fullRetObj.path === 'string'
+            ? fullRetObj.path
+            : JSONPath.toPathString(fullRetObj.path);
         callback(preferredOutput, type, fullRetObj);
     }
 };
 
-JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, literalPriority) {
+JSONPath.prototype._trace = function (
+    expr, val, path, parent, parentPropName, callback, literalPriority
+) {
     // No expr to follow? return path and value as the result of this trace branch
     let retObj;
     const self = this;
@@ -248,18 +258,19 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     // We need to gather the return value of recursive trace calls in order to
     // do the parent sel computation.
     const ret = [];
-    function retPush (elem) {
-        ret.push(elem);
-    }
     function addRet (elems) {
         if (Array.isArray(elems)) {
-            elems.forEach(retPush);
+            elems.forEach((t) => {
+                ret.push(t);
+            });
         } else {
             ret.push(elems);
         }
     }
 
-    if ((typeof loc !== 'string' || literalPriority) && val && Object.prototype.hasOwnProperty.call(val, loc)) { // simple case--directly follow property
+    if ((typeof loc !== 'string' || literalPriority) && val &&
+        hasOwnProperty.call(val, loc)
+    ) { // simple case--directly follow property
         addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback));
     } else if (loc === '*') { // all child properties
         this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, x, v, p, par, pr, cb) {
@@ -305,7 +316,10 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
             throw new Error('Eval [(expr)] prevented in JSONPath expression.');
         }
         // As this will resolve to a property name (but we don't know it yet), property and parent information is relative to the parent of the property to which this expression will resolve
-        addRet(this._trace(unshift(this._eval(loc, val, path[path.length - 1], path.slice(0, -1), parent, parentPropName), x), val, path, parent, parentPropName, callback));
+        addRet(this._trace(unshift(
+            this._eval(loc, val, path[path.length - 1], path.slice(0, -1), parent, parentPropName),
+            x
+        ), val, path, parent, parentPropName, callback));
     } else if (loc[0] === '@') { // value type: @boolean(), etc.
         let addType = false;
         const valueType = loc.slice(1, -2);
@@ -359,15 +373,15 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
             this._handleCallback(retObj, callback, 'value');
             return retObj;
         }
-    } else if (loc[0] === '`' && val && Object.prototype.hasOwnProperty.call(val, loc.slice(1))) { // `-escaped property
+    } else if (loc[0] === '`' && val && hasOwnProperty.call(val, loc.slice(1))) { // `-escaped property
         const locProp = loc.slice(1);
         addRet(this._trace(x, val[locProp], push(path, locProp), val, locProp, callback, true));
     } else if (loc.includes(',')) { // [name1,name2,...]
         const parts = loc.split(',');
-        for (let i = 0; i < parts.length; i++) {
-            addRet(this._trace(unshift(parts[i], x), val, path, parent, parentPropName, callback));
+        for (const part of parts) {
+            addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback));
         }
-    } else if (!literalPriority && val && Object.prototype.hasOwnProperty.call(val, loc)) { // simple case--directly follow property
+    } else if (!literalPriority && val && hasOwnProperty.call(val, loc)) { // simple case--directly follow property
         addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, true));
     }
 
@@ -378,7 +392,9 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
         for (let t = 0; t < ret.length; t++) {
             const rett = ret[t];
             if (rett.isParentSelector) {
-                const tmp = self._trace(rett.expr, val, rett.path, parent, parentPropName, callback);
+                const tmp = self._trace(
+                    rett.expr, val, rett.path, parent, parentPropName, callback
+                );
                 if (Array.isArray(tmp)) {
                     ret[t] = tmp[0];
                     const tl = tmp.length;
@@ -396,14 +412,14 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
 };
 
 JSONPath.prototype._walk = function (loc, expr, val, path, parent, parentPropName, callback, f) {
-    let i, n, m;
     if (Array.isArray(val)) {
-        for (i = 0, n = val.length; i < n; i++) {
+        const n = val.length;
+        for (let i = 0; i < n; i++) {
             f(i, loc, expr, val, path, parent, parentPropName, callback);
         }
     } else if (typeof val === 'object') {
-        for (m in val) {
-            if (Object.prototype.hasOwnProperty.call(val, m)) {
+        for (const m in val) {
+            if (hasOwnProperty.call(val, m)) {
                 f(m, loc, expr, val, path, parent, parentPropName, callback);
             }
         }
@@ -414,16 +430,15 @@ JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropNa
     if (!Array.isArray(val)) { return; }
     const len = val.length, parts = loc.split(':'),
         step = (parts[2] && parseInt(parts[2], 10)) || 1;
-    let i,
-        start = (parts[0] && parseInt(parts[0], 10)) || 0,
+    let start = (parts[0] && parseInt(parts[0], 10)) || 0,
         end = (parts[1] && parseInt(parts[1], 10)) || len;
     start = (start < 0) ? Math.max(0, start + len) : Math.min(len, start);
     end = (end < 0) ? Math.max(0, end + len) : Math.min(len, end);
     const ret = [];
-    for (i = start; i < end; i += step) {
+    for (let i = start; i < end; i += step) {
         const tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback);
         if (Array.isArray(tmp)) {
-            tmp.forEach(function (t) {
+            tmp.forEach((t) => {
                 ret.push(t);
             });
         } else {
@@ -510,8 +525,12 @@ JSONPath.toPathArray = function (expr) {
     const subx = [];
     const normalized = expr
         // Properties
-        .replace(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/g, ';$&;')
-        // Parenthetical evaluations (filtering and otherwise), directly within brackets or single quotes
+        .replace(
+            /@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/g,
+            ';$&;'
+        )
+        // Parenthetical evaluations (filtering and otherwise), directly
+        //   within brackets or single quotes
         .replace(/[['](\??\(.*?\))[\]']/g, function ($0, $1) {
             return '[#' + (subx.push($1) - 1) + ']';
         })

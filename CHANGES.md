@@ -1,5 +1,12 @@
 # jsonpath-plus changes
 
+## ?
+
+- Security enhancement: Use global eval instead of regular eval
+- Refactoring: Use arrow functions, for-of, declare block scope vars
+    closer to block
+- npm: Add Rollup to test scripts
+
 ## 0.17.0 (October 19, 2018)
 
 - Breaking change: With Node use, must now use
