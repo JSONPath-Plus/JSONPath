@@ -172,27 +172,31 @@ Given the following JSON, taken from <http://goessner.net/articles/JsonPath/>:
       "category": "reference",
       "author": "Nigel Rees",
       "title": "Sayings of the Century",
-      "price": 8.95
+      "price": 8.95,
+      "publishedAt": "2019-09-04T06:49:12.126"
     },
     {
       "category": "fiction",
       "author": "Evelyn Waugh",
       "title": "Sword of Honour",
-      "price": 12.99
+      "price": 12.99,
+      "publishedAt": "2018-09-04T06:49:12.126"
     },
     {
       "category": "fiction",
       "author": "Herman Melville",
       "title": "Moby Dick",
       "isbn": "0-553-21311-3",
-      "price": 8.99
+      "price": 8.99,
+      "publishedAt": "2017-09-04T06:49:12.126"
     },
     {
       "category": "fiction",
       "author": "J. R. R. Tolkien",
       "title": "The Lord of the Rings",
       "isbn": "0-395-19395-8",
-      "price": 22.99
+      "price": 22.99,
+      "publishedAt": "2016-09-04T06:49:12.126"
     }
   ],
   "bicycle": {
@@ -212,12 +216,14 @@ and the following XML representation:
         <author>Nigel Rees</author>
         <title>Sayings of the Century</title>
         <price>8.95</price>
+        <publishedAt>2019-09-04T06:49:12.126</publishedAt>
     </book>
     <book>
         <category>fiction</category>
         <author>Evelyn Waugh</author>
         <title>Sword of Honour</title>
         <price>12.99</price>
+        <publishedAt>2018-09-04T06:49:12.126</publishedAt>
     </book>
     <book>
         <category>fiction</category>
@@ -225,6 +231,7 @@ and the following XML representation:
         <title>Moby Dick</title>
         <isbn>0-553-21311-3</isbn>
         <price>8.99</price>
+        <publishedAt>2017-09-04T06:49:12.126</publishedAt>
     </book>
     <book>
         <category>fiction</category>
@@ -232,6 +239,7 @@ and the following XML representation:
         <title>The Lord of the Rings</title>
         <isbn>0-395-19395-8</isbn>
         <price>22.99</price>
+        <publishedAt>2016-09-04T06:49:12.126</publishedAt>
     </book>
     <bicycle>
         <color>red</color>
@@ -266,6 +274,8 @@ comparisons or to prevent ambiguity).
 //book\[parent::\*/bicycle/color = "red"]/category | $..book\[?(@parent.bicycle && @parent.bicycle.color === "red")].category | Grabs all categories of books where the parent object of the book has a bicycle child whose color is red (i.e., all the books) | @parent is not present in the original spec
 //book/*\[name() != 'category']     | $..book.*\[?(@property !== "category")] | Grabs all children of "book" except for "category" ones  | @property is not present in the original spec
 //book/*\[position() != 0]    | $..book\[?(@property !== 0)] | Grabs all books whose property (which, being that we are reaching inside an array, is the numeric index) is not 0 | @property is not present in the original spec
+-     | $..book.*\[?(@property !== "publishedAt" && new Date(@).getTime() <= new Date('2019').getTime())] | Grabs all string-representations of date specified by "publishedAt" attribute of "book" which is less then "2019-01-01T00:00:00.000Z" | @property is not present in the original spec
+-     | $..book.*\[?(@property === "category" && @.match(/.*ion$/g))] | Grabs all "category" of "book" which match by regex  | @property is not present in the original spec
 /store/\*/\*\[name(parent::*) != 'book'] | $.store.*\[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
 //book\[count(preceding-sibling::\*) != 0]/\*/text() | $..book.*\[?(@parentProperty !== 0)]  | Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0 | @parentProperty is not present in the original spec
 //book/../\*\[. instance of element(\*, xs:decimal)\] (in XPath 2.0) | $..book..\*@number() | Get the numeric values within the book array | @number(), the other basic types (@boolean(), @string()), other low-level derived types (@null(), @object(), @array()), the JSONSchema-added type, @integer(), the compound type @scalar() (which also accepts `undefined` and non-finite numbers for JavaScript objects as well as all of the basic non-object/non-function types), the type, @other(), to be used in conjunction with a user-defined callback (see `otherTypeCallback`) and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (@undefined(), @function(), @nonFinite()) are not present in the original spec
