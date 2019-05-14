@@ -390,6 +390,7 @@ JSONPath.prototype._getPreferredOutput = function (ea) {
 
   switch (resultType) {
     case 'all':
+      ea.pointer = JSONPath.toPointer(ea.path);
       ea.path = typeof ea.path === 'string' ? ea.path : JSONPath.toPathString(ea.path);
       return ea;
 

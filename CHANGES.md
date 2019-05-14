@@ -1,5 +1,9 @@
 # jsonpath-plus changes
 
+## 0.18.1 (May 14, 2019)
+
+- Fix: Expose `pointer` on `resultType: "all"`
+
 ## 0.18.0 (October 20, 2018)
 
 - Security enhancement: Use global eval instead of regular eval
