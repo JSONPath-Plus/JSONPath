@@ -1,5 +1,13 @@
 # jsonpath-plus changes
 
+## ?
+
+- Docs (README): Indicate features, including performance (removing old note)
+- Docs (README): Add headings for setup and fix headings levels
+- Docs (README): Indicate parent selector was not present in original spec
+    (not just not documented)
+- Docs (README): Fix escaping
+
 ## 0.18.1 (May 14, 2019)
 
 - Fix: Expose `pointer` on `resultType: "all"`
