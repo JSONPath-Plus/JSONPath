@@ -2,3 +2,7 @@ node_modules
 test
 test-helpers
 rollup.config.js
+lgtm.yml
+.travis.yml
+.DS_Store
+.babelrc
