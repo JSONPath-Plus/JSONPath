@@ -3,28 +3,58 @@
 Analyse, transform, and selectively extract data from JSON
 documents (and JavaScript objects).
 
-**Note that `jsonpath-plus` may be suffering from [performance problems](https://github.com/s3u/JSONPath/issues/14)
-and the maintainers are not currently able to work on resolving.
-You may wish to use [jsonpath](https://www.npmjs.com/package/jsonpath)
-to avoid this problem (though noting that it does not include the
-proprietary features added to `jsonpath-plus`).**
+`jsonpath-plus` expands on the original specification to add some
+additional operators and makes explicit some behaviors the original
+did not spell out.
 
-# Install
+## Features
+
+* **Compliant** with the original jsonpath spec
+* Consistently **performant** per
+    [json-querying-performance-testing](https://github.com/andykais/json-querying-performance-testing>)
+    benchmarking, particularly for large data sets.
+* Convenient **additions or elaborations** not provided in the original spec:
+    * `^` for grabbing the **parent** of a matching item
+    * `~` for grabbing **property names** of matching items (as array)
+    * **Type selectors** for obtaining:
+        * Basic JSON types: `@null()`, `@boolean()`, `@number()`, `@string()`, `@array()`, `@object()`
+        * `@integer()`
+        * The compound type `@scalar()` (which also accepts `undefined` and
+            non-finite numbers when querying JavaScript objects as well as all of the basic non-object/non-function types)
+        * `@other()` usable in conjunction with a user-defined `otherTypeCallback`
+        * Non-JSON types that can nevertheless be used when querying
+            non-JSON JavaScript objects (`@undefined()`, `@function()`, `@nonFinite()`)
+    * `@path`/`@parent`/`@property`/`@parentProperty` **shorthand selectors** within filters
+    * **Escaping**
+        * `` ` `` for escaping remaining sequence
+        * `@['...']`/`?@['...']` syntax for escaping special characters within
+        property names in filters
+    * Documents `$..` (**getting all parent components**)
+* **ESM** and **UMD** export formats
+* In addition to queried values, **can return various meta-information**
+    including paths or pointers to the value, as well as the parent
+    object and parent property name (to allow for modification).
+* **Utilities for converting** between paths, arrays, and pointers
+* Option to **prevent evaluations** permitted in the original spec or supply
+    a **sandbox** for evaluated values.
+* Option for **callback to handle results** as they are obtained.
+
+## Install
 
 ```shell
 npm install jsonpath-plus
 ```
 
-# Usage
+## Setup
 
-## Syntax
-
-In Node.js:
+### Node.js
 
 ```js
 const {JSONPath} = require('jsonpath-plus');
 const result = JSONPath({path: '...', json: ...});
 ```
+
+### Browser
 
 For browser usage you can directly include `dist/index-umd.js`; no Browserify
 magic is necessary:
@@ -36,6 +66,8 @@ const result = JSONPath({path: '...', json: ...});
 </script>
 ```
 
+### ESM (Modern browsers)
+
 You may also use ES6 Module imports (for modern browsers):
 
 ```html
@@ -45,12 +77,16 @@ const result = JSONPath({path: '...', json: ...});
 </script>
 ```
 
+### ESM (Bundlers)
+
 Or if you are bundling your JavaScript (e.g., with Rollup), just use:
 
 ```js
 import JSONPath from 'jsonpath-plus';
 const result = JSONPath({path: '...', json: ...});
 ```
+
+## Usage
 
 The full signature available is:
 
@@ -69,7 +105,7 @@ the callback function being executed 0 to N times depending
 on the number of independent items to be found in the result.
 See the docs below for more on `JSONPath`'s available arguments.
 
-## Properties
+### Properties
 
 The properties that can be supplied on the options object or
 evaluate method (as the first argument) include:
@@ -129,7 +165,7 @@ evaluate method (as the first argument) include:
   belongs to the "other" type or not (or it may handle transformations and
   return false).
 
-## Instance methods
+### Instance methods
 
 - ***evaluate(path, json, callback, otherTypeCallback)*** OR
   ***evaluate({path: \<path\>, json: \<json object\>, callback:***
@@ -141,7 +177,7 @@ evaluate method (as the first argument) include:
   accept any of the other allowed instance properties (except
   for `autostart` which would have no relevance here).
 
-## Class properties and methods
+### Class properties and methods
 
 - ***JSONPath.cache*** - Exposes the cache object for those who wish
   to preserve and reuse it for optimization purposes.
@@ -160,7 +196,7 @@ evaluate method (as the first argument) include:
   Pointer spec). The JSONPath terminal constructions `~` and `^` and
   type operators like `@string()` are silently stripped.
 
-# Syntax through examples
+## Syntax through examples
 
 Given the following JSON, taken from <http://goessner.net/articles/JsonPath/>:
 
@@ -260,7 +296,7 @@ comparisons or to prevent ambiguity).
 /                   | $                      | The root of the JSON object (i.e., the whole object itself) | To get a literal `$` (by itself or anywhere in the path), you must use the backtick escape
 //\*/\*\|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
 //*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
-//*\[price>19]/..    | $..\[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not documented in the original spec
+//*\[price>19]/..    | $..\[?(@.price>19)]^    | Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book) | Parent (caret) not present in the original spec
 /store/*/name() (in XPath 2.0)  | $.store.*~ | The property names of the store sub-object ("book" and "bicycle"). Useful with wildcard properties. | Property name (tilde) is not present in the original spec
 /store/book\[not(. is /store/book\[1\])\] (in XPath 2.0) | $.store.book\[?(@path !== "$\[\'store\']\[\'book\']\[0]")] | All books besides that at the path pointing to the first | @path not present in the original spec
 //book\[parent::\*/bicycle/color = "red"]/category | $..book\[?(@parent.bicycle && @parent.bicycle.color === "red")].category | Grabs all categories of books where the parent object of the book has a bicycle child whose color is red (i.e., all the books) | @parent is not present in the original spec
@@ -269,13 +305,13 @@ comparisons or to prevent ambiguity).
 /store/\*/\*\[name(parent::*) != 'book'] | $.store.*\[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
 //book\[count(preceding-sibling::\*) != 0]/\*/text() | $..book.*\[?(@parentProperty !== 0)]  | Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0 | @parentProperty is not present in the original spec
 //book/../\*\[. instance of element(\*, xs:decimal)\] (in XPath 2.0) | $..book..\*@number() | Get the numeric values within the book array | @number(), the other basic types (@boolean(), @string()), other low-level derived types (@null(), @object(), @array()), the JSONSchema-added type, @integer(), the compound type @scalar() (which also accepts `undefined` and non-finite numbers for JavaScript objects as well as all of the basic non-object/non-function types), the type, @other(), to be used in conjunction with a user-defined callback (see `otherTypeCallback`) and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (@undefined(), @function(), @nonFinite()) are not present in the original spec
-| | `` ` `` (e.g., `` `$`` to match a property literally named `$`) | Escapes the entire sequence following (to be treated as a literal) | `\`` is not present in the original spec; to get a literal backtick, use an additional backtick to escape
+| | `` ` `` (e.g., `` `$`` to match a property literally named `$`) | Escapes the entire sequence following (to be treated as a literal) | `` ` `` is not present in the original spec; to get a literal backtick, use an additional backtick to escape
 
 Any additional variables supplied as properties on the optional "sandbox"
 object option are also available to (parenthetical-based)
 evaluations.
 
-# Potential sources of confusion for XPath users
+## Potential sources of confusion for XPath users
 
 1. In JSONPath, a filter expression, in addition to its `@` being a
 reference to its children, actually selects the immediate children
@@ -286,14 +322,14 @@ from 0), whereas in XPath, they are 1-based.
 1. In JSONPath, equality tests utilize (as per JavaScript) multiple equal signs
 whereas in XPath, they use a single equal sign.
 
-# Ideas
+## Ideas
 
 1. Support OR outside of filters (as in XPath `|`) and grouping.
 1. Create syntax to work like XPath filters in not selecting children?
 1. Allow option for parentNode equivalent (maintaining entire chain of
     parent-and-parentProperty objects up to root)
 
-# Development
+## Development
 
 Running the tests on Node:
 
@@ -311,6 +347,6 @@ npm run browser-test
 
 - Visit [http://localhost:8082/test/](http://localhost:8082/test/).
 
-# License
+## License
 
 [MIT License](http://www.opensource.org/licenses/mit-license.php).
