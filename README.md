@@ -51,7 +51,8 @@ npm install jsonpath-plus
 
 ```js
 const {JSONPath} = require('jsonpath-plus');
-const result = JSONPath({path: '...', json: ...});
+
+const result = JSONPath({path: '...', json});
 ```
 
 ### Browser
@@ -83,14 +84,15 @@ Or if you are bundling your JavaScript (e.g., with Rollup), just use:
 
 ```js
 import JSONPath from 'jsonpath-plus';
-const result = JSONPath({path: '...', json: ...});
+
+const result = JSONPath({path: '...', json});
 ```
 
 ## Usage
 
 The full signature available is:
 
-```js
+```
 const result = JSONPath([options,] path, json, callback, otherTypeCallback);
 ```
 

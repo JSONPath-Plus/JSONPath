@@ -1,12 +1,17 @@
 # jsonpath-plus changes
 
-## ?
+## 0.19.0 (May 16, 2019)
 
 - Docs (README): Indicate features, including performance (removing old note)
 - Docs (README): Add headings for setup and fix headings levels
 - Docs (README): Indicate parent selector was not present in original spec
     (not just not documented)
 - Docs (README): Fix escaping
+- Linting: Switch to Unix line breaks and other changes per ash-nazg, including linting Markdown JS
+- Linting: Use recommended `.json` extension
+- Linting: Switch to ash-nazg
+- Linting: Add lgtm.yml file for lgtm.com
+- npm: Update devDeps, and update per security audit
 
 ## 0.18.1 (May 14, 2019)
 

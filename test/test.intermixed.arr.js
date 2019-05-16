@@ -1,10 +1,8 @@
-/* eslint-disable quotes */
-(function () {
 'use strict';
+const {testCase} = require('nodeunit');
+const jsonpath = require('../').JSONPath;
 
-const jsonpath = require('../').JSONPath,
-    testCase = require('nodeunit').testCase;
-
+(function () {
 // tests based on examples at http://goessner.net/articles/jsonpath/
 
 const json = {"store": {

@@ -1,4 +1,4 @@
-/* eslint-env browser */
+/* eslint-disable callback-return */
 /* globals nodeunit */
 
 import {JSONPath} from '../dist/index-es.js';
@@ -10,11 +10,12 @@ nodeunit.testCase = function (tc) {
     return _testCase(tc);
 };
 // stubs to load nodejs tests
-function require (path) { // eslint-disable-line no-unused-vars
+function require (path) {
     if (path === 'nodeunit') { return nodeunit; }
     if (path.match(/^\.\.\/?$/)) { return {JSONPath}; }
+    return undefined;
 }
-const module = {exports: {}}; // eslint-disable-line no-unused-vars
+const module = {exports: {}};
 
 // synchronous load function for JS code, uses XMLHttpRequest abstraction from
 // http://www.quirksmode.org/js/xmlhttp.html
@@ -34,12 +35,12 @@ function get (url, callback) {
         }
         return false;
     }
-    function sendRequest (url, callback) {
+    function sendRequest (uri, cb) {
         const req = createXMLHTTPObject();
-        req.open('GET', url, false /* sync */);
+        req.open('GET', uri, false /* sync */);
         req.onreadystatechange = function () {
             if (req.readyState === 4) {
-                callback(req);
+                cb(req);
             }
         };
         if (req.readyState !== 4) {
@@ -49,7 +50,7 @@ function get (url, callback) {
     sendRequest(url, callback);
 }
 
-function loadJS (url) { // eslint-disable-line no-unused-vars
+function loadJS (url) {
     get(url, function (req) {
         new Function(req.responseText)(); // eslint-disable-line no-new-func
     });

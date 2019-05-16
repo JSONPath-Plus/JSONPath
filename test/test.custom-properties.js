@@ -1,10 +1,8 @@
-/* eslint-disable quotes */
-(function () {
 'use strict';
+const {testCase} = require('nodeunit');
+const jsonpath = require('../').JSONPath;
 
-const jsonpath = require('../').JSONPath,
-    testCase = require('nodeunit').testCase;
-
+(function () {
 const t1 = {
     b: {true: 'abc', false: 'def'},
     c: {true: 'qrs', false: 'tuv'}

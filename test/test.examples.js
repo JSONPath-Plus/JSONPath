@@ -1,10 +1,8 @@
-/* eslint-disable quotes */
-(function () {
 'use strict';
+const {testCase} = require('nodeunit');
+const jsonpath = require('../').JSONPath;
 
-const jsonpath = require('../').JSONPath,
-    testCase = require('nodeunit').testCase;
-
+(function () {
 // tests based on examples at http://goessner.net/articles/jsonpath/
 
 const json = {
@@ -264,10 +262,10 @@ module.exports = testCase({
         let result = jsonpath({json, path: '$.store.*[?(@parentProperty !== "book")]'});
         test.deepEqual(expected, result);
 
-        expected = json.store.book.slice(1).reduce(function (result, book) {
-            return result.concat(Object.keys(book).reduce(function (result, prop) {
-                result.push(book[prop]);
-                return result;
+        expected = json.store.book.slice(1).reduce(function (rslt, book) {
+            return rslt.concat(Object.keys(book).reduce(function (reslt, prop) {
+                reslt.push(book[prop]);
+                return reslt;
             }, []));
         }, []);
         result = jsonpath({json, path: '$..book.*[?(@parentProperty !== 0)]'});

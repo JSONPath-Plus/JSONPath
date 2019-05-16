@@ -1,10 +1,8 @@
-/* eslint-disable quotes */
-(function () {
 'use strict';
+const {testCase} = require('nodeunit');
+const jsonpath = require('../').JSONPath;
 
-const jsonpath = require('../').JSONPath,
-    testCase = require('nodeunit').testCase;
-
+(function () {
 // tests based on examples at http://goessner.net/articles/jsonpath/
 
 const json = {"store": {
@@ -66,7 +64,7 @@ module.exports = testCase({
         test.expect(1);
         const expected = [12.99, 8.99, 22.99];
         function endsIn99 (val, path, parent, parentPropName) {
-            return !!val.toString().match(/\.99/);
+            return Boolean(val.toString().match(/\.99/));
         }
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
         test.deepEqual(expected, result);

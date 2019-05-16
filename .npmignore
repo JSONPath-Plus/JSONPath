@@ -1,3 +1,4 @@
 node_modules
 test
 test-helpers
+rollup.config.js

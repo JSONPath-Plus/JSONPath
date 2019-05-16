@@ -1,4 +1,6 @@
 /* globals loadJS, nodeunit, suites */
+/* eslint-disable strict, import/unambiguous */
+'use strict';
 [
     'test.all.js',
     'test.arr.js',
@@ -17,5 +19,5 @@
     'test.toPath.js',
     'test.toPointer.js',
     'test.type-operators.js'
-].forEach(loadJS);
+].forEach((item) => loadJS(item));
 nodeunit.run(suites);
