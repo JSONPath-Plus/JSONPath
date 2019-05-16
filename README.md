@@ -10,9 +10,6 @@ did not spell out.
 ## Features
 
 * **Compliant** with the original jsonpath spec
-* Consistently **performant** per
-    [json-querying-performance-testing](https://github.com/andykais/json-querying-performance-testing>)
-    benchmarking, particularly for large data sets.
 * Convenient **additions or elaborations** not provided in the original spec:
     * `^` for grabbing the **parent** of a matching item
     * `~` for grabbing **property names** of matching items (as array)
@@ -38,6 +35,9 @@ did not spell out.
 * Option to **prevent evaluations** permitted in the original spec or supply
     a **sandbox** for evaluated values.
 * Option for **callback to handle results** as they are obtained.
+
+## Benchmarking
+`jsonpath-plus` is consistently performant with both large and small datasets per [json-querying-performance-testing](https://github.com/andykais/json-querying-performance-testing). You can verify these findings yourself by [running the project](https://github.com/andykais/json-querying-performance-testing#how-to-run) and adding more perf cases.
 
 ## Install
 
