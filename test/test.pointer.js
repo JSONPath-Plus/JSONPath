@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const json = {
@@ -36,36 +34,32 @@ const json = {
     }
 };
 
-module.exports = testCase({
-    'array' (test) {
+describe('JSONPath - Pointers', function () {
+    it('array', () => {
         const expected = [
             '/store/book/0/price',
             '/store/book/1/price',
             '/store/bicycle/price'
         ];
         const result = jsonpath({json, path: 'store..price', resultType: 'pointer', flatten: true});
-        test.deepEqual(expected, result);
-        test.done();
-    },
-    'single' (test) {
+        assert.deepEqual(expected, result);
+    });
+    it('single', () => {
         const expected = ['/store'];
         const result = jsonpath({json, path: 'store', resultType: 'pointer', flatten: true});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'escape / as ~1' (test) {
+    it('escape / as ~1', () => {
         const expected = ['/store/book/2/application~1vnd.wordperfect'];
         const result = jsonpath({json, path: "$['store']['book'][*]['application/vnd.wordperfect']", resultType: 'pointer', flatten: true});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'escape ~ as ~0' (test) {
+    it('escape ~ as ~0', () => {
         const expected = ['/store/book/3/application~0vnd.wordperfect'];
         const result = jsonpath({json, path: "$['store']['book'][*]['application~vnd.wordperfect']", resultType: 'pointer', flatten: true});
-        test.deepEqual(expected, result);
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

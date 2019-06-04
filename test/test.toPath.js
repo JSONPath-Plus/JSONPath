@@ -1,55 +1,39 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
-module.exports = testCase({
-    'toPathString' (test) {
-        test.expect(1);
+describe('JSONPath - toPath*', function () {
+    it('toPathString', () => {
         const expected = "$['store']['bicycle']['color']";
         const result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color']);
-        test.strictEqual(expected, result);
-
-        test.done();
-    },
-    'toPathString (stripped)' (test) {
-        test.expect(3);
+        assert.strictEqual(expected, result);
+    });
+    it('toPathString (stripped)', () => {
         const expected = "$['store']['bicycle']['color']";
         let result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '^']);
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
         result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '@string()']);
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
         result = jsonpath.toPathString(['$', 'store', 'bicycle', 'color', '~']);
-        test.deepEqual(expected, result);
-
-        test.done();
-    },
-    'toPathArray' (test) {
-        test.expect(1);
+        assert.deepEqual(expected, result);
+    });
+    it('toPathArray', () => {
         const expected = ['$', 'store', 'bicycle', 'color'];
         const result = jsonpath.toPathArray("$['store']['bicycle']['color']");
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    'toPathArray (unnormalized)' (test) {
-        test.expect(1);
+    it('toPathArray (unnormalized)', () => {
         const expected = ['$', 'store', 'bicycle', 'color'];
         const result = jsonpath.toPathArray("$.store['bicycle'].color");
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    'toPathArray (avoid cache reference issue #78)' (test) {
-        test.expect(3);
-
+    it('toPathArray (avoid cache reference issue #78)', () => {
         const originalPath = "$['foo']['bar']";
         const json = {foo: {bar: 'baz'}};
         const pathArr = jsonpath.toPathArray(originalPath);
 
-        test.equal(pathArr.length, 3);
+        assert.strictEqual(pathArr.length, 3);
 
         // Shouldn't manipulate pathArr values
         jsonpath({
@@ -59,11 +43,10 @@ module.exports = testCase({
             resultType: 'value'
         });
 
-        test.equal(pathArr.length, 3);
+        assert.strictEqual(pathArr.length, 3);
         const path = jsonpath.toPathString(pathArr);
 
-        test.equal(path, originalPath);
-        test.done();
-    }
+        assert.strictEqual(path, originalPath);
+    });
 });
 }());

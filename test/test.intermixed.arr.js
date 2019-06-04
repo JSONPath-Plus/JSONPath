@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 // tests based on examples at http://goessner.net/articles/jsonpath/
@@ -41,16 +39,13 @@ const json = {"store": {
 }
 };
 
-module.exports = testCase({
-    'all sub properties, entire tree' (test) {
-        test.expect(1);
+describe('JSONPath - Intermixed Array', function () {
+    it('all sub properties, entire tree', () => {
         const books = json.store.book;
         let expected = [books[1].price, books[2].price, books[3].price, json.store.bicycle.price];
         expected = books[0].price.concat(expected);
         const result = jsonpath({json, path: '$.store..price', flatten: true});
-        test.deepEqual(expected, result);
-
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

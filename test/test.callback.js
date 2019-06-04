@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const json = {
@@ -38,12 +36,17 @@ const json = {
     }
 };
 
-module.exports = testCase({
-    'Callback' (test) {
-        test.expect(1);
-
+describe('JSONPath - Callback', function () {
+    it('Callback', () => {
         const expected = ['value', json.store.bicycle, {path: "$['store']['bicycle']", value: json.store.bicycle, parent: json.store, parentProperty: 'bicycle'}];
         let result;
+        /**
+         *
+         * @param {PlainObject} data
+         * @param {string} type
+         * @param {PlainObject} fullData
+         * @returns {void}
+         */
         function callback (data, type, fullData) {
             if (!result) {
                 result = [];
@@ -51,9 +54,7 @@ module.exports = testCase({
             result.push(type, data, fullData);
         }
         jsonpath({json, path: '$.store.bicycle', resultType: 'value', wrap: false, callback});
-        test.deepEqual(expected, result);
-
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

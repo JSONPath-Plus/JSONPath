@@ -1,28 +1,20 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
-module.exports = testCase({
-    'toPointer' (test) {
-        test.expect(1);
+describe('JSONPath - toPointer', function () {
+    it('toPointer', () => {
         const expected = '/store/bicycle/color';
         const result = jsonpath.toPointer(['$', 'store', 'bicycle', 'color']);
-        test.deepEqual(expected, result);
-
-        test.done();
-    },
-    'toPointer (stripped)' (test) {
-        test.expect(3);
+        assert.deepEqual(expected, result);
+    });
+    it('toPointer (stripped)', () => {
         const expected = '/store/bicycle/color';
         let result = jsonpath.toPointer(['$', 'store', 'bicycle', 'color', '^']);
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
         result = jsonpath.toPointer(['$', 'store', 'bicycle', 'color', '@string()']);
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
         result = jsonpath.toPointer(['$', 'store', 'bicycle', 'color', '~']);
-        test.deepEqual(expected, result);
-
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

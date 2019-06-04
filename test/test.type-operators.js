@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 // tests based on examples at http://goessner.net/articles/jsonpath/
@@ -41,35 +39,34 @@ const json = {"store": {
 }
 };
 
-module.exports = testCase({
-    '@number()' (test) {
-        test.expect(1);
+describe('JSONPath - Type Operators', function () {
+    it('@number()', () => {
         const expected = [8.95, 8.94, 8.93, 12.99, 8.99, 22.99];
         const result = jsonpath({json, path: '$.store.book..*@number()', flatten: true});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    '@scalar()' (test) {
-        test.expect(1);
+    it('@scalar()', () => {
         const expected = ["red", 19.95];
         const result = jsonpath({json, path: '$.store.bicycle..*@scalar()', flatten: true});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    '@other()' (test) {
-        test.expect(1);
+    it('@other()', () => {
         const expected = [12.99, 8.99, 22.99];
+        /**
+         *
+         * @param {Any} val
+         * @param {string} path
+         * @param {PlainObject|GenericArray} parent
+         * @param {string} parentPropName
+         * @returns {boolean}
+         */
         function endsIn99 (val, path, parent, parentPropName) {
             return Boolean(val.toString().match(/\.99/));
         }
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
-        test.deepEqual(expected, result);
-
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

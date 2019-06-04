@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const json = {
@@ -12,44 +10,33 @@ const json = {
     ]
 };
 
-module.exports = testCase({
-    'simple parent selection' (test) {
-        test.expect(1);
+describe('JSONPath - Parent selector', function () {
+    it('simple parent selection', () => {
         const result = jsonpath({json, path: '$.children[0]^', flatten: true});
-        test.deepEqual(json.children, result);
-        test.done();
-    },
+        assert.deepEqual(json.children, result);
+    });
 
-    'parent selection with multiple matches' (test) {
-        test.expect(1);
+    it('parent selection with multiple matches', () => {
         const expected = [json.children, json.children];
         const result = jsonpath({json, path: '$.children[1:3]^'});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'select sibling via parent' (test) {
-        test.expect(1);
+    it('select sibling via parent', () => {
         const expected = [{"name": "child3_2"}];
         const result = jsonpath({json, path: '$..[?(@.name && @.name.match(/3_1$/))]^[?(@.name.match(/_2$/))]'});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'parent parent parent' (test) {
-        test.expect(1);
+    it('parent parent parent', () => {
         const expected = json.children[0].children;
         const result = jsonpath({json, path: '$..[?(@.name && @.name.match(/1_1$/))].name^^', flatten: true});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'no such parent' (test) {
-        test.expect(1);
+    it('no such parent', () => {
         const result = jsonpath({json, path: 'name^^'});
-        test.deepEqual([], result);
-        test.done();
-    }
-
+        assert.deepEqual([], result);
+    });
 });
 }());

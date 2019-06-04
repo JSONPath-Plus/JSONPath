@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const json = {
@@ -20,19 +18,17 @@ const json = {
     }
 };
 
-module.exports = testCase({
-    'get single' (test) {
+describe('JSONPath - Array', function () {
+    it('get single', () => {
         const expected = json.store.book;
         const result = jsonpath({json, path: 'store.book', flatten: true, wrap: false});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'get arr' (test) {
+    it('get arr', () => {
         const expected = json.store.books;
         const result = jsonpath({json, path: 'store.books', flatten: true, wrap: false});
-        test.deepEqual(expected, result);
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

@@ -139,17 +139,28 @@
     return _assertThisInitialized(self);
   }
 
-  /* eslint-disable no-eval */
+  /* eslint-disable no-eval, jsdoc/check-types */
+  // Todo: Reenable jsdoc/check-types once PR merged: https://github.com/gajus/eslint-plugin-jsdoc/pull/270
   var globalEval = eval; // eslint-disable-next-line import/no-commonjs
 
   var supportsNodeVM = typeof module !== 'undefined' && Boolean(module.exports) && !(typeof navigator !== 'undefined' && navigator.product === 'ReactNative');
   var allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
   var hasOwnProp = Object.prototype.hasOwnProperty;
   /**
+  * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
+  */
+
+  /**
+  * @callback ConditionCallback
+  * @param item
+  * @returns {boolean}
+  */
+
+  /**
    * Copy items out of one array into another.
    * @param {Array} source Array with items to copy
    * @param {Array} target Array to which to copy
-   * @param {Function} conditionCb Callback passed the current item; will move
+   * @param {ConditionCallback} conditionCb Callback passed the current item; will move
    *     item if evaluates to `true`
    * @returns {undefined}
    */
@@ -169,8 +180,8 @@
   var vm = supportsNodeVM ? require('vm') : {
     /**
      * @param {string} expr Expression to evaluate
-     * @param {Object} context Object whose items will be added to evaluation
-     * @returns {*} Result of evaluated code
+     * @param {PlainObject} context Object whose items will be added to evaluation
+     * @returns {Any} Result of evaluated code
      */
     runInNewContext: function runInNewContext(expr, context) {
       var keys = Object.keys(context);
@@ -198,7 +209,7 @@
   /**
    * Copies array and then pushes item into it.
    * @param {Array} arr Array to copy and into which to push
-   * @param {*} item Array item to add (to end)
+   * @param {Any} item Array item to add (to end)
    * @returns {Array} Copy of the original array
    */
 
@@ -209,7 +220,7 @@
   }
   /**
    * Copies array and then unshifts item into it.
-   * @param {*} item Array item to add (to beginning)
+   * @param {Any} item Array item to add (to beginning)
    * @param {Array} arr Array to copy and into which to unshift
    * @returns {Array} Copy of the original array
    */
@@ -232,7 +243,7 @@
     _inherits(NewError, _Error);
 
     /**
-     * @param {*} value The evaluated scalar value
+     * @param {Any} value The evaluated scalar value
      */
     function NewError(value) {
       var _this;
@@ -249,12 +260,35 @@
     return NewError;
   }(_wrapNativeSuper(Error));
   /**
-   * @param {Object} [opts] If present, must be an object
+  * @typedef {PlainObject} ReturnObject
+  * @property {string} path
+  * @property {JSONObject} value
+  * @property {PlainObject|GenericArray} parent
+  * @property {string} parentProperty
+  */
+
+  /**
+  * @callback JSONPathCallback
+  * @param {string|PlainObject} preferredOutput
+  * @param {"value"|"property"} type
+  * @param {ReturnObject} fullRetObj
+  */
+
+  /**
+  * @callback OtherTypeCallback
+  * @param {JSONObject} val
+  * @param {string} path
+  * @param {PlainObject|GenericArray} parent
+  * @param {string} parentPropName
+  */
+
+  /**
+   * @param {PlainObject} [opts] If present, must be an object
    * @param {string} expr JSON path to evaluate
    * @param {JSON} obj JSON object to evaluate against
-   * @param {Function} callback Passed 3 arguments: 1) desired payload per `resultType`,
+   * @param {JSONPathCallback} callback Passed 3 arguments: 1) desired payload per `resultType`,
    *     2) `"value"|"property"`, 3) Full returned object with all payloads
-   * @param {Function} otherTypeCallback If `@other()` is at the end of one's query, this
+   * @param {OtherTypeCallback} otherTypeCallback If `@other()` is at the end of one's query, this
    *  will be invoked with the value of the item, its path, its parent, and its parent's
    *  property name, and it should return a boolean indicating whether the supplied value
    *  belongs to the "other" type or not (or it may handle transformations and return `false`).
@@ -429,6 +463,18 @@
       callback(preferredOutput, type, fullRetObj);
     }
   };
+  /**
+   *
+   * @param {string} expr
+   * @param {JSONObject} val
+   * @param {string} path
+   * @param {PlainObject|GenericArray} parent
+   * @param {string} parentPropName
+   * @param {JSONPathCallback} callback
+   * @param {boolean} literalPriority
+   * @returns {ReturnObject|ReturnObject[]}
+   */
+
 
   JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, literalPriority) {
     // No expr to follow? return path and value as the result of this trace branch
@@ -453,6 +499,11 @@
     // do the parent sel computation.
 
     var ret = [];
+    /**
+     *
+     * @param {ReturnObject|ReturnObject[]} elems
+     * @returns {void}
+     */
 
     function addRet(elems) {
       if (Array.isArray(elems)) {
@@ -661,7 +712,6 @@
 
 
     if (this._hasParentSelector) {
-      // eslint-disable-next-line unicorn/no-for-loop
       for (var t = 0; t < ret.length; t++) {
         var rett = ret[t];
 

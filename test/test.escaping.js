@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const json = {
@@ -14,37 +12,35 @@ const jsonMissingSpecial = {
     'foo': 'bar'
 };
 
-module.exports = testCase({
-    'escape *' (test) {
+describe('JSONPath - Escaping', function () {
+    it('escape *', () => {
         let expected = ['star'];
         let result = jsonpath({json, path: "$['`*']"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
 
         expected = [];
         result = jsonpath({json: jsonMissingSpecial, path: "$['`*']"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
 
         expected = ['star', 'rest'];
         result = jsonpath({json, path: "$[`*,rest]"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
 
         expected = ['star'];
         result = jsonpath({json, path: "$.`*"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
 
         expected = [];
         result = jsonpath({json: jsonMissingSpecial, path: "$.`*"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
 
         expected = ['star', 'rest', 'bar'];
         result = jsonpath({json, path: "$['*']"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
 
         expected = ['rest', 'bar'];
         result = jsonpath({json: jsonMissingSpecial, path: "$['*']"});
-        test.deepEqual(expected, result);
-
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

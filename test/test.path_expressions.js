@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 // tests based on examples at http://goessner.net/articles/JsonPath/
@@ -41,65 +39,47 @@ const json = {"store": {
     }
 }};
 
-module.exports = testCase({
-    'dot notation' (test) {
-        test.expect(1);
+describe('JSONPath - Path expressions', function () {
+    it('dot notation', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         const result = jsonpath({json, path: '$.store.book[*].author'});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    'bracket notation' (test) {
-        test.expect(1);
+    it('bracket notation', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         const result = jsonpath({json, path: "$['store']['book'][*]['author']"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    'bracket notation without quotes' (test) {
-        test.expect(1);
+    it('bracket notation without quotes', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         const result = jsonpath({json, path: "$[store][book][*][author]"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    'mixed notation' (test) {
-        test.expect(1);
+    it('mixed notation', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         const result = jsonpath({json, path: "$.store.book[*]['author']"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    'bracket notation containing dots' (test) {
-        test.expect(1);
+    it('bracket notation containing dots', () => {
         const books = json.store.book;
         const expected = [books[0]["application/vnd.wordperfect"]];
         const result = jsonpath({json, path: "$['store']['book'][*]['application/vnd.wordperfect']"});
-        test.deepEqual(expected, result);
+        assert.deepEqual(expected, result);
+    });
 
-        test.done();
-    },
-
-    'mixed notation containing dots' (test) {
-        test.expect(1);
+    it('mixed notation containing dots', () => {
         const books = json.store.book;
         const expected = [books[0]["application/vnd.wordperfect"]];
         const result = jsonpath({json, path: "$.store.book[*]['application/vnd.wordperfect']"});
-        test.deepEqual(expected, result);
-
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

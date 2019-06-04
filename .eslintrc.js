@@ -1,8 +1,20 @@
-{
+module.exports = {
   "extends": ["ash-nazg/sauron-node"],
+  "settings": {
+      "polyfills": [
+          "Array.isArray",
+          "console",
+          "Date.now",
+          "document.head",
+          "JSON",
+          "Object.keys",
+          "XMLHttpRequest"
+      ]
+  },
   "overrides": [
       {
-          "files": "src/jsonpath.js",
+          "files": ["src/jsonpath.js", "test-helpers/node-env.js"],
+          // Apparent bug with `overrides` necessitating this
           "globals": {
               "require": "readonly",
               "module": "readonly"
@@ -29,27 +41,20 @@
       {
           "files": ["test/**"],
           "globals": {
+              "assert": "readonly",
+              "jsonpath": "readonly",
               "require": "readonly",
               "module": "readonly"
           },
           "parserOptions": {
               "sourceType": "script"
           },
+          "env": {"mocha": true},
           "rules": {
               "strict": ["error", "global"],
               "import/no-commonjs": 0,
               "import/unambiguous": 0,
               "quotes": 0
-          }
-      },
-      {
-          "files": ["test-helpers/testLoading.js"],
-          "env": {"node": false, "browser": true},
-          "parserOptions": {
-              "sourceType": "module"
-          },
-          "rules": {
-              "no-shadow": ["error", {"allow": ["require", "module"]}]
           }
       }
   ],
@@ -61,4 +66,4 @@
     "max-len": 0,
     "require-jsdoc": 0
   }
-}
+};

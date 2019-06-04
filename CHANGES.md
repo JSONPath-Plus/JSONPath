@@ -1,4 +1,15 @@
-# jsonpath-plus changes
+# CHANGES for jsonpath-plus
+
+## 0.20.0 (June 4, 2019)
+
+- Build: Add `browserslist` for Babel builds
+- Linting: Conform to ESLint updates (jsdoc)
+- Testing: Switch from end-of-lifed nodeunit to Mocha
+- Testing: Add performance test to browser, but bump duration
+- npm: Update devDeps; add core-js-bundle to peerDependencies
+- npm: Ignore some unneeded files
+- Bump Node version in Travis to avoid erring with object rest
+    in eslint-plugin-node routine
 
 ## 0.19.0 (May 16, 2019)
 

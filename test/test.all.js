@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const json = {
@@ -12,44 +10,34 @@ const json = {
     ]
 };
 
-module.exports = testCase({
-    'simple parent selection, return both path and value' (test) {
-        test.expect(1);
+describe('JSONPath - All', function () {
+    it('simple parent selection, return both path and value', () => {
         const result = jsonpath({json, path: '$.children[0]^', resultType: 'all'});
-        test.deepEqual([{path: "$['children']", value: json.children, parent: json, parentProperty: 'children', pointer: '/children'}], result);
-        test.done();
-    },
+        assert.deepEqual([{path: "$['children']", value: json.children, parent: json, parentProperty: 'children', pointer: '/children'}], result);
+    });
 
-    'parent selection with multiple matches, return both path and value' (test) {
-        test.expect(1);
+    it('parent selection with multiple matches, return both path and value', () => {
         const expectedOne = {path: "$['children']", value: json.children, parent: json, parentProperty: 'children', pointer: '/children'};
         const expected = [expectedOne, expectedOne];
         const result = jsonpath({json, path: '$.children[1:3]^', resultType: 'all'});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'select sibling via parent, return both path and value' (test) {
-        test.expect(1);
+    it('select sibling via parent, return both path and value', () => {
         const expected = [{path: "$['children'][2]['children'][1]", value: {name: 'child3_2'}, parent: json.children[2].children, parentProperty: 1, pointer: '/children/2/children/1'}];
         const result = jsonpath({json, path: '$..[?(@.name && @.name.match(/3_1$/))]^[?(@.name.match(/_2$/))]', resultType: 'all'});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'parent parent parent, return both path and value' (test) {
-        test.expect(1);
+    it('parent parent parent, return both path and value', () => {
         const expected = [{path: "$['children'][0]['children']", value: json.children[0].children, parent: json.children[0], parentProperty: 'children', pointer: '/children/0/children'}];
         const result = jsonpath({json, path: '$..[?(@.name && @.name.match(/1_1$/))].name^^', resultType: 'all'});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'no such parent' (test) {
-        test.expect(1);
+    it('no such parent', () => {
         const result = jsonpath({json, path: 'name^^', resultType: 'all'});
-        test.deepEqual([], result);
-        test.done();
-    }
+        assert.deepEqual([], result);
+    });
 });
 }());

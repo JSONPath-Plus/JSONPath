@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const t1 = {
@@ -8,12 +6,10 @@ const t1 = {
     c: {true: 'qrs', false: 'tuv'}
 };
 
-module.exports = testCase({
-    '@path for index' (test) {
-        test.expect(1);
+describe('JSONPath - Custom properties', function () {
+    it('@path for index', () => {
         const result = jsonpath({json: t1, path: '$.*[(@path === "$[\'b\']")]', wrap: false});
-        test.deepEqual(['abc', 'tuv'], result);
-        test.done();
-    }
+        assert.deepEqual(['abc', 'tuv'], result);
+    });
 });
 }());

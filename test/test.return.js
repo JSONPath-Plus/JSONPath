@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const json = {"store": {
@@ -38,14 +36,11 @@ const json = {"store": {
     }
 }};
 
-module.exports = testCase({
-    'single result: path payload' (test) {
-        test.expect(1);
+describe('JSONPath - Return', function () {
+    it('single result: path payload', () => {
         const expected = "$['store']['bicycle']['color']";
         const result = jsonpath({json, path: "$.store.bicycle.color", resultType: 'path', wrap: false});
-        test.deepEqual(expected, result);
-
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

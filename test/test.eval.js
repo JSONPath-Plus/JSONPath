@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const json = {
@@ -26,36 +24,33 @@ const json = {
     }
 };
 
-module.exports = testCase({
-    'multi statement eval' (test) {
+describe('JSONPath - Eval', function () {
+    it('multi statement eval', () => {
         const expected = json.store.books[0];
         const selector = '$..[?(' +
                      'var sum = @.price && @.price[0]+@.price[1];' +
                      'sum > 20;)]';
         const result = jsonpath({json, path: selector, wrap: false});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'accessing current path' (test) {
+    it('accessing current path', () => {
         const expected = json.store.books[1];
         const result = jsonpath({json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false});
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'sandbox' (test) {
+    it('sandbox', () => {
         const expected = json.store.book;
         const result = jsonpath({
             json,
             sandbox: {category: 'reference'},
             path: "$..[?(@.category === category)]", wrap: false
         });
-        test.deepEqual(expected, result);
-        test.done();
-    },
+        assert.deepEqual(expected, result);
+    });
 
-    'sandbox (with parsing function)' (test) {
+    it('sandbox (with parsing function)', () => {
         const expected = json.store.book;
         const result = jsonpath({
             json,
@@ -66,8 +61,7 @@ module.exports = testCase({
             },
             path: "$..[?(filter(@))]", wrap: false
         });
-        test.deepEqual(expected, result);
-        test.done();
-    }
+        assert.deepEqual(expected, result);
+    });
 });
 }());

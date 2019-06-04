@@ -1,5 +1,6 @@
-/* eslint-disable no-eval */
+/* eslint-disable no-eval, jsdoc/check-types */
 
+// Todo: Reenable jsdoc/check-types once PR merged: https://github.com/gajus/eslint-plugin-jsdoc/pull/270
 const globalEval = eval;
 // eslint-disable-next-line import/no-commonjs
 const supportsNodeVM = typeof module !== 'undefined' && Boolean(module.exports) &&
@@ -8,10 +9,20 @@ const allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentPropert
 const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
 /**
+* @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
+*/
+
+/**
+* @callback ConditionCallback
+* @param item
+* @returns {boolean}
+*/
+
+/**
  * Copy items out of one array into another.
  * @param {Array} source Array with items to copy
  * @param {Array} target Array to which to copy
- * @param {Function} conditionCb Callback passed the current item; will move
+ * @param {ConditionCallback} conditionCb Callback passed the current item; will move
  *     item if evaluates to `true`
  * @returns {undefined}
  */
@@ -30,8 +41,8 @@ const vm = supportsNodeVM
     : {
         /**
          * @param {string} expr Expression to evaluate
-         * @param {Object} context Object whose items will be added to evaluation
-         * @returns {*} Result of evaluated code
+         * @param {PlainObject} context Object whose items will be added to evaluation
+         * @returns {Any} Result of evaluated code
          */
         runInNewContext (expr, context) {
             const keys = Object.keys(context);
@@ -60,7 +71,7 @@ const vm = supportsNodeVM
 /**
  * Copies array and then pushes item into it.
  * @param {Array} arr Array to copy and into which to push
- * @param {*} item Array item to add (to end)
+ * @param {Any} item Array item to add (to end)
  * @returns {Array} Copy of the original array
  */
 function push (arr, item) {
@@ -70,7 +81,7 @@ function push (arr, item) {
 }
 /**
  * Copies array and then unshifts item into it.
- * @param {*} item Array item to add (to beginning)
+ * @param {Any} item Array item to add (to beginning)
  * @param {Array} arr Array to copy and into which to unshift
  * @returns {Array} Copy of the original array
  */
@@ -86,7 +97,7 @@ function unshift (item, arr) {
  */
 class NewError extends Error {
     /**
-     * @param {*} value The evaluated scalar value
+     * @param {Any} value The evaluated scalar value
      */
     constructor (value) {
         super('JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)');
@@ -97,12 +108,35 @@ class NewError extends Error {
 }
 
 /**
- * @param {Object} [opts] If present, must be an object
+* @typedef {PlainObject} ReturnObject
+* @property {string} path
+* @property {JSONObject} value
+* @property {PlainObject|GenericArray} parent
+* @property {string} parentProperty
+*/
+
+/**
+* @callback JSONPathCallback
+* @param {string|PlainObject} preferredOutput
+* @param {"value"|"property"} type
+* @param {ReturnObject} fullRetObj
+*/
+
+/**
+* @callback OtherTypeCallback
+* @param {JSONObject} val
+* @param {string} path
+* @param {PlainObject|GenericArray} parent
+* @param {string} parentPropName
+*/
+
+/**
+ * @param {PlainObject} [opts] If present, must be an object
  * @param {string} expr JSON path to evaluate
  * @param {JSON} obj JSON object to evaluate against
- * @param {Function} callback Passed 3 arguments: 1) desired payload per `resultType`,
+ * @param {JSONPathCallback} callback Passed 3 arguments: 1) desired payload per `resultType`,
  *     2) `"value"|"property"`, 3) Full returned object with all payloads
- * @param {Function} otherTypeCallback If `@other()` is at the end of one's query, this
+ * @param {OtherTypeCallback} otherTypeCallback If `@other()` is at the end of one's query, this
  *  will be invoked with the value of the item, its path, its parent, and its parent's
  *  property name, and it should return a boolean indicating whether the supplied value
  *  belongs to the "other" type or not (or it may handle transformations and return `false`).
@@ -252,6 +286,17 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
     }
 };
 
+/**
+ *
+ * @param {string} expr
+ * @param {JSONObject} val
+ * @param {string} path
+ * @param {PlainObject|GenericArray} parent
+ * @param {string} parentPropName
+ * @param {JSONPathCallback} callback
+ * @param {boolean} literalPriority
+ * @returns {ReturnObject|ReturnObject[]}
+ */
 JSONPath.prototype._trace = function (
     expr, val, path, parent, parentPropName, callback, literalPriority
 ) {
@@ -269,6 +314,11 @@ JSONPath.prototype._trace = function (
     // We need to gather the return value of recursive trace calls in order to
     // do the parent sel computation.
     const ret = [];
+    /**
+     *
+     * @param {ReturnObject|ReturnObject[]} elems
+     * @returns {void}
+     */
     function addRet (elems) {
         if (Array.isArray(elems)) {
             // This was causing excessive stack size in Node (with or without Babel) against our performance test: `ret.push(...elems);`
@@ -408,7 +458,6 @@ JSONPath.prototype._trace = function (
     // selections we discard the value object and continue the trace with the
     // current val object
     if (this._hasParentSelector) {
-        // eslint-disable-next-line unicorn/no-for-loop
         for (let t = 0; t < ret.length; t++) {
             const rett = ret[t];
             if (rett.isParentSelector) {

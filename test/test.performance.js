@@ -1,6 +1,4 @@
 'use strict';
-const {testCase} = require('nodeunit');
-const jsonpath = require('../').JSONPath;
 
 (function () {
 const arraySize = 12333,
@@ -32,13 +30,12 @@ for (i = 0; i < resultCount; i++) {
     }
 }
 
-module.exports = testCase({
-    'performance' (test) {
-        test.expect(1);
+describe('JSONPath - Performance', function () {
+    it('performance', () => {
+        const expectedDuration = typeof window !== 'undefined' ? 4500 : 2500;
         const start = Date.now();
         jsonpath({json, path: '$.results[*].groups[*].items[42]'});
-        test.strictEqual((Date.now() - start) < 2500, true);
-        test.done();
-    }
+        assert.strictEqual((Date.now() - start) < expectedDuration, true);
+    });
 });
 }());
