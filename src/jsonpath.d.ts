@@ -1,5 +1,3 @@
-import { JSONPathOptions } from "jsonpath-plus"
-
 declare module 'jsonpath-plus' {
   type JSONPathCallback = (payload: any, payloadType: any, fullPayload: any) => any
 
