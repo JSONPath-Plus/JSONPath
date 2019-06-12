@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 0.20.1 (June 12, 2019)
+
+- npm: Avoid adding `core-js-bundle` as peerDep. (fixes #95)
+
 ## 0.20.0 (June 4, 2019)
 
 - Build: Add `browserslist` for Babel builds

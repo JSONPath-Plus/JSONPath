@@ -61,7 +61,11 @@ For browser usage you can directly include `dist/index-umd.js`; no Browserify
 magic is necessary:
 
 ```html
-<script src="dist/index-umd.js"></script>
+<!-- Polyfill recommended by Babel for items not covered for older
+      browsers in dist -->
+<script src="node_modules/core-js-bundle/minified.js"></script>
+
+<script src="node_modules/jsonpath-plus/dist/index-umd.js"></script>
 <script>
 const result = JSONPath({path: '...', json: ...});
 </script>

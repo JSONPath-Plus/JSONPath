@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "main": "dist/index-umd.js",
   "module": "dist/index-es.js",
   "description": "A JS implementation of JSONPath with some additional operators",
@@ -43,9 +43,6 @@
   },
   "react-native": {
     "vm": false
-  },
-  "peerDependencies": {
-    "core-js-bundle": "^3.1.3"
   },
   "dependencies": {},
   "devDependencies": {
