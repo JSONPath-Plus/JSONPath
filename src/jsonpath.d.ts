@@ -1,17 +1,20 @@
+/**
+ * Declaration for https://github.com/s3u/JSONPath
+ */
 declare module 'jsonpath-plus' {
   type JSONPathCallback = (payload: any, payloadType: any, fullPayload: any) => any
 
-  type JSONPathOtherTypeCallback = (...args: Array<any>) => void
+  type JSONPathOtherTypeCallback = (...args: any[]) => void
 
   interface JSONPathOptions {
     /**
      * The JSONPath expression as a (normalized or unnormalized) string or array.
      */
-    path: string | Array<any>
+    path: string | any[]
     /**
      * The JSON object to evaluate (whether of null, boolean, number, string, object, or array type).
      */
-    json: null | boolean | number | string | object | Array<any>
+    json: null | boolean | number | string | object | any[]
     /**
      * If this is supplied as false, one may call the evaluate method manually.
      *
@@ -99,10 +102,15 @@ declare module 'jsonpath-plus' {
     otherTypeCallback?: undefined | JSONPathOtherTypeCallback
   }
 
-  interface JSONPathCallable {
-    (options: JSONPathOptions): JSONPathClass
+  interface JSONPathOptionsAutoStart extends JSONPathOptions {
+    autostart: false
+  }
 
-    (path: JSONPathOptions['path'], json: JSONPathOptions['json'], callback: JSONPathOptions['callback'], otherTypeCallback: JSONPathOptions['otherTypeCallback']): JSONPathClass
+  interface JSONPathCallable {
+    <T = any>(options: JSONPathOptionsAutoStart): JSONPathClass
+    <T = any>(options: JSONPathOptions): T
+
+    <T = any>(path: JSONPathOptions['path'], json: JSONPathOptions['json'], callback: JSONPathOptions['callback'], otherTypeCallback: JSONPathOptions['otherTypeCallback']): T
   }
 
   class JSONPathClass {
@@ -115,14 +123,14 @@ declare module 'jsonpath-plus' {
      * Accepts a normalized or unnormalized path as string and
      * converts to an array: for example, ['$', 'aProperty', 'anotherProperty'].
      */
-    static toPathArray(path: string): Array<string>
+    static toPathArray(path: string): string[]
 
     /**
      * Accepts a path array and converts to a normalized path string.
      * The string will be in a form like: $['aProperty']['anotherProperty][0].
      * The JSONPath terminal constructions ~ and ^ and type operators like @string() are silently stripped.
      */
-    static toPathString(path: Array<string>): string
+    static toPathString(path: string[]): string
 
     /**
      * Accepts a path array and converts to a JSON Pointer.
@@ -132,10 +140,7 @@ declare module 'jsonpath-plus' {
      *
      * The JSONPath terminal constructions ~ and ^ and type operators like @string() are silently stripped.
      */
-    static toPointer(path: Array<string>): any
-
-    constructor(options: JSONPathOptions)
-    constructor(path: JSONPathOptions['path'], json: JSONPathOptions['json'], callback: JSONPathOptions['callback'], otherTypeCallback: JSONPathOptions['otherTypeCallback'])
+    static toPointer(path: string[]): any
 
     evaluate(path: JSONPathOptions['path'], json: JSONPathOptions['json'], callback: JSONPathOptions['callback'], otherTypeCallback: JSONPathOptions['otherTypeCallback'])
     evaluate(options: { path: JSONPathOptions['path'], json: JSONPathOptions['json'], callback: JSONPathOptions['callback'], otherTypeCallback: JSONPathOptions['otherTypeCallback'] })
