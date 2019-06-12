@@ -44,6 +44,7 @@
   "react-native": {
     "vm": false
   },
+  "types": "./src/jsonpath.d.ts",
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.4.5",
