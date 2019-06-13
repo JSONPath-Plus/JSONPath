@@ -88,6 +88,7 @@
   ],
   "scripts": {
     "remark": "remark -q -f .",
+    "typescript": "tsc src/jsonpath.d.ts",
     "mocha": "mocha --require test-helpers/node-env.js test",
     "test": "npm run eslint && npm run rollup && npm run mocha",
     "start": "static -p 8084",
