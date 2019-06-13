@@ -86,8 +86,7 @@
   ],
   "scripts": {
     "remark": "remark -q -f .",
-    "typescript": "tsc src/jsonpath.d.ts",
-    "build-docs": "typedoc --out docs/ts src",
+    "build-docs": "typedoc --out docs/ts src --includeDeclarations",
     "open-docs": "open-cli http://localhost:8084/docs/ts/ && npm start",
     "mocha": "mocha --require test-helpers/node-env.js test",
     "test": "npm run eslint && npm run rollup && npm run mocha",
