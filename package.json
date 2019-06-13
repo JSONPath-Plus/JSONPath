@@ -74,6 +74,7 @@
     "rollup": "1.13.1",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-terser": "^5.0.0",
+    "typedoc": "^0.14.2",
     "typescript": "^3.5.1"
   },
   "keywords": [
@@ -86,11 +87,13 @@
   "scripts": {
     "remark": "remark -q -f .",
     "typescript": "tsc src/jsonpath.d.ts",
-    "rollup": "rollup -c",
-    "eslint": "eslint --ext js,md .",
+    "build-docs": "typedoc --out docs/ts src",
+    "open-docs": "open-cli http://localhost:8084/docs/ts/ && npm start",
     "mocha": "mocha --require test-helpers/node-env.js test",
     "test": "npm run eslint && npm run rollup && npm run mocha",
-    "browser-test": "npm run eslint && npm run rollup && open-cli http://localhost:8084/test/ && static -p 8084",
-    "start": "npm run browser-test"
+    "start": "static -p 8084",
+    "rollup": "rollup -c",
+    "eslint": "eslint --ext js,md .",
+    "browser-test": "npm run eslint && npm run rollup && open-cli http://localhost:8084/test/ && npm start"
   }
 }

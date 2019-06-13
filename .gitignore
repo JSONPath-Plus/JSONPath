@@ -7,3 +7,4 @@ pids
 reports
 target
 *.log
+docs/ts
