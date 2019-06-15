@@ -4,6 +4,7 @@
   "version": "0.20.2",
   "main": "dist/index-umd.js",
   "module": "dist/index-es.js",
+  "types": "./src/jsonpath.d.ts",
   "description": "A JS implementation of JSONPath with some additional operators",
   "contributors": [
     {
@@ -44,7 +45,6 @@
   "react-native": {
     "vm": false
   },
-  "types": "./src/jsonpath.d.ts",
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.5.5",
