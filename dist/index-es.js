@@ -135,9 +135,16 @@ function _possibleConstructorReturn(self, call) {
 
 /* eslint-disable no-eval, jsdoc/check-types */
 // Todo: Reenable jsdoc/check-types once PR merged: https://github.com/gajus/eslint-plugin-jsdoc/pull/270
-var globalEval = eval; // eslint-disable-next-line import/no-commonjs
+var globalEval = eval; // Only Node.JS has a process variable that is of [[Class]] process
 
-var supportsNodeVM = typeof module !== 'undefined' && Boolean(module.exports) && !(typeof navigator !== 'undefined' && navigator.product === 'ReactNative');
+var supportsNodeVM = function supportsNodeVM() {
+  try {
+    return Object.prototype.toString.call(global.process) === '[object process]';
+  } catch (e) {
+    return false;
+  }
+};
+
 var allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
 var hasOwnProp = Object.prototype.hasOwnProperty;
 /**
@@ -171,7 +178,7 @@ var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb
   }
 };
 
-var vm = supportsNodeVM ? require('vm') : {
+var vm = supportsNodeVM() ? require('vm') : {
   /**
    * @param {string} expr Expression to evaluate
    * @param {PlainObject} context Object whose items will be added to evaluation

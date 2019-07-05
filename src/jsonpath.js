@@ -2,9 +2,14 @@
 
 // Todo: Reenable jsdoc/check-types once PR merged: https://github.com/gajus/eslint-plugin-jsdoc/pull/270
 const globalEval = eval;
-// eslint-disable-next-line import/no-commonjs
-const supportsNodeVM = typeof module !== 'undefined' && Boolean(module.exports) &&
-    !(typeof navigator !== 'undefined' && navigator.product === 'ReactNative');
+// Only Node.JS has a process variable that is of [[Class]] process
+const supportsNodeVM = function () {
+    try {
+        return Object.prototype.toString.call(global.process) === '[object process]';
+    } catch (e) {
+        return false;
+    }
+};
 const allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
 const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
@@ -36,7 +41,7 @@ const moveToAnotherArray = function (source, target, conditionCb) {
     }
 };
 
-const vm = supportsNodeVM
+const vm = supportsNodeVM()
     ? require('vm')
     : {
         /**
