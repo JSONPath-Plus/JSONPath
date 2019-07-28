@@ -56,7 +56,7 @@ describe('JSONPath - Type Operators', function () {
         const expected = [12.99, 8.99, 22.99];
         /**
          *
-         * @param {Any} val
+         * @param {any} val
          * @param {string} path
          * @param {PlainObject|GenericArray} parent
          * @param {string} parentPropName

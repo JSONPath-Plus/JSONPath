@@ -133,7 +133,8 @@ function _possibleConstructorReturn(self, call) {
   return _assertThisInitialized(self);
 }
 
-/* eslint-disable no-eval */
+/* eslint-disable no-eval, prefer-named-capture-group */
+// Disabled `prefer-named-capture-group` due to https://github.com/babel/babel/issues/8951#issuecomment-508045524
 var globalEval = eval; // Only Node.JS has a process variable that is of [[Class]] process
 
 var supportsNodeVM = function supportsNodeVM() {
@@ -158,8 +159,8 @@ var hasOwnProp = Object.prototype.hasOwnProperty;
 
 /**
  * Copy items out of one array into another.
- * @param {Array} source Array with items to copy
- * @param {Array} target Array to which to copy
+ * @param {GenericArray} source Array with items to copy
+ * @param {GenericArray} target Array to which to copy
  * @param {ConditionCallback} conditionCb Callback passed the current item;
  *     will move item if evaluates to `true`
  * @returns {undefined}
@@ -182,7 +183,7 @@ var vm = supportsNodeVM() ? require('vm') : {
    * @param {string} expr Expression to evaluate
    * @param {PlainObject} context Object whose items will be added
    *   to evaluation
-   * @returns {Any} Result of evaluated code
+   * @returns {any} Result of evaluated code
    */
   runInNewContext: function runInNewContext(expr, context) {
     var keys = Object.keys(context);
@@ -209,9 +210,9 @@ var vm = supportsNodeVM() ? require('vm') : {
 };
 /**
  * Copies array and then pushes item into it.
- * @param {Array} arr Array to copy and into which to push
- * @param {Any} item Array item to add (to end)
- * @returns {Array} Copy of the original array
+ * @param {GenericArray} arr Array to copy and into which to push
+ * @param {any} item Array item to add (to end)
+ * @returns {GenericArray} Copy of the original array
  */
 
 function push(arr, item) {
@@ -221,9 +222,9 @@ function push(arr, item) {
 }
 /**
  * Copies array and then unshifts item into it.
- * @param {Any} item Array item to add (to beginning)
- * @param {Array} arr Array to copy and into which to unshift
- * @returns {Array} Copy of the original array
+ * @param {any} item Array item to add (to beginning)
+ * @param {GenericArray} arr Array to copy and into which to unshift
+ * @returns {GenericArray} Copy of the original array
  */
 
 
@@ -244,7 +245,7 @@ function (_Error) {
   _inherits(NewError, _Error);
 
   /**
-   * @param {Any} value The evaluated scalar value
+   * @param {any} value The evaluated scalar value
    */
   function NewError(value) {
     var _this;

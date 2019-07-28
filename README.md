@@ -197,7 +197,7 @@ evaluate method (as the first argument) include:
   silently stripped.
 - ***JSONPath.toPointer(pathAsArray)*** - Accepts a path array and
   converts to a [JSON Pointer](http://www.rfc-base.org/txt/rfc-6901.txt).
-  The string will be in a form like: `'/aProperty/anotherProperty/0`
+  The string will be in a form like: `/aProperty/anotherProperty/0`
   (with any `~` and `/` internal characters escaped as per the JSON
   Pointer spec). The JSONPath terminal constructions `~` and `^` and
   type operators like `@string()` are silently stripped.

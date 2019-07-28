@@ -20,6 +20,8 @@
         <h1>JSONPath Tests</h1>
         <div id="mocha"></div>
         <script>
+        /* globals chai, JSONPath */
+        'use strict';
         mocha.setup('bdd');
         window.assert = chai.assert;
         window.jsonpath = JSONPath.JSONPath;
@@ -45,6 +47,7 @@
         <script src="test.type-operators.js"></script>
 
         <script>
+        'use strict';
         mocha.run();
         </script>
     </body>
