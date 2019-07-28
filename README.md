@@ -77,7 +77,7 @@ You may also use ES6 Module imports (for modern browsers):
 
 ```html
 <script type="module">
-import JSONPath from './node_modules/jsonpath-plus/dist/index-es.js';
+import {JSONPath} from './node_modules/jsonpath-plus/dist/index-es.js';
 const result = JSONPath({path: '...', json: ...});
 </script>
 ```
@@ -87,7 +87,7 @@ const result = JSONPath({path: '...', json: ...});
 Or if you are bundling your JavaScript (e.g., with Rollup), just use:
 
 ```js
-import JSONPath from 'jsonpath-plus';
+import {JSONPath} from 'jsonpath-plus';
 
 const result = JSONPath({path: '...', json});
 ```
