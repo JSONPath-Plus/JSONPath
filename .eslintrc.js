@@ -54,7 +54,9 @@ module.exports = {
               "strict": ["error", "global"],
               "import/no-commonjs": 0,
               "import/unambiguous": 0,
-              "quotes": 0
+              "quotes": 0,
+              // Todo: Reenable
+              "max-len": 0
           }
       }
   ],
@@ -62,8 +64,8 @@ module.exports = {
     "indent": ["error", 4, {"outerIIFEBody": 0}],
     "promise/prefer-await-to-callbacks": 0,
     "quote-props": 0,
-    "require-unicode-regexp": 0,
-    "max-len": 0,
-    "require-jsdoc": 0
+    "require-jsdoc": 0,
+    // Reenable when no longer having problems
+    "unicorn/no-unsafe-regex": 0
   }
 };

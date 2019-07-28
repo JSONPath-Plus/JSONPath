@@ -1,16 +1,18 @@
-/* eslint-disable no-eval, jsdoc/check-types */
-
-// Todo: Reenable jsdoc/check-types once PR merged: https://github.com/gajus/eslint-plugin-jsdoc/pull/270
+/* eslint-disable no-eval */
 const globalEval = eval;
 // Only Node.JS has a process variable that is of [[Class]] process
 const supportsNodeVM = function () {
     try {
-        return Object.prototype.toString.call(global.process) === '[object process]';
+        return Object.prototype.toString.call(
+            global.process
+        ) === '[object process]';
     } catch (e) {
         return false;
     }
 };
-const allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
+const allowedResultTypes = [
+    'value', 'path', 'pointer', 'parent', 'parentProperty', 'all'
+];
 const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
 /**
@@ -27,8 +29,8 @@ const {hasOwnProperty: hasOwnProp} = Object.prototype;
  * Copy items out of one array into another.
  * @param {Array} source Array with items to copy
  * @param {Array} target Array to which to copy
- * @param {ConditionCallback} conditionCb Callback passed the current item; will move
- *     item if evaluates to `true`
+ * @param {ConditionCallback} conditionCb Callback passed the current item;
+ *     will move item if evaluates to `true`
  * @returns {undefined}
  */
 const moveToAnotherArray = function (source, target, conditionCb) {
@@ -46,7 +48,8 @@ const vm = supportsNodeVM()
     : {
         /**
          * @param {string} expr Expression to evaluate
-         * @param {PlainObject} context Object whose items will be added to evaluation
+         * @param {PlainObject} context Object whose items will be added
+         *   to evaluation
          * @returns {Any} Result of evaluated code
          */
         runInNewContext (expr, context) {
@@ -57,14 +60,14 @@ const vm = supportsNodeVM()
             });
             const code = funcs.reduce((s, func) => {
                 let fString = context[func].toString();
-                if (!(/function/).exec(fString)) {
+                if (!(/function/u).exec(fString)) {
                     fString = 'function ' + fString;
                 }
                 return 'var ' + func + '=' + fString + ';' + s;
             }, '') + keys.reduce((s, vr) => {
                 return 'var ' + vr + '=' + JSON.stringify(context[vr]).replace(
                     // http://www.thespanner.co.uk/2011/07/25/the-json-specification-is-now-wrong/
-                    /\u2028|\u2029/g, (m) => {
+                    /\u2028|\u2029/gu, (m) => {
                         return '\\u202' + (m === '\u2028' ? '8' : '9');
                     }
                 ) + ';' + s;
@@ -105,7 +108,10 @@ class NewError extends Error {
      * @param {Any} value The evaluated scalar value
      */
     constructor (value) {
-        super('JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)');
+        super(
+            'JSONPath should not be called with "new" (it prevents return ' +
+            'of (unwrapped) scalar values)'
+        );
         this.avoidNew = true;
         this.value = value;
         this.name = 'NewError';
@@ -139,12 +145,14 @@ class NewError extends Error {
  * @param {PlainObject} [opts] If present, must be an object
  * @param {string} expr JSON path to evaluate
  * @param {JSON} obj JSON object to evaluate against
- * @param {JSONPathCallback} callback Passed 3 arguments: 1) desired payload per `resultType`,
- *     2) `"value"|"property"`, 3) Full returned object with all payloads
- * @param {OtherTypeCallback} otherTypeCallback If `@other()` is at the end of one's query, this
- *  will be invoked with the value of the item, its path, its parent, and its parent's
- *  property name, and it should return a boolean indicating whether the supplied value
- *  belongs to the "other" type or not (or it may handle transformations and return `false`).
+ * @param {JSONPathCallback} callback Passed 3 arguments: 1) desired payload
+ *     per `resultType`, 2) `"value"|"property"`, 3) Full returned object with
+ *     all payloads
+ * @param {OtherTypeCallback} otherTypeCallback If `@other()` is at the end
+ *   of one's query, this will be invoked with the value of the item, its
+ *   path, its parent, and its parent's property name, and it should return
+ *   a boolean indicating whether the supplied value belongs to the "other"
+ *   type or not (or it may handle transformations and return `false`).
  * @returns {JSONPath}
  * @class
  */
@@ -169,10 +177,12 @@ function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
         opts = {};
     }
     opts = opts || {};
-    const objArgs = hasOwnProp.call(opts, 'json') && hasOwnProp.call(opts, 'path');
+    const objArgs = hasOwnProp.call(opts, 'json') &&
+        hasOwnProp.call(opts, 'path');
     this.json = opts.json || obj;
     this.path = opts.path || expr;
-    this.resultType = (opts.resultType && opts.resultType.toLowerCase()) || 'value';
+    this.resultType = (opts.resultType && opts.resultType.toLowerCase()) ||
+        'value';
     this.flatten = opts.flatten || false;
     this.wrap = hasOwnProp.call(opts, 'wrap') ? opts.wrap : true;
     this.sandbox = opts.sandbox || {};
@@ -180,9 +190,14 @@ function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
     this.parent = opts.parent || null;
     this.parentProperty = opts.parentProperty || null;
     this.callback = opts.callback || callback || null;
-    this.otherTypeCallback = opts.otherTypeCallback || otherTypeCallback || function () {
-        throw new Error('You must supply an otherTypeCallback callback option with the @other() operator.');
-    };
+    this.otherTypeCallback = opts.otherTypeCallback ||
+        otherTypeCallback ||
+        function () {
+            throw new Error(
+                'You must supply an otherTypeCallback callback option ' +
+                'with the @other() operator.'
+            );
+        };
 
     if (opts.autostart !== false) {
         const ret = this.evaluate({
@@ -197,7 +212,9 @@ function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
 }
 
 // PUBLIC METHODS
-JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback) {
+JSONPath.prototype.evaluate = function (
+    expr, json, callback, otherTypeCallback
+) {
     const that = this;
     let currParent = this.parent,
         currParentProperty = this.parentProperty;
@@ -213,18 +230,31 @@ JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback)
     expr = expr || this.path;
     if (expr && typeof expr === 'object') {
         if (!expr.path) {
-            throw new Error('You must supply a "path" property when providing an object argument to JSONPath.evaluate().');
+            throw new Error(
+                'You must supply a "path" property when providing an object ' +
+                'argument to JSONPath.evaluate().'
+            );
         }
         json = hasOwnProp.call(expr, 'json') ? expr.json : json;
         flatten = hasOwnProp.call(expr, 'flatten') ? expr.flatten : flatten;
-        this.currResultType = hasOwnProp.call(expr, 'resultType') ? expr.resultType : this.currResultType;
-        this.currSandbox = hasOwnProp.call(expr, 'sandbox') ? expr.sandbox : this.currSandbox;
+        this.currResultType = hasOwnProp.call(expr, 'resultType')
+            ? expr.resultType
+            : this.currResultType;
+        this.currSandbox = hasOwnProp.call(expr, 'sandbox')
+            ? expr.sandbox
+            : this.currSandbox;
         wrap = hasOwnProp.call(expr, 'wrap') ? expr.wrap : wrap;
-        this.currPreventEval = hasOwnProp.call(expr, 'preventEval') ? expr.preventEval : this.currPreventEval;
+        this.currPreventEval = hasOwnProp.call(expr, 'preventEval')
+            ? expr.preventEval
+            : this.currPreventEval;
         callback = hasOwnProp.call(expr, 'callback') ? expr.callback : callback;
-        this.currOtherTypeCallback = hasOwnProp.call(expr, 'otherTypeCallback') ? expr.otherTypeCallback : this.currOtherTypeCallback;
+        this.currOtherTypeCallback = hasOwnProp.call(expr, 'otherTypeCallback')
+            ? expr.otherTypeCallback
+            : this.currOtherTypeCallback;
         currParent = hasOwnProp.call(expr, 'parent') ? expr.parent : currParent;
-        currParentProperty = hasOwnProp.call(expr, 'parentProperty') ? expr.parentProperty : currParentProperty;
+        currParentProperty = hasOwnProp.call(expr, 'parentProperty')
+            ? expr.parentProperty
+            : currParentProperty;
         expr = expr.path;
     }
     currParent = currParent || null;
@@ -269,7 +299,9 @@ JSONPath.prototype._getPreferredOutput = function (ea) {
         throw new TypeError('Unknown result type');
     case 'all':
         ea.pointer = JSONPath.toPointer(ea.path);
-        ea.path = typeof ea.path === 'string' ? ea.path : JSONPath.toPathString(ea.path);
+        ea.path = typeof ea.path === 'string'
+            ? ea.path
+            : JSONPath.toPathString(ea.path);
         return ea;
     case 'value': case 'parent': case 'parentProperty':
         return ea[resultType];
@@ -305,7 +337,8 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
 JSONPath.prototype._trace = function (
     expr, val, path, parent, parentPropName, callback, literalPriority
 ) {
-    // No expr to follow? return path and value as the result of this trace branch
+    // No expr to follow? return path and value as the result of
+    //  this trace branch
     let retObj;
     const that = this;
     if (!expr.length) {
@@ -326,7 +359,9 @@ JSONPath.prototype._trace = function (
      */
     function addRet (elems) {
         if (Array.isArray(elems)) {
-            // This was causing excessive stack size in Node (with or without Babel) against our performance test: `ret.push(...elems);`
+            // This was causing excessive stack size in Node (with or
+            //  without Babel) against our performance test:
+            //  `ret.push(...elems);`
             elems.forEach((t) => {
                 ret.push(t);
             });
@@ -340,19 +375,31 @@ JSONPath.prototype._trace = function (
     ) { // simple case--directly follow property
         addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback));
     } else if (loc === '*') { // all child properties
-        // eslint-disable-next-line no-shadow
-        this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, x, v, p, par, pr, cb) {
-            addRet(that._trace(unshift(m, x), v, p, par, pr, cb, true));
-        });
-    } else if (loc === '..') { // all descendent parent properties
-        addRet(this._trace(x, val, path, parent, parentPropName, callback)); // Check remaining expression with val's immediate children
-        // eslint-disable-next-line no-shadow
-        this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, x, v, p, par, pr, cb) {
-            // We don't join m and x here because we only want parents, not scalar values
-            if (typeof v[m] === 'object') { // Keep going with recursive descent on val's object children
-                addRet(that._trace(unshift(l, x), v[m], push(p, m), v, m, cb));
+        this._walk(
+            loc, x, val, path, parent, parentPropName, callback,
+            function (m, l, _x, v, p, par, pr, cb) {
+                addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true));
             }
-        });
+        );
+    } else if (loc === '..') { // all descendent parent properties
+        // Check remaining expression with val's immediate children
+        addRet(
+            this._trace(x, val, path, parent, parentPropName, callback)
+        );
+        this._walk(
+            loc, x, val, path, parent, parentPropName, callback,
+            function (m, l, _x, v, p, par, pr, cb) {
+                // We don't join m and x here because we only want parents,
+                //   not scalar values
+                if (typeof v[m] === 'object') {
+                    // Keep going with recursive descent on val's
+                    //   object children
+                    addRet(that._trace(
+                        unshift(l, _x), v[m], push(p, m), v, m, cb
+                    ));
+                }
+            }
+        );
     // The parent sel computation is handled in the frame above using the
     // ancestor object of val
     } else if (loc === '^') {
@@ -366,30 +413,44 @@ JSONPath.prototype._trace = function (
             }
             : [];
     } else if (loc === '~') { // property name
-        retObj = {path: push(path, loc), value: parentPropName, parent, parentProperty: null};
+        retObj = {
+            path: push(path, loc),
+            value: parentPropName,
+            parent,
+            parentProperty: null
+        };
         this._handleCallback(retObj, callback, 'property');
         return retObj;
     } else if (loc === '$') { // root only
         addRet(this._trace(x, val, path, null, null, callback));
-    } else if ((/^(-?\d*):(-?\d*):?(\d*)$/).test(loc)) { // [start:end:step]  Python slice syntax
-        addRet(this._slice(loc, x, val, path, parent, parentPropName, callback));
+    } else if ((/^(-?\d*):(-?\d*):?(\d*)$/u).test(loc)) { // [start:end:step]  Python slice syntax
+        addRet(
+            this._slice(loc, x, val, path, parent, parentPropName, callback)
+        );
     } else if (loc.indexOf('?(') === 0) { // [?(expr)] (filtering)
         if (this.currPreventEval) {
             throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
         }
-        // eslint-disable-next-line no-shadow
-        this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, x, v, p, par, pr, cb) {
-            if (that._eval(l.replace(/^\?\((.*?)\)$/, '$1'), v[m], m, p, par, pr)) {
-                addRet(that._trace(unshift(m, x), v, p, par, pr, cb));
+        this._walk(
+            loc, x, val, path, parent, parentPropName, callback,
+            function (m, l, _x, v, p, par, pr, cb) {
+                if (that._eval(l.replace(/^\?\((.*?)\)$/u, '$1'), v[m], m, p, par, pr)) {
+                    addRet(that._trace(unshift(m, _x), v, p, par, pr, cb));
+                }
             }
-        });
+        );
     } else if (loc[0] === '(') { // [(expr)] (dynamic property/index)
         if (this.currPreventEval) {
             throw new Error('Eval [(expr)] prevented in JSONPath expression.');
         }
-        // As this will resolve to a property name (but we don't know it yet), property and parent information is relative to the parent of the property to which this expression will resolve
+        // As this will resolve to a property name (but we don't know it
+        //  yet), property and parent information is relative to the
+        //  parent of the property to which this expression will resolve
         addRet(this._trace(unshift(
-            this._eval(loc, val, path[path.length - 1], path.slice(0, -1), parent, parentPropName),
+            this._eval(
+                loc, val, path[path.length - 1],
+                path.slice(0, -1), parent, parentPropName
+            ),
             x
         ), val, path, parent, parentPropName, callback));
     } else if (loc[0] === '@') { // value type: @boolean(), etc.
@@ -404,12 +465,14 @@ JSONPath.prototype._trace = function (
             }
             break;
         case 'boolean': case 'string': case 'undefined': case 'function':
-            if (typeof val === valueType) { // eslint-disable-line valid-typeof
+            // eslint-disable-next-line valid-typeof
+            if (typeof val === valueType) {
                 addType = true;
             }
             break;
         case 'number':
-            if (typeof val === valueType && isFinite(val)) { // eslint-disable-line valid-typeof
+            // eslint-disable-next-line valid-typeof
+            if (typeof val === valueType && isFinite(val)) {
                 addType = true;
             }
             break;
@@ -419,7 +482,8 @@ JSONPath.prototype._trace = function (
             }
             break;
         case 'object':
-            if (val && typeof val === valueType) { // eslint-disable-line valid-typeof
+            // eslint-disable-next-line valid-typeof
+            if (val && typeof val === valueType) {
                 addType = true;
             }
             break;
@@ -429,7 +493,9 @@ JSONPath.prototype._trace = function (
             }
             break;
         case 'other':
-            addType = this.currOtherTypeCallback(val, path, parent, parentPropName);
+            addType = this.currOtherTypeCallback(
+                val, path, parent, parentPropName
+            );
             break;
         case 'integer':
             if (val === Number(val) && isFinite(val) && !(val % 1)) {
@@ -447,16 +513,24 @@ JSONPath.prototype._trace = function (
             this._handleCallback(retObj, callback, 'value');
             return retObj;
         }
-    } else if (loc[0] === '`' && val && hasOwnProp.call(val, loc.slice(1))) { // `-escaped property
+    // `-escaped property
+    } else if (loc[0] === '`' && val && hasOwnProp.call(val, loc.slice(1))) {
         const locProp = loc.slice(1);
-        addRet(this._trace(x, val[locProp], push(path, locProp), val, locProp, callback, true));
+        addRet(this._trace(
+            x, val[locProp], push(path, locProp), val, locProp, callback, true
+        ));
     } else if (loc.includes(',')) { // [name1,name2,...]
         const parts = loc.split(',');
         for (const part of parts) {
-            addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback));
+            addRet(this._trace(
+                unshift(part, x), val, path, parent, parentPropName, callback
+            ));
         }
-    } else if (!literalPriority && val && hasOwnProp.call(val, loc)) { // simple case--directly follow property
-        addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, true));
+    // simple case--directly follow property
+    } else if (!literalPriority && val && hasOwnProp.call(val, loc)) {
+        addRet(
+            this._trace(x, val[loc], push(path, loc), val, loc, callback, true)
+        );
     }
 
     // We check the resulting values for parent selections. For parent
@@ -485,7 +559,9 @@ JSONPath.prototype._trace = function (
     return ret;
 };
 
-JSONPath.prototype._walk = function (loc, expr, val, path, parent, parentPropName, callback, f) {
+JSONPath.prototype._walk = function (
+    loc, expr, val, path, parent, parentPropName, callback, f
+) {
     if (Array.isArray(val)) {
         const n = val.length;
         for (let i = 0; i < n; i++) {
@@ -500,7 +576,9 @@ JSONPath.prototype._walk = function (loc, expr, val, path, parent, parentPropNam
     }
 };
 
-JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropName, callback) {
+JSONPath.prototype._slice = function (
+    loc, expr, val, path, parent, parentPropName, callback
+) {
     if (!Array.isArray(val)) { return undefined; }
     const len = val.length, parts = loc.split(':'),
         step = (parts[2] && parseInt(parts[2])) || 1;
@@ -510,9 +588,12 @@ JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropNa
     end = (end < 0) ? Math.max(0, end + len) : Math.min(len, end);
     const ret = [];
     for (let i = start; i < end; i += step) {
-        const tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback);
+        const tmp = this._trace(
+            unshift(i, expr), val, path, parent, parentPropName, callback
+        );
         if (Array.isArray(tmp)) {
-            // This was causing excessive stack size in Node (with or without Babel) against our performance test: `ret.push(...tmp);`
+            // This was causing excessive stack size in Node (with or
+            //  without Babel) against our performance test: `ret.push(...tmp);`
             tmp.forEach((t) => {
                 ret.push(t);
             });
@@ -523,27 +604,29 @@ JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropNa
     return ret;
 };
 
-JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropName) {
+JSONPath.prototype._eval = function (
+    code, _v, _vname, path, parent, parentPropName
+) {
     if (!this._obj || !_v) { return false; }
     if (code.includes('@parentProperty')) {
         this.currSandbox._$_parentProperty = parentPropName;
-        code = code.replace(/@parentProperty/g, '_$_parentProperty');
+        code = code.replace(/@parentProperty/gu, '_$_parentProperty');
     }
     if (code.includes('@parent')) {
         this.currSandbox._$_parent = parent;
-        code = code.replace(/@parent/g, '_$_parent');
+        code = code.replace(/@parent/gu, '_$_parent');
     }
     if (code.includes('@property')) {
         this.currSandbox._$_property = _vname;
-        code = code.replace(/@property/g, '_$_property');
+        code = code.replace(/@property/gu, '_$_property');
     }
     if (code.includes('@path')) {
         this.currSandbox._$_path = JSONPath.toPathString(path.concat([_vname]));
-        code = code.replace(/@path/g, '_$_path');
+        code = code.replace(/@path/gu, '_$_path');
     }
-    if (code.match(/@([.\s)[])/)) {
+    if (code.match(/@([.\s)[])/u)) {
         this.currSandbox._$_v = _v;
-        code = code.replace(/@([.\s)[])/g, '_$_v$1');
+        code = code.replace(/@([.\s)[])/gu, '_$_v$1');
     }
     try {
         return vm.runInNewContext(code, this.currSandbox);
@@ -567,8 +650,8 @@ JSONPath.toPathString = function (pathArr) {
     const x = pathArr, n = x.length;
     let p = '$';
     for (let i = 1; i < n; i++) {
-        if (!(/^(~|\^|@.*?\(\))$/).test(x[i])) {
-            p += (/^[0-9*]+$/).test(x[i]) ? ('[' + x[i] + ']') : ("['" + x[i] + "']");
+        if (!(/^(~|\^|@.*?\(\))$/u).test(x[i])) {
+            p += (/^[0-9*]+$/u).test(x[i]) ? ('[' + x[i] + ']') : ("['" + x[i] + "']");
         }
     }
     return p;
@@ -582,10 +665,10 @@ JSONPath.toPointer = function (pointer) {
     const x = pointer, n = x.length;
     let p = '';
     for (let i = 1; i < n; i++) {
-        if (!(/^(~|\^|@.*?\(\))$/).test(x[i])) {
+        if (!(/^(~|\^|@.*?\(\))$/u).test(x[i])) {
             p += '/' + x[i].toString()
-                .replace(/~/g, '~0')
-                .replace(/\//g, '~1');
+                .replace(/~/gu, '~0')
+                .replace(/\//gu, '~1');
         }
     }
     return p;
@@ -602,40 +685,40 @@ JSONPath.toPathArray = function (expr) {
     const normalized = expr
         // Properties
         .replace(
-            /@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/g,
+            /@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/gu,
             ';$&;'
         )
         // Parenthetical evaluations (filtering and otherwise), directly
         //   within brackets or single quotes
-        .replace(/[['](\??\(.*?\))[\]']/g, function ($0, $1) {
+        .replace(/[['](\??\(.*?\))[\]']/gu, function ($0, $1) {
             return '[#' + (subx.push($1) - 1) + ']';
         })
         // Escape periods and tildes within properties
-        .replace(/\['([^'\]]*)'\]/g, function ($0, prop) {
+        .replace(/\['([^'\]]*)'\]/gu, function ($0, prop) {
             return "['" + prop
-                .replace(/\./g, '%@%')
-                .replace(/~/g, '%%@@%%') +
+                .replace(/\./gu, '%@%')
+                .replace(/~/gu, '%%@@%%') +
                 "']";
         })
         // Properties operator
-        .replace(/~/g, ';~;')
+        .replace(/~/gu, ';~;')
         // Split by property boundaries
-        .replace(/'?\.'?(?![^[]*\])|\['?/g, ';')
+        .replace(/'?\.'?(?![^[]*\])|\['?/gu, ';')
         // Reinsert periods within properties
-        .replace(/%@%/g, '.')
+        .replace(/%@%/gu, '.')
         // Reinsert tildes within properties
-        .replace(/%%@@%%/g, '~')
+        .replace(/%%@@%%/gu, '~')
         // Parent
-        .replace(/(?:;)?(\^+)(?:;)?/g, function ($0, ups) {
+        .replace(/(?:;)?(\^+)(?:;)?/gu, function ($0, ups) {
             return ';' + ups.split('').join(';') + ';';
         })
         // Descendents
-        .replace(/;;;|;;/g, ';..;')
+        .replace(/;;;|;;/gu, ';..;')
         // Remove trailing
-        .replace(/;$|'?\]|'$/g, '');
+        .replace(/;$|'?\]|'$/gu, '');
 
     const exprList = normalized.split(';').map(function (exp) {
-        const match = exp.match(/#(\d+)/);
+        const match = exp.match(/#(\d+)/u);
         return !match || !match[1] ? exp : subx[match[1]];
     });
     cache[expr] = exprList;

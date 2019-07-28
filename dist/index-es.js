@@ -133,8 +133,7 @@ function _possibleConstructorReturn(self, call) {
   return _assertThisInitialized(self);
 }
 
-/* eslint-disable no-eval, jsdoc/check-types */
-// Todo: Reenable jsdoc/check-types once PR merged: https://github.com/gajus/eslint-plugin-jsdoc/pull/270
+/* eslint-disable no-eval */
 var globalEval = eval; // Only Node.JS has a process variable that is of [[Class]] process
 
 var supportsNodeVM = function supportsNodeVM() {
@@ -161,8 +160,8 @@ var hasOwnProp = Object.prototype.hasOwnProperty;
  * Copy items out of one array into another.
  * @param {Array} source Array with items to copy
  * @param {Array} target Array to which to copy
- * @param {ConditionCallback} conditionCb Callback passed the current item; will move
- *     item if evaluates to `true`
+ * @param {ConditionCallback} conditionCb Callback passed the current item;
+ *     will move item if evaluates to `true`
  * @returns {undefined}
  */
 
@@ -181,7 +180,8 @@ var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb
 var vm = supportsNodeVM() ? require('vm') : {
   /**
    * @param {string} expr Expression to evaluate
-   * @param {PlainObject} context Object whose items will be added to evaluation
+   * @param {PlainObject} context Object whose items will be added
+   *   to evaluation
    * @returns {Any} Result of evaluated code
    */
   runInNewContext: function runInNewContext(expr, context) {
@@ -251,7 +251,7 @@ function (_Error) {
 
     _classCallCheck(this, NewError);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(NewError).call(this, 'JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)'));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(NewError).call(this, 'JSONPath should not be called with "new" (it prevents return ' + 'of (unwrapped) scalar values)'));
     _this.avoidNew = true;
     _this.value = value;
     _this.name = 'NewError';
@@ -287,12 +287,14 @@ function (_Error) {
  * @param {PlainObject} [opts] If present, must be an object
  * @param {string} expr JSON path to evaluate
  * @param {JSON} obj JSON object to evaluate against
- * @param {JSONPathCallback} callback Passed 3 arguments: 1) desired payload per `resultType`,
- *     2) `"value"|"property"`, 3) Full returned object with all payloads
- * @param {OtherTypeCallback} otherTypeCallback If `@other()` is at the end of one's query, this
- *  will be invoked with the value of the item, its path, its parent, and its parent's
- *  property name, and it should return a boolean indicating whether the supplied value
- *  belongs to the "other" type or not (or it may handle transformations and return `false`).
+ * @param {JSONPathCallback} callback Passed 3 arguments: 1) desired payload
+ *     per `resultType`, 2) `"value"|"property"`, 3) Full returned object with
+ *     all payloads
+ * @param {OtherTypeCallback} otherTypeCallback If `@other()` is at the end
+ *   of one's query, this will be invoked with the value of the item, its
+ *   path, its parent, and its parent's property name, and it should return
+ *   a boolean indicating whether the supplied value belongs to the "other"
+ *   type or not (or it may handle transformations and return `false`).
  * @returns {JSONPath}
  * @class
  */
@@ -334,7 +336,7 @@ function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
   this.callback = opts.callback || callback || null;
 
   this.otherTypeCallback = opts.otherTypeCallback || otherTypeCallback || function () {
-    throw new Error('You must supply an otherTypeCallback callback option with the @other() operator.');
+    throw new Error('You must supply an otherTypeCallback callback option ' + 'with the @other() operator.');
   };
 
   if (opts.autostart !== false) {
@@ -368,7 +370,7 @@ JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback)
 
   if (expr && _typeof(expr) === 'object') {
     if (!expr.path) {
-      throw new Error('You must supply a "path" property when providing an object argument to JSONPath.evaluate().');
+      throw new Error('You must supply a "path" property when providing an object ' + 'argument to JSONPath.evaluate().');
     }
 
     json = hasOwnProp.call(expr, 'json') ? expr.json : json;
@@ -478,7 +480,8 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
 
 
 JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, literalPriority) {
-  // No expr to follow? return path and value as the result of this trace branch
+  // No expr to follow? return path and value as the result of
+  //  this trace branch
   var retObj;
   var that = this;
 
@@ -508,7 +511,9 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
 
   function addRet(elems) {
     if (Array.isArray(elems)) {
-      // This was causing excessive stack size in Node (with or without Babel) against our performance test: `ret.push(...elems);`
+      // This was causing excessive stack size in Node (with or
+      //  without Babel) against our performance test:
+      //  `ret.push(...elems);`
       elems.forEach(function (t) {
         ret.push(t);
       });
@@ -522,20 +527,21 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback));
   } else if (loc === '*') {
     // all child properties
-    // eslint-disable-next-line no-shadow
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, x, v, p, par, pr, cb) {
-      addRet(that._trace(unshift(m, x), v, p, par, pr, cb, true));
+    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
+      addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true));
     });
   } else if (loc === '..') {
     // all descendent parent properties
-    addRet(this._trace(x, val, path, parent, parentPropName, callback)); // Check remaining expression with val's immediate children
-    // eslint-disable-next-line no-shadow
+    // Check remaining expression with val's immediate children
+    addRet(this._trace(x, val, path, parent, parentPropName, callback));
 
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, x, v, p, par, pr, cb) {
-      // We don't join m and x here because we only want parents, not scalar values
+    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
+      // We don't join m and x here because we only want parents,
+      //   not scalar values
       if (_typeof(v[m]) === 'object') {
-        // Keep going with recursive descent on val's object children
-        addRet(that._trace(unshift(l, x), v[m], push(p, m), v, m, cb));
+        // Keep going with recursive descent on val's
+        //   object children
+        addRet(that._trace(unshift(l, _x), v[m], push(p, m), v, m, cb));
       }
     }); // The parent sel computation is handled in the frame above using the
     // ancestor object of val
@@ -563,26 +569,27 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
   } else if (loc === '$') {
     // root only
     addRet(this._trace(x, val, path, null, null, callback));
-  } else if (/^(-?\d*):(-?\d*):?(\d*)$/.test(loc)) {
+  } else if (/^(\x2D?[0-9]*):(\x2D?[0-9]*):?([0-9]*)$/.test(loc)) {
     // [start:end:step]  Python slice syntax
     addRet(this._slice(loc, x, val, path, parent, parentPropName, callback));
   } else if (loc.indexOf('?(') === 0) {
     // [?(expr)] (filtering)
     if (this.currPreventEval) {
       throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
-    } // eslint-disable-next-line no-shadow
+    }
 
-
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, x, v, p, par, pr, cb) {
-      if (that._eval(l.replace(/^\?\((.*?)\)$/, '$1'), v[m], m, p, par, pr)) {
-        addRet(that._trace(unshift(m, x), v, p, par, pr, cb));
+    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
+      if (that._eval(l.replace(/^\?\(((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?)\)$/, '$1'), v[m], m, p, par, pr)) {
+        addRet(that._trace(unshift(m, _x), v, p, par, pr, cb));
       }
     });
   } else if (loc[0] === '(') {
     // [(expr)] (dynamic property/index)
     if (this.currPreventEval) {
       throw new Error('Eval [(expr)] prevented in JSONPath expression.');
-    } // As this will resolve to a property name (but we don't know it yet), property and parent information is relative to the parent of the property to which this expression will resolve
+    } // As this will resolve to a property name (but we don't know it
+    //  yet), property and parent information is relative to the
+    //  parent of the property to which this expression will resolve
 
 
     addRet(this._trace(unshift(this._eval(loc, val, path[path.length - 1], path.slice(0, -1), parent, parentPropName), x), val, path, parent, parentPropName, callback));
@@ -606,16 +613,16 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
       case 'string':
       case 'undefined':
       case 'function':
+        // eslint-disable-next-line valid-typeof
         if (_typeof(val) === valueType) {
-          // eslint-disable-line valid-typeof
           addType = true;
         }
 
         break;
 
       case 'number':
+        // eslint-disable-next-line valid-typeof
         if (_typeof(val) === valueType && isFinite(val)) {
-          // eslint-disable-line valid-typeof
           addType = true;
         }
 
@@ -629,8 +636,8 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
         break;
 
       case 'object':
+        // eslint-disable-next-line valid-typeof
         if (val && _typeof(val) === valueType) {
-          // eslint-disable-line valid-typeof
           addType = true;
         }
 
@@ -673,9 +680,9 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
       this._handleCallback(retObj, callback, 'value');
 
       return retObj;
-    }
+    } // `-escaped property
+
   } else if (loc[0] === '`' && val && hasOwnProp.call(val, loc.slice(1))) {
-    // `-escaped property
     var locProp = loc.slice(1);
     addRet(this._trace(x, val[locProp], push(path, locProp), val, locProp, callback, true));
   } else if (loc.includes(',')) {
@@ -689,7 +696,8 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
       for (var _iterator = parts[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var part = _step.value;
         addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback));
-      }
+      } // simple case--directly follow property
+
     } catch (err) {
       _didIteratorError = true;
       _iteratorError = err;
@@ -705,7 +713,6 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
       }
     }
   } else if (!literalPriority && val && hasOwnProp.call(val, loc)) {
-    // simple case--directly follow property
     addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, true));
   } // We check the resulting values for parent selections. For parent
   // selections we discard the value object and continue the trace with the
@@ -771,7 +778,8 @@ JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropNa
     var tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback);
 
     if (Array.isArray(tmp)) {
-      // This was causing excessive stack size in Node (with or without Babel) against our performance test: `ret.push(...tmp);`
+      // This was causing excessive stack size in Node (with or
+      //  without Babel) against our performance test: `ret.push(...tmp);`
       tmp.forEach(function (t) {
         ret.push(t);
       });
@@ -808,9 +816,9 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
     code = code.replace(/@path/g, '_$_path');
   }
 
-  if (code.match(/@([.\s)[])/)) {
+  if (code.match(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/)) {
     this.currSandbox._$_v = _v;
-    code = code.replace(/@([.\s)[])/g, '_$_v$1');
+    code = code.replace(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/g, '_$_v$1');
   }
 
   try {
@@ -836,8 +844,8 @@ JSONPath.toPathString = function (pathArr) {
   var p = '$';
 
   for (var i = 1; i < n; i++) {
-    if (!/^(~|\^|@.*?\(\))$/.test(x[i])) {
-      p += /^[0-9*]+$/.test(x[i]) ? '[' + x[i] + ']' : "['" + x[i] + "']";
+    if (!/^(~|\^|@(?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?\(\))$/.test(x[i])) {
+      p += /^[\*0-9]+$/.test(x[i]) ? '[' + x[i] + ']' : "['" + x[i] + "']";
     }
   }
 
@@ -855,7 +863,7 @@ JSONPath.toPointer = function (pointer) {
   var p = '';
 
   for (var i = 1; i < n; i++) {
-    if (!/^(~|\^|@.*?\(\))$/.test(x[i])) {
+    if (!/^(~|\^|@(?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?\(\))$/.test(x[i])) {
       p += '/' + x[i].toString().replace(/~/g, '~0').replace(/\//g, '~1');
     }
   }
@@ -879,14 +887,14 @@ JSONPath.toPathArray = function (expr) {
   var normalized = expr // Properties
   .replace(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/g, ';$&;') // Parenthetical evaluations (filtering and otherwise), directly
   //   within brackets or single quotes
-  .replace(/[['](\??\(.*?\))[\]']/g, function ($0, $1) {
+  .replace(/['\[](\??\((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?\))['\]]/g, function ($0, $1) {
     return '[#' + (subx.push($1) - 1) + ']';
   }) // Escape periods and tildes within properties
-  .replace(/\['([^'\]]*)'\]/g, function ($0, prop) {
+  .replace(/\['((?:[\0-&\(-\\\^-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)'\]/g, function ($0, prop) {
     return "['" + prop.replace(/\./g, '%@%').replace(/~/g, '%%@@%%') + "']";
   }) // Properties operator
   .replace(/~/g, ';~;') // Split by property boundaries
-  .replace(/'?\.'?(?![^[]*\])|\['?/g, ';') // Reinsert periods within properties
+  .replace(/'?\.'?(?!(?:[\0-Z\\-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*\])|\['?/g, ';') // Reinsert periods within properties
   .replace(/%@%/g, '.') // Reinsert tildes within properties
   .replace(/%%@@%%/g, '~') // Parent
   .replace(/(?:;)?(\^+)(?:;)?/g, function ($0, ups) {
@@ -895,7 +903,7 @@ JSONPath.toPathArray = function (expr) {
   .replace(/;;;|;;/g, ';..;') // Remove trailing
   .replace(/;$|'?\]|'$/g, '');
   var exprList = normalized.split(';').map(function (exp) {
-    var match = exp.match(/#(\d+)/);
+    var match = exp.match(/#([0-9]+)/);
     return !match || !match[1] ? exp : subx[match[1]];
   });
   cache[expr] = exprList;

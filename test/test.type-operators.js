@@ -63,7 +63,7 @@ describe('JSONPath - Type Operators', function () {
          * @returns {boolean}
          */
         function endsIn99 (val, path, parent, parentPropName) {
-            return Boolean(val.toString().match(/\.99/));
+            return Boolean(val.toString().match(/\.99/u));
         }
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
         assert.deepEqual(expected, result);
