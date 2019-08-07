@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "0.20.2",
+  "version": "1.0.0",
   "main": "dist/index-umd.js",
   "module": "dist/index-es.js",
   "types": "./src/jsonpath.d.ts",

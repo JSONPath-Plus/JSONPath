@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 1.0.0 (August 7, 2019)
+
+- Add TypeScript declaration
+
 ## 0.20.1 (June 12, 2019)
 
 - npm: Avoid adding `core-js-bundle` as peerDep. (fixes #95)
