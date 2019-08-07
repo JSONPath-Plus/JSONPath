@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## ?
+
+- npm: Ignore `.idea`/`.remarkrc` files
+
 ## 1.0.0 (August 7, 2019)
 
 - Add TypeScript declaration

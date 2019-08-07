@@ -6,3 +6,5 @@ lgtm.yml
 .travis.yml
 .DS_Store
 .babelrc
+.idea
+.remarkrc
