@@ -1,5 +1,10 @@
 # CHANGES for jsonpath-plus
 
+## ?
+
+- npm: Avoid eslint script within test script
+- Travis: Update to check Node 6, 10, 12
+
 ## 1.1.0 (September 25, 2019)
 
 - Enhancement: Add explicit 'any' to `evaluate()` declaration (for use

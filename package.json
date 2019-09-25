@@ -93,7 +93,7 @@
     "build-docs": "typedoc --out docs/ts src --includeDeclarations",
     "open-docs": "open-cli http://localhost:8084/docs/ts/ && npm start",
     "mocha": "mocha --require test-helpers/node-env.js test",
-    "test": "npm run eslint && npm run rollup && npm run mocha",
+    "test": "npm run rollup && npm run mocha",
     "start": "static -p 8084",
     "rollup": "rollup -c",
     "eslint": "eslint --ext js,md,html .",
