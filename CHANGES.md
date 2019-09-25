@@ -2,7 +2,9 @@
 
 ## ?
 
+- Build: Update minified build files
 - npm: Ignore `.idea`/`.remarkrc` files
+- npm: Update devDeps (Babel, linting,Rollup,TypeScript related)
 
 ## 1.0.0 (August 7, 2019)
 
