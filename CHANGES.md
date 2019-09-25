@@ -1,10 +1,12 @@
 # CHANGES for jsonpath-plus
 
-## ?
+## 1.1.0 (September 25, 2019)
 
+- Enhancement: Add explicit 'any' to `evaluate()` declaration (for use
+  with `noImplicitAny` TypeScript option)
 - Build: Update minified build files
 - npm: Ignore `.idea`/`.remarkrc` files
-- npm: Update devDeps (Babel, linting,Rollup,TypeScript related)
+- npm: Update devDeps (Babel, linting, Rollup, TypeScript related)
 
 ## 1.0.0 (August 7, 2019)
 
