@@ -5,10 +5,11 @@
 - Enhancement: Add explicit 'any' to `evaluate()` declaration (for use
   with `noImplicitAny` TypeScript option)
 - Build: Update minified build files
+- Travis: Update to check Node 6, 10, 12
 - npm: Ignore `.idea`/`.remarkrc` files
 - npm: Update devDeps (Babel, linting, Rollup, TypeScript related)
 - npm: Avoid eslint script within test script
-- Travis: Update to check Node 6, 10, 12
+- npm: Ignore typescript docs
 
 ## 1.0.0 (August 7, 2019)
 
