@@ -181,13 +181,13 @@ declare module 'jsonpath-plus' {
         json: JSONPathOptions['json'],
         callback: JSONPathOptions['callback'],
         otherTypeCallback: JSONPathOptions['otherTypeCallback']
-    )
+    ): any
     evaluate(options: {
         path: JSONPathOptions['path'],
         json: JSONPathOptions['json'],
         callback: JSONPathOptions['callback'],
         otherTypeCallback: JSONPathOptions['otherTypeCallback']
-    })
+    }): any
   }
 
   type JSONPathType = JSONPathCallable & JSONPathClass
