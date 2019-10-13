@@ -94,6 +94,7 @@
     "open-docs": "open-cli http://localhost:8084/docs/ts/ && npm start",
     "mocha": "mocha --require test-helpers/node-env.js test",
     "test": "npm run rollup && npm run mocha",
+    "open": "open-cli http://localhost:8084/demo/ && npm start",
     "start": "static -p 8084",
     "rollup": "rollup -c",
     "eslint": "eslint --ext js,md,html .",

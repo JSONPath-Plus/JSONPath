@@ -6,6 +6,7 @@ module.exports = {
           "console",
           "Date.now",
           "document.head",
+          "document.querySelector",
           "JSON",
           "Object.keys",
           "XMLHttpRequest"

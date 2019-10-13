@@ -67,7 +67,7 @@ magic is necessary:
 
 <script src="node_modules/jsonpath-plus/dist/index-umd.js"></script>
 <script>
-const result = JSONPath({path: '...', json: ...});
+const result = JSONPath.JSONPath({path: '...', json: ...});
 </script>
 ```
 
