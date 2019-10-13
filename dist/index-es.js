@@ -817,6 +817,11 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
     code = code.replace(/@path/g, '_$_path');
   }
 
+  if (code.includes('@root')) {
+    this.currSandbox._$_root = this.json;
+    code = code.replace(/@root/g, '_$_root');
+  }
+
   if (code.match(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/)) {
     this.currSandbox._$_v = _v;
     code = code.replace(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/g, '_$_v$1');

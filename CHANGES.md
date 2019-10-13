@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 1.2.0 (October 13, 2019)
+
+- Enhancement: Add `@root` filter selector
+
 ## 1.1.0 (September 26, 2019)
 
 - Enhancement: Add explicit 'any' to `evaluate()` declaration (for use

@@ -214,6 +214,12 @@ describe('JSONPath - Examples', function () {
         assert.deepEqual(expected, result);
     });
 
+    it('Custom property: @root', () => {
+        const expected = [json.store.book[2]];
+        const result = jsonpath({json, path: '$..book[?(@.price === @root.store.book[2].price)]'});
+        assert.deepEqual(expected, result);
+    });
+
     it('@number()', () => {
         const expected = [8.95, 12.99, 8.99, 22.99];
         const result = jsonpath({json, path: '$.store.book..*@number()', flatten: true});

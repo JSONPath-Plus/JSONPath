@@ -21,7 +21,7 @@ did not spell out.
         * `@other()` usable in conjunction with a user-defined `otherTypeCallback`
         * Non-JSON types that can nevertheless be used when querying
             non-JSON JavaScript objects (`@undefined()`, `@function()`, `@nonFinite()`)
-    * `@path`/`@parent`/`@property`/`@parentProperty` **shorthand selectors** within filters
+    * `@path`/`@parent`/`@property`/`@parentProperty`/`@root` **shorthand selectors** within filters
     * **Escaping**
         * `` ` `` for escaping remaining sequence
         * `@['...']`/`?@['...']` syntax for escaping special characters within
@@ -310,6 +310,7 @@ comparisons or to prevent ambiguity).
 //book/*\[position() != 0]    | $..book\[?(@property !== 0)] | Grabs all books whose property (which, being that we are reaching inside an array, is the numeric index) is not 0 | @property is not present in the original spec
 /store/\*/\*\[name(parent::*) != 'book'] | $.store.*\[?(@parentProperty !== "book")] | Grabs the grandchildren of store whose parent property is not book (i.e., bicycle's children, "color" and "price") | @parentProperty is not present in the original spec
 //book\[count(preceding-sibling::\*) != 0]/\*/text() | $..book.*\[?(@parentProperty !== 0)]  | Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0 | @parentProperty is not present in the original spec
+//book\[price = /store/book\[3]/price] | $..book\[?(@.price === @root.store.book\[2].price)] | Filter all books whose price equals the price of the third book | @root is not present in the original spec
 //book/../\*\[. instance of element(\*, xs:decimal)\] (in XPath 2.0) | $..book..\*@number() | Get the numeric values within the book array | @number(), the other basic types (@boolean(), @string()), other low-level derived types (@null(), @object(), @array()), the JSONSchema-added type, @integer(), the compound type @scalar() (which also accepts `undefined` and non-finite numbers for JavaScript objects as well as all of the basic non-object/non-function types), the type, @other(), to be used in conjunction with a user-defined callback (see `otherTypeCallback`) and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (@undefined(), @function(), @nonFinite()) are not present in the original spec
 | | `` ` `` (e.g., `` `$`` to match a property literally named `$`) | Escapes the entire sequence following (to be treated as a literal) | `` ` `` is not present in the original spec; to get a literal backtick, use an additional backtick to escape
 

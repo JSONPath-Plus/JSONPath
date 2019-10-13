@@ -625,6 +625,10 @@ JSONPath.prototype._eval = function (
         this.currSandbox._$_path = JSONPath.toPathString(path.concat([_vname]));
         code = code.replace(/@path/gu, '_$_path');
     }
+    if (code.includes('@root')) {
+        this.currSandbox._$_root = this.json;
+        code = code.replace(/@root/gu, '_$_root');
+    }
     if (code.match(/@([.\s)[])/u)) {
         this.currSandbox._$_v = _v;
         code = code.replace(/@([.\s)[])/gu, '_$_v$1');
