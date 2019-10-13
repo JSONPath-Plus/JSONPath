@@ -3,6 +3,7 @@
 ## 1.2.0 (October 13, 2019)
 
 - Enhancement: Add `@root` filter selector
+- npm: Update devDeps and `package-lock.json`
 
 ## 1.1.0 (September 26, 2019)
 
