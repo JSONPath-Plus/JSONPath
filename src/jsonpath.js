@@ -132,6 +132,7 @@ class NewError extends Error {
 * @param {string|PlainObject} preferredOutput
 * @param {"value"|"property"} type
 * @param {ReturnObject} fullRetObj
+* @returns {void}
 */
 
 /**
@@ -140,16 +141,35 @@ class NewError extends Error {
 * @param {string} path
 * @param {PlainObject|GenericArray} parent
 * @param {string} parentPropName
+* @returns {boolean}
 */
 
 /**
- * @param {PlainObject} [opts] If present, must be an object
- * @param {string} expr JSON path to evaluate
- * @param {JSON} obj JSON object to evaluate against
- * @param {JSONPathCallback} callback Passed 3 arguments: 1) desired payload
+ * @typedef {PlainObject} JSONPathOptions
+ * @property {JSON} json
+ * @property {string|string[]} path
+ * @property {"value"|"path"|"pointer"|"parent"|"parentProperty"|"all"}
+ *   [resultType="value"]
+ * @property {boolean} [flatten=false]
+ * @property {boolean} [wrap=true]
+ * @property {PlainObject} [sandbox={}]
+ * @property {boolean} [preventEval=false]
+ * @property {PlainObject|GenericArray|null} [parent=null]
+ * @property {string|null} [parentProperty=null]
+ * @property {JSONPathCallback} [callback]
+ * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
+ *   function which throws on encountering `@other`
+ * @property {boolean} [autostart=true]
+ */
+
+/**
+ * @param {string|JSONPathOptions} opts If a string, will be treated as `expr`
+ * @param {string} [expr] JSON path to evaluate
+ * @param {JSON} [obj] JSON object to evaluate against
+ * @param {JSONPathCallback} [callback] Passed 3 arguments: 1) desired payload
  *     per `resultType`, 2) `"value"|"property"`, 3) Full returned object with
  *     all payloads
- * @param {OtherTypeCallback} otherTypeCallback If `@other()` is at the end
+ * @param {OtherTypeCallback} [otherTypeCallback] If `@other()` is at the end
  *   of one's query, this will be invoked with the value of the item, its
  *   path, its parent, and its parent's property name, and it should return
  *   a boolean indicating whether the supplied value belongs to the "other"
