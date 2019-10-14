@@ -230,11 +230,17 @@
         }
 
         return 'var ' + func + '=' + fString + ';' + s;
-      }, ''); // Remove last semi so `return` will be inserted before
+      }, '');
+      expr = funcString + expr; // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
+
+      if (!expr.match(/(["'])use strict\1/) && !keys.includes('arguments')) {
+        expr = 'var arguments = undefined;' + expr;
+      } // Remove last semi so `return` will be inserted before
       //  the previous one instead, allowing for the return
       //  of a bare ending expression
 
-      expr = (funcString + expr).replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
+
+      expr = expr.replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
 
       var lastStatementEnd = expr.lastIndexOf(';');
       var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func

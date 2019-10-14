@@ -72,10 +72,19 @@ const vm = supportsNodeVM()
                 return 'var ' + func + '=' + fString + ';' + s;
             }, '');
 
+            expr = funcString + expr;
+
+            // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
+            if (!expr.match(/(['"])use strict\1/u) &&
+                !keys.includes('arguments')
+            ) {
+                expr = 'var arguments = undefined;' + expr;
+            }
+
             // Remove last semi so `return` will be inserted before
             //  the previous one instead, allowing for the return
             //  of a bare ending expression
-            expr = (funcString + expr).replace(/;\s*$/u, '');
+            expr = expr.replace(/;\s*$/u, '');
 
             // Insert `return`
             const lastStatementEnd = expr.lastIndexOf(';');
