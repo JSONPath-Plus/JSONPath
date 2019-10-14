@@ -1,6 +1,5 @@
-/* eslint-disable no-eval, prefer-named-capture-group */
+/* eslint-disable prefer-named-capture-group */
 // Disabled `prefer-named-capture-group` due to https://github.com/babel/babel/issues/8951#issuecomment-508045524
-const globalEval = eval;
 // Only Node.JS has a process variable that is of [[Class]] process
 const supportsNodeVM = function () {
     try {
@@ -59,21 +58,34 @@ const vm = supportsNodeVM()
             moveToAnotherArray(keys, funcs, (key) => {
                 return typeof context[key] === 'function';
             });
-            const code = funcs.reduce((s, func) => {
+            // Todo[engine:node@>=8]: Use the next line instead of the
+            //  succeeding
+            // const values = Object.values(context);
+            const values = keys.map((vr, i) => {
+                return context[vr];
+            });
+            const funcString = funcs.reduce((s, func) => {
                 let fString = context[func].toString();
                 if (!(/function/u).exec(fString)) {
                     fString = 'function ' + fString;
                 }
                 return 'var ' + func + '=' + fString + ';' + s;
-            }, '') + keys.reduce((s, vr) => {
-                return 'var ' + vr + '=' + JSON.stringify(context[vr]).replace(
-                    // http://www.thespanner.co.uk/2011/07/25/the-json-specification-is-now-wrong/
-                    /\u2028|\u2029/gu, (m) => {
-                        return '\\u202' + (m === '\u2028' ? '8' : '9');
-                    }
-                ) + ';' + s;
-            }, expr);
-            return globalEval(code);
+            }, '');
+
+            // Remove last semi so `return` will be inserted before
+            //  the previous one instead, allowing for the return
+            //  of a bare ending expression
+            expr = (funcString + expr).replace(/;\s*$/u, '');
+
+            // Insert `return`
+            const lastStatementEnd = expr.lastIndexOf(';');
+            const code = (lastStatementEnd > -1
+                ? expr.slice(0, lastStatementEnd + 1) +
+                    ' return ' + expr.slice(lastStatementEnd + 1)
+                : ' return ' + expr);
+
+            // eslint-disable-next-line no-new-func
+            return (new Function(...keys, code))(...values);
         }
     };
 

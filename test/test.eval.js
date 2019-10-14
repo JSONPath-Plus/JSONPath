@@ -63,5 +63,34 @@ describe('JSONPath - Eval', function () {
         });
         assert.deepEqual(expected, result);
     });
+
+    describe('cyclic object', () => {
+        // This is not an eval test, but we put it here for parity with item below
+        it('cyclic object without a sandbox', () => {
+            const circular = {a: {b: {c: 5}}};
+            circular.a.x = circular;
+            const expected = circular.a.b;
+            const result = jsonpath({
+                json: circular,
+                path: '$.a.b',
+                wrap: false
+            });
+            assert.deepEqual(expected, result);
+        });
+        it('cyclic object in a sandbox', () => {
+            const circular = {category: 'fiction'};
+            circular.recurse = circular;
+            const expected = json.store.books;
+            const result = jsonpath({
+                json,
+                path: '$..[?(@.category === aCircularReference.category)]',
+                sandbox: {
+                    aCircularReference: circular
+                },
+                wrap: false
+            });
+            assert.deepEqual(expected, result);
+        });
+    });
 });
 }());

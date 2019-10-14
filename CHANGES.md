@@ -3,6 +3,8 @@
 ## 1.2.0 (October 13, 2019)
 
 - Enhancement: Add `@root` filter selector
+- Enhancement: Use more efficient `new Function` over `eval`;
+    also allows use of cyclic context objects
 - npm: Update devDeps and `package-lock.json`
 
 ## 1.1.0 (September 26, 2019)

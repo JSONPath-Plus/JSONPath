@@ -139,10 +139,29 @@
     return _assertThisInitialized(self);
   }
 
-  /* eslint-disable no-eval, prefer-named-capture-group */
-  // Disabled `prefer-named-capture-group` due to https://github.com/babel/babel/issues/8951#issuecomment-508045524
-  var globalEval = eval; // Only Node.JS has a process variable that is of [[Class]] process
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+  }
 
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+      return arr2;
+    }
+  }
+
+  function _iterableToArray(iter) {
+    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance");
+  }
+
+  /* eslint-disable prefer-named-capture-group */
+  // Disabled `prefer-named-capture-group` due to https://github.com/babel/babel/issues/8951#issuecomment-508045524
+  // Only Node.JS has a process variable that is of [[Class]] process
   var supportsNodeVM = function supportsNodeVM() {
     try {
       return Object.prototype.toString.call(global.process) === '[object process]';
@@ -196,8 +215,14 @@
       var funcs = [];
       moveToAnotherArray(keys, funcs, function (key) {
         return typeof context[key] === 'function';
+      }); // Todo[engine:node@>=8]: Use the next line instead of the
+      //  succeeding
+      // const values = Object.values(context);
+
+      var values = keys.map(function (vr, i) {
+        return context[vr];
       });
-      var code = funcs.reduce(function (s, func) {
+      var funcString = funcs.reduce(function (s, func) {
         var fString = context[func].toString();
 
         if (!/function/.exec(fString)) {
@@ -205,13 +230,16 @@
         }
 
         return 'var ' + func + '=' + fString + ';' + s;
-      }, '') + keys.reduce(function (s, vr) {
-        return 'var ' + vr + '=' + JSON.stringify(context[vr]).replace( // http://www.thespanner.co.uk/2011/07/25/the-json-specification-is-now-wrong/
-        /\u2028|\u2029/g, function (m) {
-          return "\\u202" + (m === "\u2028" ? '8' : '9');
-        }) + ';' + s;
-      }, expr);
-      return globalEval(code);
+      }, ''); // Remove last semi so `return` will be inserted before
+      //  the previous one instead, allowing for the return
+      //  of a bare ending expression
+
+      expr = (funcString + expr).replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
+
+      var lastStatementEnd = expr.lastIndexOf(';');
+      var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func
+
+      return _construct(Function, _toConsumableArray(keys).concat([code])).apply(void 0, _toConsumableArray(values));
     }
   };
   /**
@@ -280,6 +308,7 @@
   * @param {string|PlainObject} preferredOutput
   * @param {"value"|"property"} type
   * @param {ReturnObject} fullRetObj
+  * @returns {void}
   */
 
   /**
@@ -288,16 +317,35 @@
   * @param {string} path
   * @param {PlainObject|GenericArray} parent
   * @param {string} parentPropName
+  * @returns {boolean}
   */
 
   /**
-   * @param {PlainObject} [opts] If present, must be an object
-   * @param {string} expr JSON path to evaluate
-   * @param {JSON} obj JSON object to evaluate against
-   * @param {JSONPathCallback} callback Passed 3 arguments: 1) desired payload
+   * @typedef {PlainObject} JSONPathOptions
+   * @property {JSON} json
+   * @property {string|string[]} path
+   * @property {"value"|"path"|"pointer"|"parent"|"parentProperty"|"all"}
+   *   [resultType="value"]
+   * @property {boolean} [flatten=false]
+   * @property {boolean} [wrap=true]
+   * @property {PlainObject} [sandbox={}]
+   * @property {boolean} [preventEval=false]
+   * @property {PlainObject|GenericArray|null} [parent=null]
+   * @property {string|null} [parentProperty=null]
+   * @property {JSONPathCallback} [callback]
+   * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
+   *   function which throws on encountering `@other`
+   * @property {boolean} [autostart=true]
+   */
+
+  /**
+   * @param {string|JSONPathOptions} opts If a string, will be treated as `expr`
+   * @param {string} [expr] JSON path to evaluate
+   * @param {JSON} [obj] JSON object to evaluate against
+   * @param {JSONPathCallback} [callback] Passed 3 arguments: 1) desired payload
    *     per `resultType`, 2) `"value"|"property"`, 3) Full returned object with
    *     all payloads
-   * @param {OtherTypeCallback} otherTypeCallback If `@other()` is at the end
+   * @param {OtherTypeCallback} [otherTypeCallback] If `@other()` is at the end
    *   of one's query, this will be invoked with the value of the item, its
    *   path, its parent, and its parent's property name, and it should return
    *   a boolean indicating whether the supplied value belongs to the "other"
