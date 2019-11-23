@@ -216,11 +216,10 @@ function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
         callback = obj;
         obj = expr;
         expr = opts;
-        opts = {};
+        opts = null;
     }
+    const optObj = opts && typeof opts === 'object';
     opts = opts || {};
-    const objArgs = hasOwnProp.call(opts, 'json') &&
-        hasOwnProp.call(opts, 'path');
     this.json = opts.json || obj;
     this.path = opts.path || expr;
     this.resultType = (opts.resultType && opts.resultType.toLowerCase()) ||
@@ -235,17 +234,22 @@ function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
     this.otherTypeCallback = opts.otherTypeCallback ||
         otherTypeCallback ||
         function () {
-            throw new Error(
+            throw new TypeError(
                 'You must supply an otherTypeCallback callback option ' +
                 'with the @other() operator.'
             );
         };
 
     if (opts.autostart !== false) {
-        const ret = this.evaluate({
-            path: (objArgs ? opts.path : expr),
-            json: (objArgs ? opts.json : obj)
-        });
+        const args = {
+            path: (optObj ? opts.path : expr)
+        };
+        if (!optObj) {
+            args.json = obj;
+        } else if ('json' in opts) {
+            args.json = opts.json;
+        }
+        const ret = this.evaluate(args);
         if (!ret || typeof ret !== 'object') {
             throw new NewError(ret);
         }
@@ -272,8 +276,14 @@ JSONPath.prototype.evaluate = function (
     expr = expr || this.path;
     if (expr && typeof expr === 'object') {
         if (!expr.path) {
-            throw new Error(
+            throw new TypeError(
                 'You must supply a "path" property when providing an object ' +
+                'argument to JSONPath.evaluate().'
+            );
+        }
+        if (!('json' in expr)) {
+            throw new TypeError(
+                'You must supply a "json" property when providing an object ' +
                 'argument to JSONPath.evaluate().'
             );
         }
