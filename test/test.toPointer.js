@@ -1,6 +1,5 @@
 'use strict';
 
-(function () {
 describe('JSONPath - toPointer', function () {
     it('toPointer', () => {
         const expected = '/store/bicycle/color';
@@ -17,4 +16,3 @@ describe('JSONPath - toPointer', function () {
         assert.deepEqual(expected, result);
     });
 });
-}());

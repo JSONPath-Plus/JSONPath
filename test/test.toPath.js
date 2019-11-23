@@ -1,6 +1,5 @@
 'use strict';
 
-(function () {
 describe('JSONPath - toPath*', function () {
     it('toPathString', () => {
         const expected = "$['store']['bicycle']['color']";
@@ -49,4 +48,3 @@ describe('JSONPath - toPath*', function () {
         assert.strictEqual(path, originalPath);
     });
 });
-}());

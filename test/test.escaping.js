@@ -1,18 +1,17 @@
 'use strict';
 
-(function () {
-const json = {
-    '*': 'star',
-    'rest': 'rest',
-    'foo': 'bar'
-};
-
-const jsonMissingSpecial = {
-    'rest': 'rest',
-    'foo': 'bar'
-};
-
 describe('JSONPath - Escaping', function () {
+    const json = {
+        '*': 'star',
+        'rest': 'rest',
+        'foo': 'bar'
+    };
+
+    const jsonMissingSpecial = {
+        'rest': 'rest',
+        'foo': 'bar'
+    };
+
     it('escape *', () => {
         let expected = ['star'];
         let result = jsonpath({json, path: "$['`*']"});
@@ -43,4 +42,3 @@ describe('JSONPath - Escaping', function () {
         assert.deepEqual(expected, result);
     });
 });
-}());

@@ -1,40 +1,39 @@
 'use strict';
 
-(function () {
-const json = {
-    "store": {
-        "book": [{
-            "category": "reference",
-            "author": "Nigel Rees",
-            "title": "Sayings of the Century",
-            "price": 8.95
-        },
-        {
-            "category": "fiction",
-            "author": "Evelyn Waugh",
-            "title": "Sword of Honour",
-            "price": 12.99
-        },
-        {
-            "category": "reference",
-            "author": "Nigel Rees",
-            "application/vnd.wordperfect": "sotc.wpd",
-            "title": "Sayings of the Century"
-        },
-        {
-            "category": "reference",
-            "author": "Nigel Rees",
-            "application~vnd.wordperfect": "sotc.wpd",
-            "title": "Sayings of the Century"
-        }],
-        "bicycle": {
-            "color": "red",
-            "price": 19.95
-        }
-    }
-};
-
 describe('JSONPath - Pointers', function () {
+    const json = {
+        "store": {
+            "book": [{
+                "category": "reference",
+                "author": "Nigel Rees",
+                "title": "Sayings of the Century",
+                "price": 8.95
+            },
+            {
+                "category": "fiction",
+                "author": "Evelyn Waugh",
+                "title": "Sword of Honour",
+                "price": 12.99
+            },
+            {
+                "category": "reference",
+                "author": "Nigel Rees",
+                "application/vnd.wordperfect": "sotc.wpd",
+                "title": "Sayings of the Century"
+            },
+            {
+                "category": "reference",
+                "author": "Nigel Rees",
+                "application~vnd.wordperfect": "sotc.wpd",
+                "title": "Sayings of the Century"
+            }],
+            "bicycle": {
+                "color": "red",
+                "price": 19.95
+            }
+        }
+    };
+
     it('array', () => {
         const expected = [
             '/store/book/0/price',
@@ -62,4 +61,3 @@ describe('JSONPath - Pointers', function () {
         assert.deepEqual(expected, result);
     });
 });
-}());

@@ -1,21 +1,20 @@
 'use strict';
 
-(function () {
-const t1 = {
-    simpleString: "simpleString",
-    "@": "@asPropertyName",
-    "a$a": "$inPropertyName",
-    "$": {
-        "@": "withboth"
-    },
-    a: {
-        b: {
-            c: "food"
-        }
-    }
-};
-
 describe('JSONPath - At and Dollar sign', function () {
+    const t1 = {
+        simpleString: "simpleString",
+        "@": "@asPropertyName",
+        "a$a": "$inPropertyName",
+        "$": {
+            "@": "withboth"
+        },
+        a: {
+            b: {
+                c: "food"
+            }
+        }
+    };
+
     it('test undefined, null', () => {
         assert.strictEqual(null, jsonpath({json: {a: null}, path: '$.a', wrap: false}));
         assert.strictEqual(undefined, jsonpath({json: undefined, path: 'foo'}));
@@ -33,4 +32,3 @@ describe('JSONPath - At and Dollar sign', function () {
         assert.strictEqual(undefined, jsonpath({json: t1, path: '\\@'})[1]);
     });
 });
-}());

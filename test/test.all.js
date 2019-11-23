@@ -1,16 +1,15 @@
 'use strict';
 
-(function () {
-const json = {
-    "name": "root",
-    "children": [
-        {"name": "child1", "children": [{"name": "child1_1"}, {"name": "child1_2"}]},
-        {"name": "child2", "children": [{"name": "child2_1"}]},
-        {"name": "child3", "children": [{"name": "child3_1"}, {"name": "child3_2"}]}
-    ]
-};
-
 describe('JSONPath - All', function () {
+    const json = {
+        "name": "root",
+        "children": [
+            {"name": "child1", "children": [{"name": "child1_1"}, {"name": "child1_2"}]},
+            {"name": "child2", "children": [{"name": "child2_1"}]},
+            {"name": "child3", "children": [{"name": "child3_1"}, {"name": "child3_2"}]}
+        ]
+    };
+
     it('simple parent selection, return both path and value', () => {
         const result = jsonpath({json, path: '$.children[0]^', resultType: 'all'});
         assert.deepEqual([{path: "$['children']", value: json.children, parent: json, parentProperty: 'children', pointer: '/children'}], result);
@@ -40,4 +39,3 @@ describe('JSONPath - All', function () {
         assert.deepEqual([], result);
     });
 });
-}());
