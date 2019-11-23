@@ -1,5 +1,20 @@
 # CHANGES for jsonpath-plus
 
+## 2.0.0 (November 23, 2019)
+
+- Breaking change: Throw `TypeError` instead of `Error` for missing
+    `otherTypeCallback` when using `@other`
+- Breaking change: Throw `TypeError` instead of `Error` for missing `path`
+- Enhancement: Throw `TypeError` for missing `json` (fixes #110)
+- Enhancement: Use more efficient `new Function` over `eval`;
+    also allows use of cyclic context objects
+- Maintenance: Add `.editorconfig`
+- Docs: Document options in jsdoc; add return values to callbacks;
+    fix constructor doc sig.
+- Testing: Add test for missing `path` or `json`
+- Testing: Remove unneeded closures
+- npm: Update devDeps
+
 ## 1.2.0 (October 13, 2019)
 
 - Enhancement: Add `@root` filter selector
