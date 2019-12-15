@@ -328,7 +328,7 @@ JSONPath.prototype.evaluate = function (
         .filter(function (ea) { return ea && !ea.isParentSelector; });
 
     if (!result.length) { return wrap ? [] : undefined; }
-    if (result.length === 1 && !wrap && !Array.isArray(result[0].value)) {
+    if (!wrap && this.isSingularResult(result, exprList)) {
         return this._getPreferredOutput(result[0]);
     }
     return result.reduce(function (rslt, ea) {
@@ -362,6 +362,45 @@ JSONPath.prototype._getPreferredOutput = function (ea) {
     case 'pointer':
         return JSONPath.toPointer(ea.path);
     }
+};
+/**
+ * Detect filter expressions.
+ * @param {string}loc
+ * @returns {boolean}
+ */
+JSONPath.prototype.isFilterExpr = function (loc) {
+    return loc.indexOf('?(') === 0;
+};
+/**
+ * Detects operators in the expression list that require an array result.
+ * an array of results. If no such operator exists, the result
+ * will be treated as a singular value.
+ *
+ * For example, the following paths return whatever is found at the specified
+ * location, whether that is a scalar, object, or array:
+ *   "store.book[0]" - specific book
+ *   "store.bicycle.red" - single property of a single object
+ *
+ * Conversely, the following paths will always result in an array,
+ * because they can generate multiple results depending on the dataset:
+ *   $.store.book[0][category,author] - category,author will return 2 values
+ *   $..book - ".." will recurse through the store object
+ *   $.store.book[1:2] - indicates a range within the array
+ *   $.store.book[*] - wild card indicates multiple results
+ *   $.store.book[?(@.isbn)] - filtering
+ */
+/**
+ * @param {PlainObject} result - json path result
+ * @param {array} exprList - array of json path expressions
+ * @returns {boolean}
+ */
+JSONPath.prototype.isSingularResult = function (result, exprList) {
+    return (result.length === 1 &&
+             !exprList.includes('*') &&
+             !exprList.includes('..') &&
+              exprList.every((loc) => !this.isFilterExpr(loc)) &&
+              exprList.every((loc) => !loc.includes(',')) &&
+              exprList.every((loc) => !loc.includes(':')));
 };
 
 JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
@@ -421,7 +460,6 @@ JSONPath.prototype._trace = function (
             ret.push(elems);
         }
     }
-
     if ((typeof loc !== 'string' || literalPriority) && val &&
         hasOwnProp.call(val, loc)
     ) { // simple case--directly follow property
@@ -479,7 +517,7 @@ JSONPath.prototype._trace = function (
         addRet(
             this._slice(loc, x, val, path, parent, parentPropName, callback)
         );
-    } else if (loc.indexOf('?(') === 0) { // [?(expr)] (filtering)
+    } else if (this.isFilterExpr(loc)) { // [?(expr)] (filtering)
         if (this.currPreventEval) {
             throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
         }

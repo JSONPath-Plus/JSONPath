@@ -24,9 +24,9 @@ describe('JSONPath - Properties', function () {
 
     it('At signs within properties', () => {
         let result = jsonpath({json, path: "$.datafield[?(@.tag=='035')]", wrap: false});
-        assert.deepEqual(json.datafield[0], result);
+        assert.deepEqual([json.datafield[0]], result);
         result = jsonpath({json, path: "$.datafield[?(@['@tag']=='042')]", wrap: false});
-        assert.deepEqual(json.datafield[1], result);
+        assert.deepEqual([json.datafield[1]], result);
         result = jsonpath({json, path: "$.datafield[2][(@['@tag'])]", wrap: false});
         assert.deepEqual(json.datafield[2]['045'], result);
     });
