@@ -93,6 +93,17 @@ describe('JSONPath - Examples', function () {
         assert.deepEqual(expected, result);
     });
 
+    it('range of property of entire tree w/ single element result', () => {
+        const book = json.store.book[0];
+        const input = {books: [book]};
+        const expected = [book];
+        let result = jsonpath({json: input, path: '$.books[0,1]', wrap: false});
+        assert.deepEqual(expected, result);
+
+        result = jsonpath({json: input, path: '$.books[:1]', wrap: false});
+        assert.deepEqual(expected, result);
+    });
+
     it('categories and authors of all books', () => {
         const expected = ['reference', 'Nigel Rees'];
         const result = jsonpath({json, path: '$..book[0][category,author]'});
@@ -103,6 +114,14 @@ describe('JSONPath - Examples', function () {
         const books = json.store.book;
         const expected = [books[2], books[3]];
         const result = jsonpath({json, path: '$..book[?(@.isbn)]'});
+        assert.deepEqual(expected, result);
+    });
+
+    it('filter all properties if sub property exists, of single element array', () => {
+        const book = json.store.book[3];
+        const input = {books: [book]};
+        const expected = [book];
+        const result = jsonpath({json: input, path: '$.books[?(@.isbn)]', wrap: false});
         assert.deepEqual(expected, result);
     });
 

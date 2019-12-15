@@ -46,4 +46,12 @@ describe('JSONPath - Intermixed Array', function () {
         const result = jsonpath({json, path: '$.store..price', flatten: true});
         assert.deepEqual(expected, result);
     });
+
+    it('all sub properties of single element arr', () => {
+        const book = json.store.book[0];
+        const input = {book};
+        const expected = [book.title];
+        const result = jsonpath({json: input, path: '$..title', flatten: true, wrap: false});
+        assert.deepEqual(expected, result);
+    });
 });

@@ -25,7 +25,7 @@ describe('JSONPath - Eval', function () {
     };
 
     it('multi statement eval', () => {
-        const expected = json.store.books[0];
+        const expected = [json.store.books[0]];
         const selector = '$..[?(' +
                      'var sum = @.price && @.price[0]+@.price[1];' +
                      'sum > 20;)]';
@@ -34,13 +34,13 @@ describe('JSONPath - Eval', function () {
     });
 
     it('accessing current path', () => {
-        const expected = json.store.books[1];
+        const expected = [json.store.books[1]];
         const result = jsonpath({json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false});
         assert.deepEqual(expected, result);
     });
 
     it('sandbox', () => {
-        const expected = json.store.book;
+        const expected = [json.store.book];
         const result = jsonpath({
             json,
             sandbox: {category: 'reference'},
@@ -50,7 +50,7 @@ describe('JSONPath - Eval', function () {
     });
 
     it('sandbox (with parsing function)', () => {
-        const expected = json.store.book;
+        const expected = [json.store.book];
         const result = jsonpath({
             json,
             sandbox: {
