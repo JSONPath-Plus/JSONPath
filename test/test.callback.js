@@ -37,7 +37,7 @@ describe('JSONPath - Callback', function () {
     };
 
     it('Callback', () => {
-        const expected = ['value', json.store.bicycle, {path: "$['store']['bicycle']", value: json.store.bicycle, parent: json.store, parentProperty: 'bicycle'}];
+        const expected = ['value', json.store.bicycle, {path: "$['store']['bicycle']", value: json.store.bicycle, parent: json.store, parentProperty: 'bicycle', hasArrExpr: undefined}];
         let result;
         /**
          *
