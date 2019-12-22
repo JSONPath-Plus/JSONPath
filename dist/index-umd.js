@@ -486,7 +486,7 @@
       return wrap ? [] : undefined;
     }
 
-    if (!wrap && this.isSingularResult(result, exprList)) {
+    if (!wrap && result.length === 1 && !result[0].hasArrExpr) {
       return this._getPreferredOutput(result[0]);
     }
 
@@ -528,52 +528,6 @@
         return JSONPath.toPointer(ea.path);
     }
   };
-  /**
-   * Detect filter expressions.
-   * @param {string}loc
-   * @returns {boolean}
-   */
-
-
-  JSONPath.prototype.isFilterExpr = function (loc) {
-    return loc.indexOf('?(') === 0;
-  };
-  /**
-   * Detects operators in the expression list that require an array result.
-   * an array of results. If no such operator exists, the result
-   * will be treated as a singular value.
-   *
-   * For example, the following paths reference singular results:
-   *   "store.book[0]" - specific book
-   *   "store.bicycle.red" - single property of a single object
-   *
-   * Conversely, the following paths will always result in an array,
-   * because they can generate multiple results depending on the dataset:
-   *   $.store.book[0][category,author] - category,author will return 2 values
-   *   $..book - ".." will recurse through the store object
-   *   $.store.book[1:2] - indicates a range within the array
-   *   $.store.book[*] - wild card indicates multiple results
-   *   $.store.book[?(@.isbn)] - filtering
-   */
-
-  /**
-   * @param {PlainObject} result - json path result
-   * @param {array} exprList - array of json path expressions
-   * @returns {boolean}
-   */
-
-
-  JSONPath.prototype.isSingularResult = function (result, exprList) {
-    var _this2 = this;
-
-    return result.length === 1 && !exprList.includes('*') && !exprList.includes('..') && exprList.every(function (loc) {
-      return !_this2.isFilterExpr(loc);
-    }) && exprList.every(function (loc) {
-      return !loc.includes(',');
-    }) && exprList.every(function (loc) {
-      return !loc.includes(':');
-    });
-  };
 
   JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
     if (callback) {
@@ -593,11 +547,12 @@
    * @param {string} parentPropName
    * @param {JSONPathCallback} callback
    * @param {boolean} literalPriority
+   * @param {boolean} hasArrExpr
    * @returns {ReturnObject|ReturnObject[]}
    */
 
 
-  JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, literalPriority) {
+  JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, hasArrExpr, literalPriority) {
     // No expr to follow? return path and value as the result of
     //  this trace branch
     var retObj;
@@ -608,7 +563,8 @@
         path: path,
         value: val,
         parent: parent,
-        parentProperty: parentPropName
+        parentProperty: parentPropName,
+        hasArrExpr: hasArrExpr
       };
 
       this._handleCallback(retObj, callback, 'value');
@@ -642,16 +598,16 @@
 
     if ((typeof loc !== 'string' || literalPriority) && val && hasOwnProp.call(val, loc)) {
       // simple case--directly follow property
-      addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback));
+      addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr));
     } else if (loc === '*') {
       // all child properties
       this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
-        addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true));
+        addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true, true));
       });
     } else if (loc === '..') {
       // all descendent parent properties
       // Check remaining expression with val's immediate children
-      addRet(this._trace(x, val, path, parent, parentPropName, callback));
+      addRet(this._trace(x, val, path, parent, parentPropName, callback, hasArrExpr));
 
       this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
         // We don't join m and x here because we only want parents,
@@ -659,7 +615,7 @@
         if (_typeof(v[m]) === 'object') {
           // Keep going with recursive descent on val's
           //   object children
-          addRet(that._trace(unshift(l, _x), v[m], push(p, m), v, m, cb));
+          addRet(that._trace(unshift(l, _x), v[m], push(p, m), v, m, cb, true));
         }
       }); // The parent sel computation is handled in the frame above using the
       // ancestor object of val
@@ -686,11 +642,11 @@
       return retObj;
     } else if (loc === '$') {
       // root only
-      addRet(this._trace(x, val, path, null, null, callback));
+      addRet(this._trace(x, val, path, null, null, callback, hasArrExpr));
     } else if (/^(\x2D?[0-9]*):(\x2D?[0-9]*):?([0-9]*)$/.test(loc)) {
       // [start:end:step]  Python slice syntax
       addRet(this._slice(loc, x, val, path, parent, parentPropName, callback));
-    } else if (this.isFilterExpr(loc)) {
+    } else if (loc.indexOf('?(') === 0) {
       // [?(expr)] (filtering)
       if (this.currPreventEval) {
         throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
@@ -698,7 +654,7 @@
 
       this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
         if (that._eval(l.replace(/^\?\(((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?)\)$/, '$1'), v[m], m, p, par, pr)) {
-          addRet(that._trace(unshift(m, _x), v, p, par, pr, cb));
+          addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true));
         }
       });
     } else if (loc[0] === '(') {
@@ -710,7 +666,7 @@
       //  parent of the property to which this expression will resolve
 
 
-      addRet(this._trace(unshift(this._eval(loc, val, path[path.length - 1], path.slice(0, -1), parent, parentPropName), x), val, path, parent, parentPropName, callback));
+      addRet(this._trace(unshift(this._eval(loc, val, path[path.length - 1], path.slice(0, -1), parent, parentPropName), x), val, path, parent, parentPropName, callback, hasArrExpr));
     } else if (loc[0] === '@') {
       // value type: @boolean(), etc.
       var addType = false;
@@ -802,7 +758,7 @@
 
     } else if (loc[0] === '`' && val && hasOwnProp.call(val, loc.slice(1))) {
       var locProp = loc.slice(1);
-      addRet(this._trace(x, val[locProp], push(path, locProp), val, locProp, callback, true));
+      addRet(this._trace(x, val[locProp], push(path, locProp), val, locProp, callback, hasArrExpr, true));
     } else if (loc.includes(',')) {
       // [name1,name2,...]
       var parts = loc.split(',');
@@ -813,7 +769,7 @@
       try {
         for (var _iterator = parts[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var part = _step.value;
-          addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback));
+          addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback, true));
         } // simple case--directly follow property
 
       } catch (err) {
@@ -831,7 +787,7 @@
         }
       }
     } else if (!literalPriority && val && hasOwnProp.call(val, loc)) {
-      addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, true));
+      addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr, true));
     } // We check the resulting values for parent selections. For parent
     // selections we discard the value object and continue the trace with the
     // current val object
@@ -842,7 +798,7 @@
         var rett = ret[t];
 
         if (rett.isParentSelector) {
-          var tmp = that._trace(rett.expr, val, rett.path, parent, parentPropName, callback);
+          var tmp = that._trace(rett.expr, val, rett.path, parent, parentPropName, callback, hasArrExpr);
 
           if (Array.isArray(tmp)) {
             ret[t] = tmp[0];
@@ -893,7 +849,7 @@
     var ret = [];
 
     for (var i = start; i < end; i += step) {
-      var tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback);
+      var tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback, true);
 
       if (Array.isArray(tmp)) {
         // This was causing excessive stack size in Node (with or

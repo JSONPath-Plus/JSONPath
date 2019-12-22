@@ -328,7 +328,7 @@ JSONPath.prototype.evaluate = function (
         .filter(function (ea) { return ea && !ea.isParentSelector; });
 
     if (!result.length) { return wrap ? [] : undefined; }
-    if (!wrap && this.isSingularResult(result, exprList)) {
+    if (!wrap && result.length === 1 && !result[0].hasArrExpr) {
         return this._getPreferredOutput(result[0]);
     }
     return result.reduce(function (rslt, ea) {
@@ -363,45 +363,6 @@ JSONPath.prototype._getPreferredOutput = function (ea) {
         return JSONPath.toPointer(ea.path);
     }
 };
-/**
- * Detect filter expressions.
- * @param {string}loc
- * @returns {boolean}
- */
-JSONPath.prototype.isFilterExpr = function (loc) {
-    return loc.indexOf('?(') === 0;
-};
-/**
- * Detects operators in the expression list that require an array result.
- * an array of results. If no such operator exists, the result
- * will be treated as a singular value.
- *
- * For example, the following paths return whatever is found at the specified
- * location, whether that is a scalar, object, or array:
- *   "store.book[0]" - specific book
- *   "store.bicycle.red" - single property of a single object
- *
- * Conversely, the following paths will always result in an array,
- * because they can generate multiple results depending on the dataset:
- *   $.store.book[0][category,author] - category,author will return 2 values
- *   $..book - ".." will recurse through the store object
- *   $.store.book[1:2] - indicates a range within the array
- *   $.store.book[*] - wild card indicates multiple results
- *   $.store.book[?(@.isbn)] - filtering
- */
-/**
- * @param {PlainObject} result - json path result
- * @param {array} exprList - array of json path expressions
- * @returns {boolean}
- */
-JSONPath.prototype.isSingularResult = function (result, exprList) {
-    return (result.length === 1 &&
-             !exprList.includes('*') &&
-             !exprList.includes('..') &&
-              exprList.every((loc) => !this.isFilterExpr(loc)) &&
-              exprList.every((loc) => !loc.includes(',')) &&
-              exprList.every((loc) => !loc.includes(':')));
-};
 
 JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
     if (callback) {
@@ -422,18 +383,26 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
  * @param {PlainObject|GenericArray} parent
  * @param {string} parentPropName
  * @param {JSONPathCallback} callback
+ * @param {boolean} hasArrExpr
  * @param {boolean} literalPriority
  * @returns {ReturnObject|ReturnObject[]}
  */
 JSONPath.prototype._trace = function (
-    expr, val, path, parent, parentPropName, callback, literalPriority
+    expr, val, path, parent, parentPropName, callback, hasArrExpr,
+    literalPriority
 ) {
     // No expr to follow? return path and value as the result of
     //  this trace branch
     let retObj;
     const that = this;
     if (!expr.length) {
-        retObj = {path, value: val, parent, parentProperty: parentPropName};
+        retObj = {
+            path,
+            value: val,
+            parent,
+            parentProperty: parentPropName,
+            hasArrExpr
+        };
         this._handleCallback(retObj, callback, 'value');
         return retObj;
     }
@@ -463,18 +432,21 @@ JSONPath.prototype._trace = function (
     if ((typeof loc !== 'string' || literalPriority) && val &&
         hasOwnProp.call(val, loc)
     ) { // simple case--directly follow property
-        addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback));
+        addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback,
+            hasArrExpr));
     } else if (loc === '*') { // all child properties
         this._walk(
             loc, x, val, path, parent, parentPropName, callback,
             function (m, l, _x, v, p, par, pr, cb) {
-                addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true));
+                addRet(that._trace(unshift(m, _x), v, p, par, pr, cb,
+                    true, true));
             }
         );
     } else if (loc === '..') { // all descendent parent properties
         // Check remaining expression with val's immediate children
         addRet(
-            this._trace(x, val, path, parent, parentPropName, callback)
+            this._trace(x, val, path, parent, parentPropName, callback,
+                hasArrExpr)
         );
         this._walk(
             loc, x, val, path, parent, parentPropName, callback,
@@ -485,7 +457,7 @@ JSONPath.prototype._trace = function (
                     // Keep going with recursive descent on val's
                     //   object children
                     addRet(that._trace(
-                        unshift(l, _x), v[m], push(p, m), v, m, cb
+                        unshift(l, _x), v[m], push(p, m), v, m, cb, true
                     ));
                 }
             }
@@ -512,12 +484,12 @@ JSONPath.prototype._trace = function (
         this._handleCallback(retObj, callback, 'property');
         return retObj;
     } else if (loc === '$') { // root only
-        addRet(this._trace(x, val, path, null, null, callback));
+        addRet(this._trace(x, val, path, null, null, callback, hasArrExpr));
     } else if ((/^(-?\d*):(-?\d*):?(\d*)$/u).test(loc)) { // [start:end:step]  Python slice syntax
         addRet(
             this._slice(loc, x, val, path, parent, parentPropName, callback)
         );
-    } else if (this.isFilterExpr(loc)) { // [?(expr)] (filtering)
+    } else if (loc.indexOf('?(') === 0) { // [?(expr)] (filtering)
         if (this.currPreventEval) {
             throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
         }
@@ -525,7 +497,8 @@ JSONPath.prototype._trace = function (
             loc, x, val, path, parent, parentPropName, callback,
             function (m, l, _x, v, p, par, pr, cb) {
                 if (that._eval(l.replace(/^\?\((.*?)\)$/u, '$1'), v[m], m, p, par, pr)) {
-                    addRet(that._trace(unshift(m, _x), v, p, par, pr, cb));
+                    addRet(that._trace(unshift(m, _x), v, p, par, pr, cb,
+                        true));
                 }
             }
         );
@@ -542,7 +515,7 @@ JSONPath.prototype._trace = function (
                 path.slice(0, -1), parent, parentPropName
             ),
             x
-        ), val, path, parent, parentPropName, callback));
+        ), val, path, parent, parentPropName, callback, hasArrExpr));
     } else if (loc[0] === '@') { // value type: @boolean(), etc.
         let addType = false;
         const valueType = loc.slice(1, -2);
@@ -607,19 +580,22 @@ JSONPath.prototype._trace = function (
     } else if (loc[0] === '`' && val && hasOwnProp.call(val, loc.slice(1))) {
         const locProp = loc.slice(1);
         addRet(this._trace(
-            x, val[locProp], push(path, locProp), val, locProp, callback, true
+            x, val[locProp], push(path, locProp), val, locProp, callback,
+            hasArrExpr, true
         ));
     } else if (loc.includes(',')) { // [name1,name2,...]
         const parts = loc.split(',');
         for (const part of parts) {
             addRet(this._trace(
-                unshift(part, x), val, path, parent, parentPropName, callback
+                unshift(part, x), val, path, parent, parentPropName, callback,
+                true
             ));
         }
     // simple case--directly follow property
     } else if (!literalPriority && val && hasOwnProp.call(val, loc)) {
         addRet(
-            this._trace(x, val[loc], push(path, loc), val, loc, callback, true)
+            this._trace(x, val[loc], push(path, loc), val, loc, callback,
+                hasArrExpr, true)
         );
     }
 
@@ -631,7 +607,8 @@ JSONPath.prototype._trace = function (
             const rett = ret[t];
             if (rett.isParentSelector) {
                 const tmp = that._trace(
-                    rett.expr, val, rett.path, parent, parentPropName, callback
+                    rett.expr, val, rett.path, parent, parentPropName, callback,
+                    hasArrExpr
                 );
                 if (Array.isArray(tmp)) {
                     ret[t] = tmp[0];
@@ -679,7 +656,7 @@ JSONPath.prototype._slice = function (
     const ret = [];
     for (let i = start; i < end; i += step) {
         const tmp = this._trace(
-            unshift(i, expr), val, path, parent, parentPropName, callback
+            unshift(i, expr), val, path, parent, parentPropName, callback, true
         );
         if (Array.isArray(tmp)) {
             // This was causing excessive stack size in Node (with or
