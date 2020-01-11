@@ -40,7 +40,7 @@ module.exports = {
           }
       },
       {
-          "files": ["test/**"],
+          "files": ["test/**", "test-helpers/node-env.js"],
           "globals": {
               "assert": "readonly",
               "jsonpath": "readonly",
@@ -67,6 +67,9 @@ module.exports = {
     "quote-props": 0,
     "require-jsdoc": 0,
     // Reenable when no longer having problems
-    "unicorn/no-unsafe-regex": 0
+    "unicorn/no-unsafe-regex": 0,
+    "node/no-unsupported-features/es-syntax": ["error", {
+        ignores: ['regexpNamedCaptureGroups', 'modules']
+    }]
   }
 };

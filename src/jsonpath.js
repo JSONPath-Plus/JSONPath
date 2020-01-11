@@ -21,7 +21,7 @@ const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
 /**
 * @callback ConditionCallback
-* @param item
+* @param {any} item
 * @returns {boolean}
 */
 
@@ -31,7 +31,7 @@ const {hasOwnProperty: hasOwnProp} = Object.prototype;
  * @param {GenericArray} target Array to which to copy
  * @param {ConditionCallback} conditionCb Callback passed the current item;
  *     will move item if evaluates to `true`
- * @returns {undefined}
+ * @returns {void}
  */
 const moveToAnotherArray = function (source, target, conditionCb) {
     const il = source.length;

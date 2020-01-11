@@ -178,7 +178,7 @@
 
   /**
   * @callback ConditionCallback
-  * @param item
+  * @param {any} item
   * @returns {boolean}
   */
 
@@ -188,7 +188,7 @@
    * @param {GenericArray} target Array to which to copy
    * @param {ConditionCallback} conditionCb Callback passed the current item;
    *     will move item if evaluates to `true`
-   * @returns {undefined}
+   * @returns {void}
    */
 
   var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb) {
