@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Errors', function () {
     it('should throw with missing `path`', function () {

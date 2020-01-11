@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Performance', function () {
     const arraySize = 12333,

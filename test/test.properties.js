@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Properties', function () {
     const json = {

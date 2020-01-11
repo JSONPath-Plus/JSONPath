@@ -1,3 +1,6 @@
-'use strict';
-global.jsonpath = require('../').JSONPath;
-global.assert = require('chai').assert;
+import {assert} from 'chai';
+
+import {JSONPath} from '../src/jsonpath.js';
+
+global.jsonpath = JSONPath;
+global.assert = assert;

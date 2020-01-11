@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Pointers', function () {
     const json = {

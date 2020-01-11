@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Escaping', function () {
     const json = {

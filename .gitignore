@@ -8,3 +8,4 @@ reports
 target
 *.log
 docs/ts
+coverage

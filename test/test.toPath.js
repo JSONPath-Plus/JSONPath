@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - toPath*', function () {
     it('toPathString', () => {

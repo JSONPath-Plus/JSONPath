@@ -9,3 +9,5 @@ lgtm.yml
 .idea
 .remarkrc
 docs
+.nyc_output
+coverage

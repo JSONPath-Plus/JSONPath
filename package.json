@@ -69,6 +69,7 @@
     "eslint-plugin-sonarjs": "^0.5.0",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-unicorn": "^15.0.1",
+    "esm": "^3.2.25",
     "mocha": "^7.0.0",
     "node-static": "^0.7.11",
     "nyc": "^15.0.0",
@@ -89,13 +90,32 @@
   "browserslist": [
     "cover 100%"
   ],
+  "nyc": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      ".eslintrc.js",
+      "rollup.config.js",
+      ".idea",
+      "coverage",
+      "dist",
+      "demo",
+      "docs",
+      "test",
+      "test-helpers/node-env.js"
+    ]
+  },
   "scripts": {
     "remark": "remark -q -f .",
     "typescript": "tsc src/jsonpath.d.ts",
     "build-docs": "typedoc --out docs/ts src --includeDeclarations",
     "open-docs": "open-cli http://localhost:8084/docs/ts/ && npm start",
-    "mocha": "mocha --require test-helpers/node-env.js test",
+    "coverage": "open-cli http://localhost:8084/coverage/ && npm start",
+    "mocha": "mocha --require esm --require test-helpers/node-env.js test",
     "test": "npm run rollup && npm run mocha",
+    "test-cov": "nyc --all npm run mocha",
     "open": "open-cli http://localhost:8084/demo/ && npm start",
     "start": "static -p 8084",
     "rollup": "rollup -c",

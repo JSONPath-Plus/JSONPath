@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Intermixed Array', function () {
     // tests based on examples at http://goessner.net/articles/jsonpath/

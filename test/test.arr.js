@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Array', function () {
     const json = {

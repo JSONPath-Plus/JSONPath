@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Path expressions', function () {
     // tests based on examples at http://goessner.net/articles/JsonPath/

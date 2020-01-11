@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Callback', function () {
     const json = {

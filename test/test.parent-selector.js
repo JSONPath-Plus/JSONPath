@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Parent selector', function () {
     const json = {

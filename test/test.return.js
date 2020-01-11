@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Return', function () {
     const json = {"store": {

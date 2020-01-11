@@ -40,22 +40,15 @@ module.exports = {
           }
       },
       {
-          "files": ["test/**", "test-helpers/node-env.js"],
+          "files": ["test/**"],
           "globals": {
               "assert": "readonly",
-              "jsonpath": "readonly",
-              "require": "readonly",
-              "module": "readonly"
-          },
-          "parserOptions": {
-              "sourceType": "script"
+              "jsonpath": "readonly"
           },
           "env": {"mocha": true},
           "rules": {
-              "strict": ["error", "global"],
-              "import/no-commonjs": 0,
-              "import/unambiguous": 0,
               "quotes": 0,
+              "import/unambiguous": 0,
               // Todo: Reenable
               "max-len": 0
           }

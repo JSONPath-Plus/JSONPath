@@ -13,42 +13,42 @@
         <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
         <script src="../node_modules/mocha/mocha.js"></script>
         <script src="../node_modules/chai/chai.js"></script>
-
-        <script src="../dist/index-umd.js"></script>
     </head>
     <body>
         <h1>JSONPath Tests</h1>
         <div id="mocha"></div>
-        <script>
-        /* globals chai, JSONPath */
-        'use strict';
+
+        <script type="module">
+        /* globals chai */
+        import {JSONPath} from '../src/jsonpath.js';
+
         mocha.setup('bdd');
         window.assert = chai.assert;
-        window.jsonpath = JSONPath.JSONPath;
+        window.jsonpath = JSONPath;
         mocha.globals(['jsonpath']);
         </script>
-        <script src="test.all.js"></script>
-        <script src="test.arr.js"></script>
-        <script src="test.at_and_dollar.js"></script>
-        <script src="test.callback.js"></script>
-        <script src="test.custom-properties.js"></script>
-        <script src="test.errors.js"></script>
-        <script src="test.escaping.js"></script>
-        <script src="test.eval.js"></script>
-        <script src="test.examples.js"></script>
-        <script src="test.intermixed.arr.js"></script>
-        <script src="test.parent-selector.js"></script>
-        <script src="test.path_expressions.js"></script>
-        <script src="test.performance.js"></script>
-        <script src="test.pointer.js"></script>
-        <script src="test.properties.js"></script>
-        <script src="test.return.js"></script>
-        <script src="test.toPath.js"></script>
-        <script src="test.toPointer.js"></script>
-        <script src="test.type-operators.js"></script>
 
-        <script>
-        'use strict';
+        <script type="module">
+        import './test.all.js';
+        import './test.arr.js';
+        import './test.at_and_dollar.js';
+        import './test.callback.js';
+        import './test.custom-properties.js';
+        import './test.errors.js';
+        import './test.escaping.js';
+        import './test.eval.js';
+        import './test.examples.js';
+        import './test.intermixed.arr.js';
+        import './test.parent-selector.js';
+        import './test.path_expressions.js';
+        import './test.performance.js';
+        import './test.pointer.js';
+        import './test.properties.js';
+        import './test.return.js';
+        import './test.toPath.js';
+        import './test.toPointer.js';
+        import './test.type-operators.js';
+
         mocha.run();
         </script>
     </body>

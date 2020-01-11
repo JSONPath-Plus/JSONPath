@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - At and Dollar sign', function () {
     const t1 = {

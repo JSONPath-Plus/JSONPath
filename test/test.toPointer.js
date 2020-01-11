@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - toPointer', function () {
     it('toPointer', () => {

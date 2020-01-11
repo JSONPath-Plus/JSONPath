@@ -1,4 +1,3 @@
-'use strict';
 
 describe('JSONPath - Eval', function () {
     const json = {
