@@ -65,4 +65,74 @@ describe('JSONPath - Type Operators', function () {
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
         assert.deepEqual(expected, result);
     });
+
+    it('@object()', () => {
+        const jsonMixed = {
+            nested: {
+                a: true,
+                b: null,
+                c: {
+                    d: 7
+                }
+            }
+        };
+        const expected = [jsonMixed.nested, jsonMixed.nested.c];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@object()', flatten: true
+        });
+        assert.deepEqual(expected, result);
+    });
+
+    it('@array()', () => {
+        const jsonMixed = {
+            nested: {
+                a: [3, 4, 5],
+                b: null,
+                c: [
+                    7, [8, 9]
+                ]
+            }
+        };
+        const expected = [
+            jsonMixed.nested.a, jsonMixed.nested.c, jsonMixed.nested.c[1]
+        ];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@array()'
+        });
+        assert.deepEqual(expected, result);
+    });
+
+    it('@boolean()', () => {
+        const jsonMixed = {
+            nested: {
+                a: true,
+                b: null,
+                c: [
+                    7, [false, 9]
+                ]
+            }
+        };
+        const expected = [jsonMixed.nested.a, jsonMixed.nested.c[1][0]];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@boolean()', flatten: true
+        });
+        assert.deepEqual(expected, result);
+    });
+
+    it('@integer()', () => {
+        const jsonMixed = {
+            nested: {
+                a: 50.7,
+                b: null,
+                c: [
+                    42, [false, 73]
+                ]
+            }
+        };
+        const expected = [jsonMixed.nested.c[0], jsonMixed.nested.c[1][1]];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@integer()', flatten: true
+        });
+        assert.deepEqual(expected, result);
+    });
 });
