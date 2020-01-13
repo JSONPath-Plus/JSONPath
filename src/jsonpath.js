@@ -58,7 +58,10 @@ const vm = JSONPath.nodeVMSupported
             moveToAnotherArray(keys, funcs, (key) => {
                 return typeof context[key] === 'function';
             });
-            const values = Object.values(context);
+            const values = keys.map((vr, i) => {
+                return context[vr];
+            });
+
             const funcString = funcs.reduce((s, func) => {
                 let fString = context[func].toString();
                 if (!(/function/u).exec(fString)) {
