@@ -2,6 +2,7 @@
 
 ## 3.0.0 (2020-01-13)
 
+- Breaking change: Expect Node >= 8
 - Fix: wrap: false returning inconsistent data types (@CacheControl)
 - Fix: Ensure throwing with a bad result type
 - Fix: Avoid erring when value before parent selector is falsey
@@ -12,6 +13,7 @@
 - Testing: Add nyc for coverage
 - Testing: Test against source (using `esm`)
 - Testing: Improve coverage (more type operator tests)
+- Testing: Check vm
 - npm: Add `test-cov` script
 - npm: Update devDeps
 

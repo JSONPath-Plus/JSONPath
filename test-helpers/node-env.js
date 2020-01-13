@@ -1,6 +1,6 @@
 import {assert, expect} from 'chai';
 
-/*
+// Test when Node VM is not supported
 const toStr = Object.prototype.toString;
 // eslint-disable-next-line no-extend-native
 Object.prototype.toString = function () {
@@ -10,10 +10,12 @@ Object.prototype.toString = function () {
     }
     return toStr.call(Object.prototype);
 };
-*/
 
-import {JSONPath} from '../src/jsonpath.js';
-
-global.jsonpath = JSONPath;
 global.assert = assert;
 global.expect = expect;
+
+setTimeout(async () => {
+    const {JSONPath} = await import('../src/jsonpath.js');
+    global.jsonpath = JSONPath;
+    run();
+});

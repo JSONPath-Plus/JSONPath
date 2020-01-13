@@ -1,5 +1,6 @@
 module.exports = {
   "extends": ["ash-nazg/sauron-node"],
+  parser: 'babel-eslint',
   "settings": {
       "polyfills": [
           "Array.isArray",
@@ -18,6 +19,7 @@ module.exports = {
           // Apparent bug with `overrides` necessitating this
           "globals": {
               "require": "readonly",
+              "run": "readonly",
               "module": "readonly"
           }
       },
