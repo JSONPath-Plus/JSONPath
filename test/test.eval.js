@@ -60,6 +60,20 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
         });
 
+        it('sandbox (with `arguments`)', () => {
+            const expected = [json.store.book];
+            const selector = "$..[?(@.category === arguments)]";
+            const result = jsonpath({
+                json,
+                path: selector,
+                sandbox: {
+                    arguments: 'reference'
+                },
+                wrap: false
+            });
+            assert.deepEqual(result, expected);
+        });
+
         it('sandbox with function without "function" in string', () => {
             const expected = [json.store.book];
             const result = jsonpath({
