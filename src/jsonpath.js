@@ -468,13 +468,11 @@ JSONPath.prototype._trace = function (
     } else if (loc === '^') {
         // This is not a final endpoint, so we do not invoke the callback here
         this._hasParentSelector = true;
-        return path.length
-            ? {
-                path: path.slice(0, -1),
-                expr: x,
-                isParentSelector: true
-            }
-            : [];
+        return {
+            path: path.slice(0, -1),
+            expr: x,
+            isParentSelector: true
+        };
     } else if (loc === '~') { // property name
         retObj = {
             path: push(path, loc),
@@ -595,7 +593,7 @@ JSONPath.prototype._trace = function (
         }
     // simple case--directly follow property
     } else if (
-        !literalPriority && (val || val === '') && hasOwnProp.call(val, loc)
+        !literalPriority && val && hasOwnProp.call(val, loc)
     ) {
         addRet(
             this._trace(x, val[loc], push(path, loc), val, loc, callback,
