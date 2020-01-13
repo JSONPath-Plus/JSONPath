@@ -12,6 +12,7 @@
     non-array (string), ensure it is converted to an array before
     converting to pointer for `pointer`
 - Enhancement: Allow path as array in non-object signature
+- Docs: Add locally-generated badges for testing, coverage, etc.
 - Linting (ESLint): As per latest ash-nazg
 - Linting (ESLint): Remove redundant "use strict" with switch to ESM
 - Maintenance: 2 sp. for package.json

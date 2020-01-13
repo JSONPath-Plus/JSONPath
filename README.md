@@ -1,3 +1,18 @@
+[![npm](https://img.shields.io/npm/v/jsonpath-plus.svg)](https://www.npmjs.com/package/jsonpath-plus)
+[![Dependencies](https://img.shields.io/david/s3u/JSONPath.svg)](https://david-dm.org/s3u/JSONPath)
+[![devDependencies](https://img.shields.io/david/dev/s3u/JSONPath.svg)](https://david-dm.org/s3u/JSONPath?type=dev)
+
+[![testing badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/tests-badge.svg?sanitize=true)](badges/tests-badge.svg)
+[![coverage badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/coverage-badge.svg?sanitize=true)](badges/coverage-badge.svg)
+
+[![Known Vulnerabilities](https://snyk.io/test/github/s3u/JSONPath/badge.svg)](https://snyk.io/test/github/s3u/JSONPath)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/s3u/JSONPath/alerts)
+[![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/s3u/JSONPath/context:javascript)
+
+[![License](https://img.shields.io/npm/l/intl-dom.svg)](LICENSE-MIT.txt)
+
+[![issuehunt-to-marktext](https://issuehunt.io/static/embed/issuehunt-button-v1.svg)](https://issuehunt.io/r/s3u/JSONPath)
+
 # JSONPath Plus [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 
 Analyse, transform, and selectively extract data from JSON
