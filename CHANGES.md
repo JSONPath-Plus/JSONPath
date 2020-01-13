@@ -1,6 +1,19 @@
 # CHANGES for jsonpath-plus
 
-## 2.0.0 (November 23, 2019)
+## 3.0.0 (2020-01-13)
+
+- Fix: wrap: false returning inconsistent data types (@CacheControl)
+- Linting (ESLint): As per latest ash-nazg
+- Linting (ESLint): Remove redundant "use strict" with switch to ESM
+- Maintenance: 2 sp. for package.json
+- Testing: Add nyc for coverage
+- Testing: Test against source (using `esm`)
+- Testing: Improve coverage (more type operator tests)
+- npm: Add `test-cov` script
+- npm: Update devDeps
+
+
+## 2.0.0 (2019-11-23)
 
 - Breaking change: Throw `TypeError` instead of `Error` for missing
     `otherTypeCallback` when using `@other`
