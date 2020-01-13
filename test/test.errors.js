@@ -12,4 +12,10 @@ describe('JSONPath - Errors', function () {
         }, TypeError, 'You must supply a "json" property when providing an object ' +
 'argument to JSONPath.evaluate().');
     });
+
+    it('should throw with a bad filter', () => {
+        expect(() => {
+            jsonpath({json: {book: []}, path: '$..[?(@.category === category)]'});
+        }).to.throw(Error, 'jsonPath: category is not defined: _$_v.category === category');
+    });
 });

@@ -82,6 +82,18 @@ describe('JSONPath - Type Operators', function () {
         assert.deepEqual(expected, result);
     });
 
+    it('throw with `@other` and no `otherTypeCallback`', function () {
+        expect(() => {
+            jsonpath({
+                json: {a: new Date()}, path: '$..*@other()'
+            });
+        }).to.throw(
+            TypeError,
+            'You must supply an otherTypeCallback callback option ' +
+            'with the @other() operator.'
+        );
+    });
+
     it('@object()', () => {
         const jsonMixed = {
             nested: {
