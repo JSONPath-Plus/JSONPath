@@ -52,4 +52,23 @@ describe('JSONPath - API', function () {
         result = jsonpath({json, path: 'store.book[*].author'});
         assert.deepEqual(result, expected);
     });
+
+    it('should test defaults on manual `evaluate` with `autostart: false`', () => {
+        const books = json.store.book;
+        const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
+        let jp = jsonpath({
+            path: '$.store.book[*].author',
+            json,
+            autostart: false
+        });
+        let result = jp.evaluate();
+        assert.deepEqual(result, expected);
+        jp = jsonpath({
+            json,
+            path: 'store.book[*].author',
+            autostart: false
+        });
+        result = jp.evaluate();
+        assert.deepEqual(result, expected);
+    });
 });
