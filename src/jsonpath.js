@@ -657,15 +657,14 @@ JSONPath.prototype._slice = function (
         const tmp = this._trace(
             unshift(i, expr), val, path, parent, parentPropName, callback, true
         );
-        if (Array.isArray(tmp)) {
-            // This was causing excessive stack size in Node (with or
-            //  without Babel) against our performance test: `ret.push(...tmp);`
-            tmp.forEach((t) => {
-                ret.push(t);
-            });
-        } else {
-            ret.push(tmp);
-        }
+        // Should only be possible to be an array here since first part of
+        //   ``unshift(i, expr)` passed in above would not be empty, nor `~`,
+        //     nor begin with `@` (as could return objects)
+        // This was causing excessive stack size in Node (with or
+        //  without Babel) against our performance test: `ret.push(...tmp);`
+        tmp.forEach((t) => {
+            ret.push(t);
+        });
     }
     return ret;
 };
