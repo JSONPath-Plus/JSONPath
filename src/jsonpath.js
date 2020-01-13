@@ -279,13 +279,13 @@ JSONPath.prototype.evaluate = function (
                 'argument to JSONPath.evaluate().'
             );
         }
-        if (!('json' in expr)) {
+        if (!(hasOwnProp.call(expr, 'json'))) {
             throw new TypeError(
                 'You must supply a "json" property when providing an object ' +
                 'argument to JSONPath.evaluate().'
             );
         }
-        json = hasOwnProp.call(expr, 'json') ? expr.json : json;
+        ({json} = expr);
         flatten = hasOwnProp.call(expr, 'flatten') ? expr.flatten : flatten;
         this.currResultType = hasOwnProp.call(expr, 'resultType')
             ? expr.resultType

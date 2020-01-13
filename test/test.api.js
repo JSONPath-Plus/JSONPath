@@ -71,4 +71,26 @@ describe('JSONPath - API', function () {
         result = jp.evaluate();
         assert.deepEqual(result, expected);
     });
+
+    it('should test defaults with `evaluate` object and `autostart: false`', () => {
+        const books = json.store.book;
+        const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
+        const jp = jsonpath({
+            autostart: false
+        });
+        const result = jp.evaluate({
+            json,
+            path: '$.store.book[*].author',
+            sandbox: {category: 'reference'},
+            preventEval: true,
+            flatten: true,
+            wrap: false,
+            resultType: 'value',
+            callback () { /* */ },
+            parent: null,
+            parentProperty: null,
+            otherTypeCallback () { /* */ }
+        });
+        assert.deepEqual(result, expected);
+    });
 });
