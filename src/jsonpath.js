@@ -347,13 +347,16 @@ JSONPath.prototype._getPreferredOutput = function (ea) {
     switch (resultType) {
     default:
         throw new TypeError('Unknown result type');
-    case 'all':
-        ea.pointer = JSONPath.toPointer(ea.path);
+    case 'all': {
+        const path = Array.isArray(ea.path)
+            ? ea.path
+            : JSONPath.toPathArray(ea.path);
+        ea.pointer = JSONPath.toPointer(path);
         ea.path = typeof ea.path === 'string'
             ? ea.path
             : JSONPath.toPathString(ea.path);
         return ea;
-    case 'value': case 'parent': case 'parentProperty':
+    } case 'value': case 'parent': case 'parentProperty':
         return ea[resultType];
     case 'path':
         return JSONPath.toPathString(ea[resultType]);

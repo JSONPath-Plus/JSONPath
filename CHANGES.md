@@ -7,6 +7,9 @@
 - Fix: wrap: false returning inconsistent data types (@CacheControl)
 - Fix: Ensure throwing with a bad result type
 - Fix: Avoid erring when value before parent selector is falsey
+- Fix: If `resultType` is "all", if path resolves internally to a
+    non-array (string), ensure it is converted to an array before
+    converting to pointer for `pointer`
 - Enhancement: Allow path as array in non-object signature
 - Linting (ESLint): As per latest ash-nazg
 - Linting (ESLint): Remove redundant "use strict" with switch to ESM
