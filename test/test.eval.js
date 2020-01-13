@@ -60,6 +60,35 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
         });
 
+        it('sandbox with function without "function" in string', () => {
+            const expected = [json.store.book];
+            const result = jsonpath({
+                json,
+                sandbox: {
+                    category () {
+                        return 'reference';
+                    }
+                },
+                path: "$..[?(@.category === category())]", wrap: false
+            });
+            assert.deepEqual(result, expected);
+        });
+
+        it('sandbox with function with "function" in string', () => {
+            const expected = [json.store.book];
+            const result = jsonpath({
+                json,
+                sandbox: {
+                    // eslint-disable-next-line object-shorthand
+                    category: function () {
+                        return 'reference';
+                    }
+                },
+                path: "$..[?(@.category === category())]", wrap: false
+            });
+            assert.deepEqual(result, expected);
+        });
+
         it('sandbox (with parsing function)', () => {
             const expected = [json.store.book];
             const result = jsonpath({

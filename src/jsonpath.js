@@ -64,7 +64,7 @@ const vm = JSONPath.nodeVMSupported
 
             const funcString = funcs.reduce((s, func) => {
                 let fString = context[func].toString();
-                if (!(/function/u).exec(fString)) {
+                if (!(/function/u).test(fString)) {
                     fString = 'function ' + fString;
                 }
                 return 'var ' + func + '=' + fString + ';' + s;
