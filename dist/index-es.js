@@ -164,7 +164,6 @@ var supportsNodeVM = function supportsNodeVM() {
   }
 };
 
-var allowedResultTypes = ['value', 'path', 'pointer', 'parent', 'parentProperty', 'all'];
 var hasOwnProp = Object.prototype.hasOwnProperty;
 /**
 * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
@@ -430,7 +429,7 @@ JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback)
   json = json || this.json;
   expr = expr || this.path;
 
-  if (expr && _typeof(expr) === 'object') {
+  if (expr && _typeof(expr) === 'object' && !Array.isArray(expr)) {
     if (!expr.path) {
       throw new TypeError('You must supply a "path" property when providing an object ' + 'argument to JSONPath.evaluate().');
     }
@@ -459,7 +458,7 @@ JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback)
     expr = JSONPath.toPathString(expr);
   }
 
-  if (!expr || !json || !allowedResultTypes.includes(this.currResultType)) {
+  if (!expr || !json) {
     return undefined;
   }
 
@@ -792,7 +791,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     for (var t = 0; t < ret.length; t++) {
       var rett = ret[t];
 
-      if (rett.isParentSelector) {
+      if (rett && rett.isParentSelector) {
         var tmp = that._trace(rett.expr, val, rett.path, parent, parentPropName, callback, hasArrExpr);
 
         if (Array.isArray(tmp)) {
@@ -844,17 +843,16 @@ JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropNa
   var ret = [];
 
   for (var i = start; i < end; i += step) {
-    var tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback, true);
+    var tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback, true); // Should only be possible to be an array here since first part of
+    //   ``unshift(i, expr)` passed in above would not be empty, nor `~`,
+    //     nor begin with `@` (as could return objects)
+    // This was causing excessive stack size in Node (with or
+    //  without Babel) against our performance test: `ret.push(...tmp);`
 
-    if (Array.isArray(tmp)) {
-      // This was causing excessive stack size in Node (with or
-      //  without Babel) against our performance test: `ret.push(...tmp);`
-      tmp.forEach(function (t) {
-        ret.push(t);
-      });
-    } else {
-      ret.push(tmp);
-    }
+
+    tmp.forEach(function (t) {
+      ret.push(t);
+    });
   }
 
   return ret;
