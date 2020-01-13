@@ -37,6 +37,7 @@ did not spell out.
 * Option for **callback to handle results** as they are obtained.
 
 ## Benchmarking
+
 `jsonpath-plus` is consistently performant with both large and small datasets compared to other json querying libraries per [json-querying-performance-testing](https://github.com/andykais/json-querying-performance-testing). You can verify these findings by [running the project yourself](https://github.com/andykais/json-querying-performance-testing#how-to-run) and adding more perf cases.
 
 ## Install
