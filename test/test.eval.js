@@ -34,6 +34,15 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const result = jsonpath({json, path: selector, wrap: false});
             assert.deepEqual(result, expected);
         });
+        it('multi statement eval (with use strict)', () => {
+            const expected = [json.store.books[0]];
+            const selector = '$..[?(' +
+                         '"use strict";' +
+                         'var sum = @.price && @.price[0]+@.price[1];' +
+                         'sum > 20;)]';
+            const result = jsonpath({json, path: selector, wrap: false});
+            assert.deepEqual(result, expected);
+        });
 
         it('accessing current path', () => {
             const expected = [json.store.books[1]];
