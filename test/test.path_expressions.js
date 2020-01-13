@@ -42,41 +42,41 @@ describe('JSONPath - Path expressions', function () {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         const result = jsonpath({json, path: '$.store.book[*].author'});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('bracket notation', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         const result = jsonpath({json, path: "$['store']['book'][*]['author']"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('bracket notation without quotes', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         const result = jsonpath({json, path: "$[store][book][*][author]"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('mixed notation', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
         const result = jsonpath({json, path: "$.store.book[*]['author']"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('bracket notation containing dots', () => {
         const books = json.store.book;
         const expected = [books[0]["application/vnd.wordperfect"]];
         const result = jsonpath({json, path: "$['store']['book'][*]['application/vnd.wordperfect']"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('mixed notation containing dots', () => {
         const books = json.store.book;
         const expected = [books[0]["application/vnd.wordperfect"]];
         const result = jsonpath({json, path: "$.store.book[*]['application/vnd.wordperfect']"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 });

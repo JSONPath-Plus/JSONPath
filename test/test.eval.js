@@ -29,13 +29,13 @@ describe('JSONPath - Eval', function () {
                      'var sum = @.price && @.price[0]+@.price[1];' +
                      'sum > 20;)]';
         const result = jsonpath({json, path: selector, wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('accessing current path', () => {
         const expected = [json.store.books[1]];
         const result = jsonpath({json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('sandbox', () => {
@@ -45,7 +45,7 @@ describe('JSONPath - Eval', function () {
             sandbox: {category: 'reference'},
             path: "$..[?(@.category === category)]", wrap: false
         });
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('sandbox (with parsing function)', () => {
@@ -59,7 +59,7 @@ describe('JSONPath - Eval', function () {
             },
             path: "$..[?(filter(@))]", wrap: false
         });
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     describe('cyclic object', () => {
@@ -73,7 +73,7 @@ describe('JSONPath - Eval', function () {
                 path: '$.a.b',
                 wrap: false
             });
-            assert.deepEqual(expected, result);
+            assert.deepEqual(result, expected);
         });
         it('cyclic object in a sandbox', () => {
             const circular = {category: 'fiction'};
@@ -87,7 +87,7 @@ describe('JSONPath - Eval', function () {
                 },
                 wrap: false
             });
-            assert.deepEqual(expected, result);
+            assert.deepEqual(result, expected);
         });
     });
 });

@@ -38,6 +38,6 @@ describe('JSONPath - Return', function () {
     it('single result: path payload', () => {
         const expected = "$['store']['bicycle']['color']";
         const result = jsonpath({json, path: "$.store.bicycle.color", resultType: 'path', wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 });

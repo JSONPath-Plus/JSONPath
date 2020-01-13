@@ -43,7 +43,7 @@ describe('JSONPath - Intermixed Array', function () {
         let expected = [books[1].price, books[2].price, books[3].price, json.store.bicycle.price];
         expected = books[0].price.concat(expected);
         const result = jsonpath({json, path: '$.store..price', flatten: true});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('all sub properties of single element arr', () => {
@@ -51,6 +51,6 @@ describe('JSONPath - Intermixed Array', function () {
         const input = {book};
         const expected = [book.title];
         const result = jsonpath({json: input, path: '$..title', flatten: true, wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 });

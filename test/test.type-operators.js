@@ -40,13 +40,13 @@ describe('JSONPath - Type Operators', function () {
     it('@number()', () => {
         const expected = [8.95, 8.94, 8.93, 12.99, 8.99, 22.99];
         const result = jsonpath({json, path: '$.store.book..*@number()', flatten: true});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('@scalar()', () => {
         const expected = ["red", 19.95];
         const result = jsonpath({json, path: '$.store.bicycle..*@scalar()', flatten: true});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('@scalar() get falsey and avoid objects', () => {
@@ -62,7 +62,7 @@ describe('JSONPath - Type Operators', function () {
             jsonMixed.nested.a, jsonMixed.nested.c, jsonMixed.nested.d
         ];
         const result = jsonpath({json: jsonMixed, path: '$..*@scalar()'});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('@other()', () => {
@@ -79,7 +79,7 @@ describe('JSONPath - Type Operators', function () {
             return Boolean(val.toString().match(/\.99/u));
         }
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('throw with `@other` and no `otherTypeCallback`', function () {
@@ -108,7 +108,7 @@ describe('JSONPath - Type Operators', function () {
         const result = jsonpath({
             json: jsonMixed, path: '$..*@object()', flatten: true
         });
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('@array()', () => {
@@ -127,7 +127,7 @@ describe('JSONPath - Type Operators', function () {
         const result = jsonpath({
             json: jsonMixed, path: '$..*@array()'
         });
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('@boolean()', () => {
@@ -144,7 +144,7 @@ describe('JSONPath - Type Operators', function () {
         const result = jsonpath({
             json: jsonMixed, path: '$..*@boolean()', flatten: true
         });
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('@integer()', () => {
@@ -161,7 +161,7 @@ describe('JSONPath - Type Operators', function () {
         const result = jsonpath({
             json: jsonMixed, path: '$..*@integer()', flatten: true
         });
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('@nonFinite()', () => {
@@ -180,7 +180,7 @@ describe('JSONPath - Type Operators', function () {
         const result = jsonpath({
             json: jsonMixed, path: '$..*@nonFinite()'
         });
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('@null()', () => {
@@ -197,6 +197,6 @@ describe('JSONPath - Type Operators', function () {
         const result = jsonpath({
             json: jsonMixed, path: '$..*@null()'
         });
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 });

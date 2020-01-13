@@ -40,23 +40,23 @@ describe('JSONPath - Pointers', function () {
             '/store/bicycle/price'
         ];
         const result = jsonpath({json, path: 'store..price', resultType: 'pointer', flatten: true});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
     it('single', () => {
         const expected = ['/store'];
         const result = jsonpath({json, path: 'store', resultType: 'pointer', flatten: true});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('escape / as ~1', () => {
         const expected = ['/store/book/2/application~1vnd.wordperfect'];
         const result = jsonpath({json, path: "$['store']['book'][*]['application/vnd.wordperfect']", resultType: 'pointer', flatten: true});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('escape ~ as ~0', () => {
         const expected = ['/store/book/3/application~0vnd.wordperfect'];
         const result = jsonpath({json, path: "$['store']['book'][*]['application~vnd.wordperfect']", resultType: 'pointer', flatten: true});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 });

@@ -15,19 +15,19 @@ describe('JSONPath - At and Dollar sign', function () {
     };
 
     it('test undefined, null', () => {
-        assert.strictEqual(null, jsonpath({json: {a: null}, path: '$.a', wrap: false}));
-        assert.strictEqual(undefined, jsonpath({json: undefined, path: 'foo'}));
-        assert.strictEqual(undefined, jsonpath({json: null, path: 'foo'}));
-        assert.strictEqual(undefined, jsonpath({json: {}, path: 'foo'})[0]);
-        assert.strictEqual(undefined, jsonpath({json: {a: 'b'}, path: 'foo'})[0]);
-        assert.strictEqual(undefined, jsonpath({json: {a: 'b'}, path: 'foo'})[100]);
+        assert.strictEqual(jsonpath({json: {a: null}, path: '$.a', wrap: false}), null);
+        assert.strictEqual(jsonpath({json: undefined, path: 'foo'}), undefined);
+        assert.strictEqual(jsonpath({json: null, path: 'foo'}), undefined);
+        assert.strictEqual(jsonpath({json: {}, path: 'foo'})[0], undefined);
+        assert.strictEqual(jsonpath({json: {a: 'b'}, path: 'foo'})[0], undefined);
+        assert.strictEqual(jsonpath({json: {a: 'b'}, path: 'foo'})[100], undefined);
     });
 
     it('test $ and @', () => {
-        assert.strictEqual(t1.$, jsonpath({json: t1, path: '`$'})[0]);
-        assert.strictEqual(t1.a$a, jsonpath({json: t1, path: 'a$a'})[0]);
-        assert.strictEqual(t1['@'], jsonpath({json: t1, path: '`@'})[0]);
-        assert.strictEqual(t1.$['@'], jsonpath({json: t1, path: '$.`$.`@'})[0]);
-        assert.strictEqual(undefined, jsonpath({json: t1, path: '\\@'})[1]);
+        assert.strictEqual(jsonpath({json: t1, path: '`$'})[0], t1.$);
+        assert.strictEqual(jsonpath({json: t1, path: 'a$a'})[0], t1.a$a);
+        assert.strictEqual(jsonpath({json: t1, path: '`@'})[0], t1['@']);
+        assert.strictEqual(jsonpath({json: t1, path: '$.`$.`@'})[0], t1.$['@']);
+        assert.strictEqual(jsonpath({json: t1, path: '\\@'})[1], undefined);
     });
 });

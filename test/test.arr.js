@@ -20,19 +20,19 @@ describe('JSONPath - Array', function () {
     it('get single', () => {
         const expected = json.store.book;
         const result = jsonpath({json, path: 'store.book', flatten: true, wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('get arr', () => {
         const expected = json.store.books;
         const result = jsonpath({json, path: 'store.books', flatten: true, wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('query single element arr w/scalar value', () => {
         const expected = [json.store.books[0].author];
         const result = jsonpath({json, path: 'store.books[*].author', wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('query single element arr w/array value', () => {
@@ -42,7 +42,7 @@ describe('JSONPath - Array', function () {
         };
         const expected = authors;
         const result = jsonpath({json: input, path: '$.books[0].authors', wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('query multi element arr w/array value', () => {
@@ -52,6 +52,6 @@ describe('JSONPath - Array', function () {
         };
         const expected = [authors, authors];
         const result = jsonpath({json: input, path: '$.books[*].authors', wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 });

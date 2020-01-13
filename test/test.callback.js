@@ -52,6 +52,6 @@ describe('JSONPath - Callback', function () {
             result.push(type, data, fullData);
         }
         jsonpath({json, path: '$.store.bicycle', resultType: 'value', wrap: false, callback});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 });

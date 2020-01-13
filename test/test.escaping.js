@@ -14,30 +14,30 @@ describe('JSONPath - Escaping', function () {
     it('escape *', () => {
         let expected = ['star'];
         let result = jsonpath({json, path: "$['`*']"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
 
         expected = [];
         result = jsonpath({json: jsonMissingSpecial, path: "$['`*']"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
 
         expected = ['star', 'rest'];
         result = jsonpath({json, path: "$[`*,rest]"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
 
         expected = ['star'];
         result = jsonpath({json, path: "$.`*"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
 
         expected = [];
         result = jsonpath({json: jsonMissingSpecial, path: "$.`*"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
 
         expected = ['star', 'rest', 'bar'];
         result = jsonpath({json, path: "$['*']"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
 
         expected = ['rest', 'bar'];
         result = jsonpath({json: jsonMissingSpecial, path: "$['*']"});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 });

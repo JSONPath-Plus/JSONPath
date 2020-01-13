@@ -7,6 +7,6 @@ describe('JSONPath - Custom properties', function () {
 
     it('@path for index', () => {
         const result = jsonpath({json: t1, path: '$.*[(@path === "$[\'b\']")]', wrap: false});
-        assert.deepEqual(['abc', 'tuv'], result);
+        assert.deepEqual(result, ['abc', 'tuv']);
     });
 });

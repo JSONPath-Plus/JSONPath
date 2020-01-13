@@ -18,15 +18,15 @@ describe('JSONPath - Properties', function () {
     it('Periods within properties', () => {
         const expected = {"test7": "value"};
         const result = jsonpath({json, path: "$.test1.test2['test3.test4.test5']", wrap: false});
-        assert.deepEqual(expected, result);
+        assert.deepEqual(result, expected);
     });
 
     it('At signs within properties', () => {
         let result = jsonpath({json, path: "$.datafield[?(@.tag=='035')]", wrap: false});
-        assert.deepEqual([json.datafield[0]], result);
+        assert.deepEqual(result, [json.datafield[0]]);
         result = jsonpath({json, path: "$.datafield[?(@['@tag']=='042')]", wrap: false});
-        assert.deepEqual([json.datafield[1]], result);
+        assert.deepEqual(result, [json.datafield[1]]);
         result = jsonpath({json, path: "$.datafield[2][(@['@tag'])]", wrap: false});
-        assert.deepEqual(json.datafield[2]['045'], result);
+        assert.deepEqual(result, json.datafield[2]['045']);
     });
 });
