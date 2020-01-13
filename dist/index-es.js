@@ -540,8 +540,8 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
  * @param {PlainObject|GenericArray} parent
  * @param {string} parentPropName
  * @param {JSONPathCallback} callback
- * @param {boolean} literalPriority
  * @param {boolean} hasArrExpr
+ * @param {boolean} literalPriority
  * @returns {ReturnObject|ReturnObject[]}
  */
 
