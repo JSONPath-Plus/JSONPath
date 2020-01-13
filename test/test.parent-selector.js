@@ -35,6 +35,16 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
         });
 
+        /*
+        // Todo: Handle Maximum call stack error getting here
+        it('parent root', () => {
+            const jsonSimple = {};
+            const expected = json.children;
+            const result = jsonpath({json: jsonSimple, path: '^', flatten: true});
+            assert.deepEqual(result, expected);
+        });
+        */
+
         it('no such parent', () => {
             const result = jsonpath({json, path: 'name^^'});
             assert.deepEqual(result, []);

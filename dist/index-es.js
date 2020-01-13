@@ -210,7 +210,9 @@ var vm = JSONPath.nodeVMSupported ? require('vm') : {
     moveToAnotherArray(keys, funcs, function (key) {
       return typeof context[key] === 'function';
     });
-    var values = Object.values(context);
+    var values = keys.map(function (vr, i) {
+      return context[vr];
+    });
     var funcString = funcs.reduce(function (s, func) {
       var fString = context[func].toString();
 
