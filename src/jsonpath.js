@@ -604,7 +604,7 @@ JSONPath.prototype._trace = function (
     if (this._hasParentSelector) {
         for (let t = 0; t < ret.length; t++) {
             const rett = ret[t];
-            if (rett.isParentSelector) {
+            if (rett && rett.isParentSelector) {
                 const tmp = that._trace(
                     rett.expr, val, rett.path, parent, parentPropName, callback,
                     hasArrExpr

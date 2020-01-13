@@ -36,4 +36,38 @@ describe('JSONPath - Parent selector', function () {
         const result = jsonpath({json, path: 'name^^'});
         assert.deepEqual([], result);
     });
+
+    it('select sibling via parent (with non-match present)', () => {
+        const jsonMultipleChildren = {
+            "name": "root",
+            "children": [
+                {"name": "child1", "children": [{"name": "child1_1"}, {"name": "child1_2"}]},
+                {"name": "child2", "children": [{"name": "child2_1"}]},
+                {"name": "child3", "children": [{"name": "child3_1"}, {"name": "child3_2"}]},
+                {"name": "child4", "children": [{"name": "child4_1"}, {"name": "child3_1"}]}
+            ]
+        };
+        const expected = [{"name": "child3_2"}];
+        const result = jsonpath({
+            json: jsonMultipleChildren,
+            path: '$..[?(@.name && @.name.match(/3_1$/))]^[?(@.name.match(/_2$/))]'
+        });
+        assert.deepEqual(expected, result);
+    });
+    it('select sibling via parent (with multiple results)', () => {
+        const jsonMultipleChildren = {
+            "name": "root",
+            "children": [
+                {"name": "child1", "children": [{"name": "child1_1"}, {"name": "child1_2"}]},
+                {"name": "child2", "children": [{"name": "child2_1"}]},
+                {"name": "child3", "children": [{"name": "child3_1"}, {"name": "child3_2"}, {"name": "child3_2", second: true}]}
+            ]
+        };
+        const expected = [{"name": "child3_2"}, {"name": "child3_2", second: true}];
+        const result = jsonpath({
+            json: jsonMultipleChildren,
+            path: '$..[?(@.name && @.name.match(/3_1$/))]^[?(@.name.match(/_2$/))]'
+        });
+        assert.deepEqual(expected, result);
+    });
 });
