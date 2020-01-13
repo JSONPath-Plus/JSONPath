@@ -35,15 +35,27 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
         });
 
+        // Todo: Handle "this._trace(...).filter is not a function" error`
         /*
-        // Todo: Handle Maximum call stack error getting here
-        it('parent root', () => {
-            const jsonSimple = {};
-            const expected = json.children;
-            const result = jsonpath({json: jsonSimple, path: '^', flatten: true});
+        it.only('parent root', () => {
+            const jsonSimple = {
+                children: null
+            };
+            const expected = jsonSimple.children;
+            const result = jsonpath({json: jsonSimple, path: '$^', flatten: true});
+            console.log('result', result);
             assert.deepEqual(result, expected);
         });
         */
+
+        it('empty string key (parent of)', () => {
+            const jsonSimple = {
+                '': null
+            };
+            const expected = jsonSimple;
+            const result = jsonpath({json: jsonSimple, path: '^', wrap: false});
+            assert.deepEqual(result, expected);
+        });
 
         it('no such parent', () => {
             const result = jsonpath({json, path: 'name^^'});
