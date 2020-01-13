@@ -43,4 +43,13 @@ describe('JSONPath - API', function () {
         result = jsonpath({json, path: 'store.book[*].author'});
         assert.deepEqual(expected, result);
     });
+
+    it('should test array path of constructor', () => {
+        const books = json.store.book;
+        const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
+        let result = jsonpath({path: ['$', 'store', 'book', '*', 'author'], json});
+        assert.deepEqual(expected, result);
+        result = jsonpath({json, path: 'store.book[*].author'});
+        assert.deepEqual(expected, result);
+    });
 });

@@ -10,9 +10,7 @@ const supportsNodeVM = function () {
         return false;
     }
 };
-const allowedResultTypes = [
-    'value', 'path', 'pointer', 'parent', 'parentProperty', 'all'
-];
+
 const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
 /**
@@ -274,7 +272,7 @@ JSONPath.prototype.evaluate = function (
 
     json = json || this.json;
     expr = expr || this.path;
-    if (expr && typeof expr === 'object') {
+    if (expr && typeof expr === 'object' && !Array.isArray(expr)) {
         if (!expr.path) {
             throw new TypeError(
                 'You must supply a "path" property when providing an object ' +
@@ -315,7 +313,7 @@ JSONPath.prototype.evaluate = function (
     if (Array.isArray(expr)) {
         expr = JSONPath.toPathString(expr);
     }
-    if (!expr || !json || !allowedResultTypes.includes(this.currResultType)) {
+    if (!expr || !json) {
         return undefined;
     }
     this._obj = json;

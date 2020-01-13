@@ -3,6 +3,8 @@
 ## 3.0.0 (2020-01-13)
 
 - Fix: wrap: false returning inconsistent data types (@CacheControl)
+- Fix: Ensure throwing with a bad result type
+- Enhancement: Allow path as array in non-object signature
 - Linting (ESLint): As per latest ash-nazg
 - Linting (ESLint): Remove redundant "use strict" with switch to ESM
 - Maintenance: 2 sp. for package.json
