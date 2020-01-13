@@ -273,7 +273,7 @@ JSONPath.prototype.evaluate = function (
     json = json || this.json;
     expr = expr || this.path;
     if (expr && typeof expr === 'object' && !Array.isArray(expr)) {
-        if (!expr.path) {
+        if (!expr.path && expr.path !== '') {
             throw new TypeError(
                 'You must supply a "path" property when providing an object ' +
                 'argument to JSONPath.evaluate().'
@@ -313,7 +313,7 @@ JSONPath.prototype.evaluate = function (
     if (Array.isArray(expr)) {
         expr = JSONPath.toPathString(expr);
     }
-    if (!expr || !json) {
+    if ((!expr && expr !== '') || !json) {
         return undefined;
     }
     this._obj = json;

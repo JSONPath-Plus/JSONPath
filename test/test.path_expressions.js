@@ -79,4 +79,13 @@ describe('JSONPath - Path expressions', function () {
         const result = jsonpath({json, path: "$.store.book[*]['application/vnd.wordperfect']"});
         assert.deepEqual(result, expected);
     });
+
+    it('empty string key', () => {
+        const jsonSimple = {
+            '': null
+        };
+        const expected = null;
+        const result = jsonpath({json: jsonSimple, path: '', wrap: false});
+        assert.deepEqual(result, expected);
+    });
 });
