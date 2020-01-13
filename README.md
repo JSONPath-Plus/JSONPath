@@ -11,8 +11,6 @@
 
 [![License](https://img.shields.io/npm/l/intl-dom.svg)](LICENSE-MIT.txt)
 
-[![issuehunt-to-marktext](https://issuehunt.io/static/embed/issuehunt-button-v1.svg)](https://issuehunt.io/r/s3u/JSONPath)
-
 # JSONPath Plus [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 
 Analyse, transform, and selectively extract data from JSON
