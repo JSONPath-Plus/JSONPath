@@ -121,7 +121,7 @@
     "open-docs": "open-cli http://localhost:8084/docs/ts/ && npm start",
     "coverage": "open-cli http://localhost:8084/coverage/ && npm start",
     "coverage-badge": "coveradge --color brightgreen badges/coverage-badge.svg",
-    "mocha": "mocha --require esm --require test-helpers/node-env.js --reporter-options configFile=mocha-multi-reporters.json test",
+    "mocha": "mocha --require esm --require test-helpers/node-env.js --reporter=mocha-multi-reporters --delay --reporter-options configFile=mocha-multi-reporters.json test",
     "test": "npm run rollup && npm run mocha",
     "test-cov": "rm -Rf ./coverage && rm -Rf ./node_modules/.cache && nyc --all npm run mocha && npm run coverage-badge",
     "open": "open-cli http://localhost:8084/demo/ && npm start",
