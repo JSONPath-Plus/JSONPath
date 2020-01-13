@@ -10,6 +10,7 @@ module.exports = {
           "document.querySelector",
           "JSON",
           "Object.keys",
+          'Object.values',
           "XMLHttpRequest"
       ]
   },
@@ -21,6 +22,11 @@ module.exports = {
               "require": "readonly",
               "run": "readonly",
               "module": "readonly"
+          },
+          rules: {
+              "node/no-unsupported-features/es-syntax": ["error", {
+                  ignores: ['regexpNamedCaptureGroups', 'modules', 'dynamicImport']
+              }]
           }
       },
       {
@@ -67,9 +73,6 @@ module.exports = {
     "quote-props": 0,
     "require-jsdoc": 0,
     // Reenable when no longer having problems
-    "unicorn/no-unsafe-regex": 0,
-    "node/no-unsupported-features/es-syntax": ["error", {
-        ignores: ['regexpNamedCaptureGroups', 'modules']
-    }]
+    "unicorn/no-unsafe-regex": 0
   }
 };

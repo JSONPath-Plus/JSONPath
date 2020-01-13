@@ -23,7 +23,7 @@ setTimeout(async () => {
     const {JSONPath} = await import('../src/jsonpath.js');
     global.jsonpath = JSONPath;
     global.forceBuiltinVM = true;
-    // eslint-disable-next-line import/no-unresolved
+    // eslint-disable-next-line node/no-missing-import
     const {JSONPath: JSONPath2} = await import('../src/jsonpath.js?');
     global.jsonpathBuiltin = JSONPath2;
     run();
