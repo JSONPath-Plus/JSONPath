@@ -633,12 +633,10 @@ JSONPath.prototype._walk = function (
         for (let i = 0; i < n; i++) {
             f(i, loc, expr, val, path, parent, parentPropName, callback);
         }
-    } else if (typeof val === 'object') {
-        for (const m in val) {
-            if (hasOwnProp.call(val, m)) {
-                f(m, loc, expr, val, path, parent, parentPropName, callback);
-            }
-        }
+    } else if (val && typeof val === 'object') {
+        Object.keys(val).forEach((m) => {
+            f(m, loc, expr, val, path, parent, parentPropName, callback);
+        });
     }
 };
 
