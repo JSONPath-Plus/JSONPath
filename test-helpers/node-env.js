@@ -5,8 +5,12 @@ const toStr = Object.prototype.toString;
 // eslint-disable-next-line no-extend-native
 Object.prototype.toString = function () {
     if (this === global.process) {
-        // eslint-disable-next-line compat/compat
-        throw new Error('oops');
+        if (global.forceBuiltinVM) {
+            // eslint-disable-next-line compat/compat
+            throw new Error('oops');
+        }
+        // Native is not doing this here
+        return '[object process]';
     }
     return toStr.call(Object.prototype);
 };
@@ -15,7 +19,12 @@ global.assert = assert;
 global.expect = expect;
 
 setTimeout(async () => {
+    global.forceBuiltinVM = false;
     const {JSONPath} = await import('../src/jsonpath.js');
     global.jsonpath = JSONPath;
+    global.forceBuiltinVM = true;
+    // eslint-disable-next-line import/no-unresolved
+    const {JSONPath: JSONPath2} = await import('../src/jsonpath.js?');
+    global.jsonpathBuiltin = JSONPath2;
     run();
 });

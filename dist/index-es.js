@@ -164,6 +164,54 @@ var supportsNodeVM = function supportsNodeVM() {
   }
 };
 
+var builtinVM = function builtinVM() {
+  return {
+    /**
+     * @param {string} expr Expression to evaluate
+     * @param {PlainObject} context Object whose items will be added
+     *   to evaluation
+     * @returns {any} Result of evaluated code
+     */
+    runInNewContext: function runInNewContext(expr, context) {
+      var keys = Object.keys(context);
+      var funcs = [];
+      moveToAnotherArray(keys, funcs, function (key) {
+        return typeof context[key] === 'function';
+      }); // Todo[engine:node@>=8]: Use the next line instead of the
+      //  succeeding
+      // const values = Object.values(context);
+
+      var values = keys.map(function (vr, i) {
+        return context[vr];
+      });
+      var funcString = funcs.reduce(function (s, func) {
+        var fString = context[func].toString();
+
+        if (!/function/.exec(fString)) {
+          fString = 'function ' + fString;
+        }
+
+        return 'var ' + func + '=' + fString + ';' + s;
+      }, '');
+      expr = funcString + expr; // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
+
+      if (!expr.match(/(["'])use strict\1/) && !keys.includes('arguments')) {
+        expr = 'var arguments = undefined;' + expr;
+      } // Remove last semi so `return` will be inserted before
+      //  the previous one instead, allowing for the return
+      //  of a bare ending expression
+
+
+      expr = expr.replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
+
+      var lastStatementEnd = expr.lastIndexOf(';');
+      var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func
+
+      return _construct(Function, _toConsumableArray(keys).concat([code])).apply(void 0, _toConsumableArray(values));
+    }
+  };
+};
+
 var hasOwnProp = Object.prototype.hasOwnProperty;
 /**
 * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
@@ -196,51 +244,7 @@ var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb
   }
 };
 
-var vm = supportsNodeVM() ? require('vm') : {
-  /**
-   * @param {string} expr Expression to evaluate
-   * @param {PlainObject} context Object whose items will be added
-   *   to evaluation
-   * @returns {any} Result of evaluated code
-   */
-  runInNewContext: function runInNewContext(expr, context) {
-    var keys = Object.keys(context);
-    var funcs = [];
-    moveToAnotherArray(keys, funcs, function (key) {
-      return typeof context[key] === 'function';
-    }); // Todo[engine:node@>=8]: Use the next line instead of the
-    //  succeeding
-    // const values = Object.values(context);
-
-    var values = keys.map(function (vr, i) {
-      return context[vr];
-    });
-    var funcString = funcs.reduce(function (s, func) {
-      var fString = context[func].toString();
-
-      if (!/function/.exec(fString)) {
-        fString = 'function ' + fString;
-      }
-
-      return 'var ' + func + '=' + fString + ';' + s;
-    }, '');
-    expr = funcString + expr; // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
-
-    if (!expr.match(/(["'])use strict\1/) && !keys.includes('arguments')) {
-      expr = 'var arguments = undefined;' + expr;
-    } // Remove last semi so `return` will be inserted before
-    //  the previous one instead, allowing for the return
-    //  of a bare ending expression
-
-
-    expr = expr.replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
-
-    var lastStatementEnd = expr.lastIndexOf(';');
-    var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func
-
-    return _construct(Function, _toConsumableArray(keys).concat([code])).apply(void 0, _toConsumableArray(values));
-  }
-};
+var vm;
 /**
  * Copies array and then pushes item into it.
  * @param {GenericArray} arr Array to copy and into which to push
@@ -894,6 +898,8 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
   }
 
   try {
+    vm = supportsNodeVM() // eslint-disable-next-line global-require
+    ? require('vm') : builtinVM();
     return vm.runInNewContext(code, this.currSandbox);
   } catch (e) {
     // eslint-disable-next-line no-console
