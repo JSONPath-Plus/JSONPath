@@ -1,4 +1,4 @@
-import {checkBuiltInVMAndNodeVM} from '../test-helpers/checkBuiltInVM.js';
+import {checkBuiltInVMAndNodeVM} from '../test-helpers/checkVM.js';
 
 checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
     describe(`JSONPath - Error (${vmType})`, function () {

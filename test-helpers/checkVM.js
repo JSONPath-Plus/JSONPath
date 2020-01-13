@@ -5,7 +5,7 @@
 
 /**
 * @callback VMTestIterator
-* @param {"Node vm"|"Built-in vm"} vmType
+* @param {"Node vm"|"JSONPath vm"} vmType
 * @param {BeforeChecker} beforeChecker
 * @returns {void}
 */
@@ -17,9 +17,9 @@
 function checkBuiltInVMAndNodeVM (cb) {
     [
         'Node vm',
-        'Built-in vm'
+        'JSONPath vm'
     ].forEach((vmType) => {
-        const checkingBuiltInVM = vmType === 'Built-in vm';
+        const checkingBuiltInVM = vmType === 'JSONPath vm';
         cb(
             vmType,
             checkingBuiltInVM
