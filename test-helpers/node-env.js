@@ -9,7 +9,7 @@ Object.prototype.toString = function () {
             // eslint-disable-next-line compat/compat
             throw new Error('oops');
         }
-        // Native is not doing this here
+        // Native is not doing this here now
         return '[object process]';
     }
     return toStr.call(Object.prototype);
@@ -21,6 +21,7 @@ global.expect = expect;
 setTimeout(async () => {
     global.forceBuiltinVM = false;
     const {JSONPath} = await import('../src/jsonpath.js');
+    global.jsonpathNodeVM = JSONPath;
     global.jsonpath = JSONPath;
     global.forceBuiltinVM = true;
     // eslint-disable-next-line node/no-missing-import

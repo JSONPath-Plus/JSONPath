@@ -1,17 +1,8 @@
-[
-    'Node vm',
-    'Built-in vm'
-].forEach(function (vmType) {
-    const checkingBuiltInVM = vmType === 'Built-in vm';
+import {checkBuiltInVMAndNodeVM} from '../test-helpers/checkBuiltInVM.js';
+
+checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
     describe(`JSONPath - Examples (${vmType})`, function () {
-        before(() => {
-            if (checkingBuiltInVM) {
-                global.jsonpathTemp = global.jsonpath;
-                global.jsonpath = global.jsonpathBuiltin;
-            } else if (global.jsonpathTemp) {
-                global.jsonpath = global.jsonpathTemp;
-            }
-        });
+        before(setBuiltInState);
         // tests based on examples at http://goessner.net/articles/jsonpath/
         const json = {
             "store": {

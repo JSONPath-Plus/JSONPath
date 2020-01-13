@@ -41,7 +41,9 @@ const moveToAnotherArray = function (source, target, conditionCb) {
     }
 };
 
-const vm = supportsNodeVM()
+JSONPath.nodeVMSupported = supportsNodeVM();
+
+const vm = JSONPath.nodeVMSupported
     ? require('vm')
     : {
         /**

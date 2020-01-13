@@ -107,7 +107,7 @@
       "demo",
       "docs",
       "test",
-      "test-helpers/node-env.js"
+      "test-helpers"
     ]
   },
   "scripts": {
@@ -118,7 +118,7 @@
     "coverage": "open-cli http://localhost:8084/coverage/ && npm start",
     "mocha": "mocha --delay --require esm --require test-helpers/node-env.js test",
     "test": "npm run rollup && npm run mocha",
-    "test-cov": "rm -Rf ./node_modules/.cache && nyc --all npm run mocha",
+    "test-cov": "rm -Rf ./coverage && rm -Rf ./node_modules/.cache && nyc --all npm run mocha",
     "open": "open-cli http://localhost:8084/demo/ && npm start",
     "start": "static -p 8084",
     "rollup": "rollup -c",
