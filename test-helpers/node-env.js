@@ -1,4 +1,4 @@
-import {assert} from 'chai';
+import {assert, expect} from 'chai';
 
 /*
 const toStr = Object.prototype.toString;
@@ -16,3 +16,4 @@ import {JSONPath} from '../src/jsonpath.js';
 
 global.jsonpath = JSONPath;
 global.assert = assert;
+global.expect = expect;

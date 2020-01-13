@@ -673,6 +673,7 @@
       var valueType = loc.slice(1, -2);
 
       switch (valueType) {
+        /* istanbul ignore next */
         default:
           throw new TypeError('Unknown value type ' + valueType);
 

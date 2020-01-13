@@ -49,6 +49,22 @@ describe('JSONPath - Type Operators', function () {
         assert.deepEqual(expected, result);
     });
 
+    it('@scalar() get falsey and avoid objects', () => {
+        const jsonMixed = {
+            nested: {
+                a: 5,
+                b: {},
+                c: null,
+                d: 'abc'
+            }
+        };
+        const expected = [
+            jsonMixed.nested.a, jsonMixed.nested.c, jsonMixed.nested.d
+        ];
+        const result = jsonpath({json: jsonMixed, path: '$..*@scalar()'});
+        assert.deepEqual(expected, result);
+    });
+
     it('@other()', () => {
         const expected = [12.99, 8.99, 22.99];
         /**
@@ -132,6 +148,42 @@ describe('JSONPath - Type Operators', function () {
         const expected = [jsonMixed.nested.c[0], jsonMixed.nested.c[1][1]];
         const result = jsonpath({
             json: jsonMixed, path: '$..*@integer()', flatten: true
+        });
+        assert.deepEqual(expected, result);
+    });
+
+    it('@nonFinite()', () => {
+        const jsonMixed = {
+            nested: {
+                a: 50.7,
+                b: -Infinity,
+                c: [
+                    42, [Infinity, 73, NaN]
+                ]
+            }
+        };
+        const expected = [
+            jsonMixed.nested.b, jsonMixed.nested.c[1][0], jsonMixed.nested.c[1][2]
+        ];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@nonFinite()'
+        });
+        assert.deepEqual(expected, result);
+    });
+
+    it('@null()', () => {
+        const jsonMixed = {
+            nested: {
+                a: 50.7,
+                b: null,
+                c: [
+                    42, [false, 73]
+                ]
+            }
+        };
+        const expected = [null];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@null()'
         });
         assert.deepEqual(expected, result);
     });
