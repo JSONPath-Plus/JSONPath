@@ -12,7 +12,6 @@
 - npm: Add `test-cov` script
 - npm: Update devDeps
 
-
 ## 2.0.0 (2019-11-23)
 
 - Breaking change: Throw `TypeError` instead of `Error` for missing
