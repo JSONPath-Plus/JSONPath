@@ -13,12 +13,12 @@ declare module 'jsonpath-plus' {
      * The JSONPath expression as a (normalized or unnormalized) string or
      *   array.
      */
-    path: string | any[]
+    path?: string | any[]
     /**
      * The JSON object to evaluate (whether of null, boolean, number,
      *   string, object, or array type).
      */
-    json: null | boolean | number | string | object | any[]
+    json?: null | boolean | number | string | object | any[]
     /**
      * If this is supplied as false, one may call the evaluate method
      *  manually.
@@ -136,8 +136,8 @@ declare module 'jsonpath-plus' {
     <T = any>(
         path: JSONPathOptions['path'],
         json: JSONPathOptions['json'],
-        callback: JSONPathOptions['callback'],
-        otherTypeCallback: JSONPathOptions['otherTypeCallback']
+        callback?: JSONPathOptions['callback'],
+        otherTypeCallback?: JSONPathOptions['otherTypeCallback']
     ): T
   }
 
@@ -182,15 +182,9 @@ declare module 'jsonpath-plus' {
         callback: JSONPathOptions['callback'],
         otherTypeCallback: JSONPathOptions['otherTypeCallback']
     ): any
-    evaluate(options: {
-        path: JSONPathOptions['path'],
-        json: JSONPathOptions['json'],
-        callback: JSONPathOptions['callback'],
-        otherTypeCallback: JSONPathOptions['otherTypeCallback']
-    }): any
+    evaluate(options?: JSONPathOptions): any
   }
 
   type JSONPathType = JSONPathCallable & JSONPathClass
-
-  export const JSONPath: JSONPathType
+  export const JSONPath: JSONPathType;
 }
