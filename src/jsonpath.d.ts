@@ -7,7 +7,7 @@ declare module 'jsonpath-plus' {
   ) => void
 
   type JSONPathOtherTypeCallback = (
-      val: JSON|any, path: string[], parent: object|array, parentPropName: string
+      val: JSON|any, path: string[], parent: object|any[], parentPropName: string
   ) => boolean
 
   type JSON = null|boolean|number|string|{[key: string]: JSON}|JSON[]
