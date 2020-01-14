@@ -6,7 +6,9 @@ declare module 'jsonpath-plus' {
       payload: any, payloadType: "value"|"property", fullPayload: any
   ) => void
 
-  type JSONPathOtherTypeCallback = (...args: any[]) => boolean
+  type JSONPathOtherTypeCallback = (
+      val: JSON|any, path: string[], parent: object|array, parentPropName: string
+  ) => boolean
 
   type JSON = null|boolean|number|string|{[key: string]: JSON}|JSON[]
 
