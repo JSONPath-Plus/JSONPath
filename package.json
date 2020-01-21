@@ -75,7 +75,7 @@
     "eslint-plugin-unicorn": "^15.0.1",
     "esm": "^3.2.25",
     "mocha": "^7.0.0",
-    "mocha-badge-generator": "git+https://github.com/brettz9/mocha-badge-generator.git#updated-badge-up",
+    "mocha-badge-generator": "^0.4.0",
     "mocha-multi-reporters": "git+https://github.com/brettz9/mocha-multi-reporters.git#missing-reporter",
     "node-static": "^0.7.11",
     "nyc": "^15.0.0",
