@@ -11,3 +11,6 @@ lgtm.yml
 docs
 .nyc_output
 coverage
+badges
+mocha-multi-reporters.json
+.mocharc.js
