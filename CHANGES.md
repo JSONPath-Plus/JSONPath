@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## ?
+
+- npm: Update devDeps
+
 ## 3.0.0 (2020-01-13)
 
 - Breaking change: Expect Node >= 8

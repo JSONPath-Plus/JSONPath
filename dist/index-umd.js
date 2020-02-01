@@ -5,6 +5,8 @@
 }(this, (function (exports) { 'use strict';
 
   function _typeof(obj) {
+    "@babel/helpers - typeof";
+
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
       _typeof = function (obj) {
         return typeof obj;
@@ -222,7 +224,7 @@
       var funcString = funcs.reduce(function (s, func) {
         var fString = context[func].toString();
 
-        if (!/function/.exec(fString)) {
+        if (!/function/.test(fString)) {
           fString = 'function ' + fString;
         }
 
@@ -434,15 +436,16 @@
     expr = expr || this.path;
 
     if (expr && _typeof(expr) === 'object' && !Array.isArray(expr)) {
-      if (!expr.path) {
+      if (!expr.path && expr.path !== '') {
         throw new TypeError('You must supply a "path" property when providing an object ' + 'argument to JSONPath.evaluate().');
       }
 
-      if (!('json' in expr)) {
+      if (!hasOwnProp.call(expr, 'json')) {
         throw new TypeError('You must supply a "json" property when providing an object ' + 'argument to JSONPath.evaluate().');
       }
 
-      json = hasOwnProp.call(expr, 'json') ? expr.json : json;
+      var _expr = expr;
+      json = _expr.json;
       flatten = hasOwnProp.call(expr, 'flatten') ? expr.flatten : flatten;
       this.currResultType = hasOwnProp.call(expr, 'resultType') ? expr.resultType : this.currResultType;
       this.currSandbox = hasOwnProp.call(expr, 'sandbox') ? expr.sandbox : this.currSandbox;
@@ -462,7 +465,7 @@
       expr = JSONPath.toPathString(expr);
     }
 
-    if (!expr || !json) {
+    if (!expr && expr !== '' || !json) {
       return undefined;
     }
 
@@ -509,9 +512,12 @@
         throw new TypeError('Unknown result type');
 
       case 'all':
-        ea.pointer = JSONPath.toPointer(ea.path);
-        ea.path = typeof ea.path === 'string' ? ea.path : JSONPath.toPathString(ea.path);
-        return ea;
+        {
+          var path = Array.isArray(ea.path) ? ea.path : JSONPath.toPathArray(ea.path);
+          ea.pointer = JSONPath.toPointer(path);
+          ea.path = typeof ea.path === 'string' ? ea.path : JSONPath.toPathString(ea.path);
+          return ea;
+        }
 
       case 'value':
       case 'parent':
@@ -620,11 +626,11 @@
     } else if (loc === '^') {
       // This is not a final endpoint, so we do not invoke the callback here
       this._hasParentSelector = true;
-      return path.length ? {
+      return {
         path: path.slice(0, -1),
         expr: x,
         isParentSelector: true
-      } : [];
+      };
     } else if (loc === '~') {
       // property name
       retObj = {
@@ -823,12 +829,10 @@
       for (var i = 0; i < n; i++) {
         f(i, loc, expr, val, path, parent, parentPropName, callback);
       }
-    } else if (_typeof(val) === 'object') {
-      for (var m in val) {
-        if (hasOwnProp.call(val, m)) {
-          f(m, loc, expr, val, path, parent, parentPropName, callback);
-        }
-      }
+    } else if (val && _typeof(val) === 'object') {
+      Object.keys(val).forEach(function (m) {
+        f(m, loc, expr, val, path, parent, parentPropName, callback);
+      });
     }
   };
 
