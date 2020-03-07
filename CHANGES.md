@@ -2,6 +2,7 @@
 
 ## ?
 
+- Breaking change: Expect Node >= 10
 - npm: Update devDeps
 
 ## 3.0.0 (2020-01-13)

@@ -278,9 +278,7 @@
    */
 
 
-  var NewError =
-  /*#__PURE__*/
-  function (_Error) {
+  var NewError = /*#__PURE__*/function (_Error) {
     _inherits(NewError, _Error);
 
     /**
@@ -299,7 +297,7 @@
     }
 
     return NewError;
-  }(_wrapNativeSuper(Error));
+  }( /*#__PURE__*/_wrapNativeSuper(Error));
   /**
   * @typedef {PlainObject} ReturnObject
   * @property {string} path
