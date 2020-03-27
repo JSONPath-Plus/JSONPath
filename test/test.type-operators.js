@@ -170,7 +170,7 @@ describe('JSONPath - Type Operators', function () {
                 a: 50.7,
                 b: -Infinity,
                 c: [
-                    42, [Infinity, 73, NaN]
+                    42, [Infinity, 73, Number.NaN]
                 ]
             }
         };

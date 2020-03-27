@@ -1,4 +1,5 @@
+'use strict';
 module.exports = {
-  delay: true,
-  reporter: 'mocha-multi-reporters'
+    delay: true,
+    reporter: 'mocha-multi-reporters'
 };

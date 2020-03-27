@@ -3,6 +3,9 @@
 ## ?
 
 - Breaking change: Expect Node >= 10
+- Build: As per latest rollup
+- Linting: Check hidden files; update as per latest ash-nazg
+- Docs: Update coverage badge
 - npm: Update devDeps
 
 ## 3.0.0 (2020-01-13)
