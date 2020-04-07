@@ -312,7 +312,7 @@ comparisons or to prevent ambiguity).
 //book/*\[self::category\|self::author] or //book/(category,author) in XPath 2.0 | $..book\[0]\[category,author]| The categories and authors of all books |
 //book\[isbn]        | $..book\[?(@.isbn)]     | Filter all books with an ISBN number     | To access a property with a special character, utilize `[?@['...']]` for the filter (this particular feature is not present in the original spec)
 //book\[price<10]    | $..book\[?(@.price<10)] | Filter all books cheaper than 10     |
-| //\*\[name() = 'price' and . != 8.95] | $..\*\[?(@property === 'price' && @ !== 8.95)] | Obtain all property values of objects whose property is price and which does not equal 8.95 |
+| //\*\[name() = 'price' and . != 8.95] | $..\*\[?(@property === 'price' && @ !== 8.95)] | Obtain all property values of objects whose property is price and which does not equal 8.95 | With the bare `@` allowing filtering objects by property value (not necessarily within arrays), you can add `^` after the expression to get at the object possessing the filtered properties
 /                   | $                      | The root of the JSON object (i.e., the whole object itself) | To get a literal `$` (by itself or anywhere in the path), you must use the backtick escape
 //\*/\*\|//\*/\*/text()  | $..*                   | All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root. |
 //*                 | $..                    | All Elements in an XML document. All parent components of a JSON structure including root. | This behavior was not directly specified in the original spec
