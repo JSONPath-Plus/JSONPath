@@ -783,16 +783,22 @@
 
           break;
 
+        case 'integer':
+          if (Number.isFinite(val) && !(val % 1)) {
+            addType = true;
+          }
+
+          break;
+
         case 'number':
-          // eslint-disable-next-line valid-typeof
-          if (_typeof(val) === valueType && isFinite(val)) {
+          if (Number.isFinite(val)) {
             addType = true;
           }
 
           break;
 
         case 'nonFinite':
-          if (typeof val === 'number' && !isFinite(val)) {
+          if (typeof val === 'number' && !Number.isFinite(val)) {
             addType = true;
           }
 
@@ -815,13 +821,6 @@
 
         case 'other':
           addType = this.currOtherTypeCallback(val, path, parent, parentPropName);
-          break;
-
-        case 'integer':
-          if (val === Number(val) && isFinite(val) && !(val % 1)) {
-            addType = true;
-          }
-
           break;
 
         case 'null':
@@ -919,9 +918,9 @@
 
     var len = val.length,
         parts = loc.split(':'),
-        step = parts[2] && parseInt(parts[2]) || 1;
-    var start = parts[0] && parseInt(parts[0]) || 0,
-        end = parts[1] && parseInt(parts[1]) || len;
+        step = parts[2] && Number.parseInt(parts[2]) || 1;
+    var start = parts[0] && Number.parseInt(parts[0]) || 0,
+        end = parts[1] && Number.parseInt(parts[1]) || len;
     start = start < 0 ? Math.max(0, start + len) : Math.min(len, start);
     end = end < 0 ? Math.max(0, end + len) : Math.min(len, end);
     var ret = [];
