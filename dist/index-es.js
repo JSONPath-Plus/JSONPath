@@ -465,7 +465,7 @@ function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
   opts = opts || {};
   this.json = opts.json || obj;
   this.path = opts.path || expr;
-  this.resultType = opts.resultType && opts.resultType.toLowerCase() || 'value';
+  this.resultType = opts.resultType || 'value';
   this.flatten = opts.flatten || false;
   this.wrap = hasOwnProp.call(opts, 'wrap') ? opts.wrap : true;
   this.sandbox = opts.sandbox || {};

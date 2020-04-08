@@ -1,7 +1,9 @@
 # CHANGES for jsonpath-plus
 
-## ?
+## 4.0.0 (2020-04-09)
 
+- Breaking change/fix: Disallow `resultType` from being lower-cased
+    (broke `parentProperty`)
 - Breaking change: Expect Node >= 10
 - Build: As per latest rollup
 - Linting: Check hidden files; update as per latest ash-nazg

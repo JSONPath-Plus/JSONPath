@@ -9,7 +9,10 @@
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/s3u/JSONPath/alerts)
 [![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/s3u/JSONPath/context:javascript)
 
-[![License](https://img.shields.io/npm/l/intl-dom.svg)](LICENSE-MIT.txt)
+<!--[![License](https://img.shields.io/npm/l/JSONPath.svg)](LICENSE-MIT.txt)-->
+[![Licenses badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/licenses-badge.svg?sanitize=true)](badges/licenses-badge.svg)
+
+<small>(see also [licenses for dev. deps.](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/licenses-badge-dev.svg?sanitize=true))</small>
 
 # JSONPath Plus [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
 

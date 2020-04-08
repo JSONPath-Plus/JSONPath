@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "main": "dist/index-umd.js",
   "module": "dist/index-es.js",
   "types": "./src/jsonpath.d.ts",
@@ -74,6 +74,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-unicorn": "^18.0.0",
     "esm": "^3.2.25",
+    "license-badger": "^0.13.0",
     "mocha": "^7.1.1",
     "mocha-badge-generator": "^0.5.2",
     "mocha-multi-reporters": "git+https://github.com/brettz9/mocha-multi-reporters.git#missing-reporter",
@@ -115,6 +116,10 @@
     ]
   },
   "scripts": {
+    "prepublishOnly": "npm run license-badges",
+    "license-badge": "license-badger --corrections --uncategorizedLicenseTemplate \"\\${license} (\\${name} (\\${version}))\" --filteredTypes=nonempty --textTemplate \"License types\n(project, deps, and bundled devDeps)\" --packageJson --production badges/licenses-badge.svg",
+    "license-badge-dev": "license-badger --corrections --filteredTypes=nonempty --textTemplate \"License types\n(all devDeps)\" --allDevelopment badges/licenses-badge-dev.svg",
+    "license-badges": "npm run license-badge && npm run license-badge-dev",
     "remark": "remark -q -f .",
     "typescript": "tsc src/jsonpath.d.ts",
     "build-docs": "typedoc --out docs/ts src --includeDeclarations",
