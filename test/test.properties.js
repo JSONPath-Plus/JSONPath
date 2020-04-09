@@ -40,5 +40,28 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             }, path: "$.datafield[?(@.tag=='xxx')]", wrap: false});
             assert.deepEqual(result, undefined);
         });
+
+        it('Checking properties of child object (through `@` as parent object)', function () {
+            const jsonObj = {
+                test1: {
+                    a: 4,
+                    b: 8
+                }
+            };
+            const result = jsonpath({
+                json: jsonObj, path: "$.[?(@.a == 4)]", wrap: false});
+            assert.deepEqual(result, [jsonObj.test1]);
+        });
+        it('Checking properties of child object (through `@` as property)', function () {
+            const jsonObj = {
+                test1: {
+                    a: 4,
+                    b: 8
+                }
+            };
+            const result = jsonpath({
+                json: jsonObj, path: "$.[?(@property == 'a' && @ == 4)]^", wrap: false});
+            assert.deepEqual(result, [jsonObj.test1]);
+        });
     });
 });
