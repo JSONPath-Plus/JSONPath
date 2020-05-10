@@ -1,5 +1,15 @@
 # CHANGES for jsonpath-plus
 
+## ?
+
+- Build: Update per latest devDeps.
+- Docs: Update badges per latest updates
+- Linting: As per latest ash-nazg
+- Testing: Add more at-sign tests
+- npm: Update from deprecated `rollup-plugin-babel` to `@rollup/plugin-babel`
+(and make `babelHelpers` explicit)
+- npm: Update devDeps
+
 ## 4.0.0 (2020-04-09)
 
 - Breaking change/fix: Disallow `resultType` from being lower-cased

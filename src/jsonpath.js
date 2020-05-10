@@ -370,7 +370,7 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
         fullRetObj.path = typeof fullRetObj.path === 'string'
             ? fullRetObj.path
             : JSONPath.toPathString(fullRetObj.path);
-        // eslint-disable-next-line callback-return
+        // eslint-disable-next-line node/callback-return
         callback(preferredOutput, type, fullRetObj);
     }
 };
