@@ -301,7 +301,9 @@ and the following XML representation:
 
 Please note that the XPath examples below do not distinguish between
 retrieving elements and their text content (except where useful for
-comparisons or to prevent ambiguity).
+comparisons or to prevent ambiguity). Note: to test the XPath examples
+(including 2.0 ones), [this demo](http://videlibri.sourceforge.net/cgi-bin/xidelcgi)
+may be helpful (set to `xml` or `xml-strict`).
 
 | XPath             | JSONPath               | Result                                | Notes |
 | ----------------- | ---------------------- | ------------------------------------- | ----- |
