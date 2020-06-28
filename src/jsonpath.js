@@ -167,8 +167,8 @@ class NewError extends Error {
  * @typedef {PlainObject} JSONPathOptions
  * @property {JSON} json
  * @property {string|string[]} path
- * @property {"value"|"path"|"pointer"|"parent"|"parentProperty"|"all"}
- *   [resultType="value"]
+ * @property {"value"|"path"|"pointer"|"parent"|
+ * "parentProperty"|"all"} [resultType="value"]
  * @property {boolean} [flatten=false]
  * @property {boolean} [wrap=true]
  * @property {PlainObject} [sandbox={}]
@@ -344,8 +344,6 @@ JSONPath.prototype.evaluate = function (
 JSONPath.prototype._getPreferredOutput = function (ea) {
     const resultType = this.currResultType;
     switch (resultType) {
-    default:
-        throw new TypeError('Unknown result type');
     case 'all': {
         const path = Array.isArray(ea.path)
             ? ea.path
@@ -361,6 +359,8 @@ JSONPath.prototype._getPreferredOutput = function (ea) {
         return JSONPath.toPathString(ea[resultType]);
     case 'pointer':
         return JSONPath.toPointer(ea.path);
+    default:
+        throw new TypeError('Unknown result type');
     }
 };
 
@@ -518,9 +518,6 @@ JSONPath.prototype._trace = function (
         let addType = false;
         const valueType = loc.slice(1, -2);
         switch (valueType) {
-        /* istanbul ignore next */
-        default:
-            throw new TypeError('Unknown value type ' + valueType);
         case 'scalar':
             if (!val || !(['object', 'function'].includes(typeof val))) {
                 addType = true;
@@ -568,6 +565,9 @@ JSONPath.prototype._trace = function (
                 addType = true;
             }
             break;
+        /* istanbul ignore next */
+        default:
+            throw new TypeError('Unknown value type ' + valueType);
         }
         if (addType) {
             retObj = {path, value: val, parent, parentProperty: parentPropName};

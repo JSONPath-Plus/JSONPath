@@ -138,7 +138,7 @@ function _possibleConstructorReturn(self, call) {
 function _createSuper(Derived) {
   var hasNativeReflectConstruct = _isNativeReflectConstruct();
 
-  return function () {
+  return function _createSuperInternal() {
     var Super = _getPrototypeOf(Derived),
         result;
 
@@ -187,9 +187,12 @@ function _nonIterableSpread() {
   throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
-function _createForOfIteratorHelper(o) {
+function _createForOfIteratorHelper(o, allowArrayLike) {
+  var it;
+
   if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-    if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it) o = it;
       var i = 0;
 
       var F = function () {};
@@ -215,8 +218,7 @@ function _createForOfIteratorHelper(o) {
     throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
-  var it,
-      normalCompletion = true,
+  var normalCompletion = true,
       didErr = false,
       err;
   return {

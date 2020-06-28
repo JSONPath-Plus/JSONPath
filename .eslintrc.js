@@ -87,6 +87,10 @@ module.exports = {
         'promise/prefer-await-to-callbacks': 0,
         'quote-props': 0,
         'require-jsdoc': 0,
+
+        // Disable for now
+        'eslint-comments/require-description': 0,
+
         // Reenable when no longer having problems
         'unicorn/no-unsafe-regex': 0
     }

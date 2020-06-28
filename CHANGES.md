@@ -6,6 +6,8 @@
 - Docs: Update badges per latest updates
 - Linting: As per latest ash-nazg
 - Testing: Add more at-sign tests
+- Testing: Bump timeout
+- Travis: Check Node 14
 - npm: Update from deprecated `rollup-plugin-babel` to `@rollup/plugin-babel`
 (and make `babelHelpers` explicit)
 - npm: Update devDeps

@@ -1,5 +1,6 @@
 
 describe('JSONPath - Performance', function () {
+    this.timeout(5000);
     const arraySize = 12333,
         resultCount = 1150,
         itemCount = 150,
