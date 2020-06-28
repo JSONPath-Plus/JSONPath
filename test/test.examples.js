@@ -244,5 +244,14 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const result = jsonpath({json, path: '$.store.book..*@number()', flatten: true});
             assert.deepEqual(result, expected);
         });
+
+        it('Regex on value', () => {
+            const expected = [json.store.book[1].category, json.store.book[2].category, json.store.book[3].category];
+            const result = jsonpath({
+                json,
+                path: '$..book.*[?(@property === "category" && @.match(/TION$/i))]'
+            });
+            assert.deepEqual(result, expected);
+        });
     });
 });
