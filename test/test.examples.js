@@ -253,5 +253,15 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             });
             assert.deepEqual(result, expected);
         });
+
+        it('Regex on property', () => {
+            const books = json.store.book;
+            const expected = [books[2], books[3]];
+            const result = jsonpath({
+                json,
+                path: '$..book.*[?(@property.match(/bn$/i))]^'
+            });
+            assert.deepEqual(result, expected);
+        });
     });
 });
