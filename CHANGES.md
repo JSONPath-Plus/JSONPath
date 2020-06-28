@@ -14,7 +14,7 @@
 - Testing: Bump timeout
 - Travis: Check Node 14
 - npm: Update from deprecated `rollup-plugin-babel` to `@rollup/plugin-babel`
-(and make `babelHelpers` explicit)
+    (and make `babelHelpers` explicit)
 - npm: Update devDeps
 
 ## 4.0.0 (2020-04-09)
