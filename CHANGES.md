@@ -3,8 +3,13 @@
 ## ?
 
 - Build: Update per latest devDeps.
+- Docs: Add Regex (`.match`) example on value (@jeffreypriebe)
+- Docs: Add Regex (`.match`) example on property
+- Docs: Fix XPath example (@humbertoc-silva)
+- Docs: Link to XPath 2.0 tester
 - Docs: Update badges per latest updates
 - Linting: As per latest ash-nazg
+- Testing: Add test case for setting values in callbacks (issue #126)
 - Testing: Add more at-sign tests
 - Testing: Bump timeout
 - Travis: Check Node 14
