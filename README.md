@@ -23,6 +23,9 @@ documents (and JavaScript objects).
 additional operators and makes explicit some behaviors the original
 did not spell out.
 
+Try the [browser demo](https://jsonpath-plus.github.io/JSONPath/demo/) or
+[Runkit (Node)](https://npm.runkit.com/jsonpath-plus).
+
 ## Features
 
 * **Compliant** with the original jsonpath spec
