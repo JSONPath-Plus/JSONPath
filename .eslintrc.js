@@ -1,7 +1,10 @@
 'use strict';
 module.exports = {
     'extends': ['ash-nazg/sauron-node'],
-    parser: 'babel-eslint',
+    parserOptions: {
+        ecmaVersion: 2020,
+        sourceType: 'module'
+    },
     'settings': {
         'polyfills': [
             'Array.isArray',

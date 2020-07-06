@@ -131,6 +131,8 @@ the callback function being executed 0 to N times depending
 on the number of independent items to be found in the result.
 See the docs below for more on `JSONPath`'s available arguments.
 
+See also the [API docs](https://jsonpath-plus.github.io/JSONPath/docs/ts/).
+
 ### Properties
 
 The properties that can be supplied on the options object or

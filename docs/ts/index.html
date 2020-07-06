@@ -1,0 +1,602 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>jsonpath-plus</title>
+	<meta name="description" content="Documentation for jsonpath-plus">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">jsonpath-plus</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>jsonpath-plus</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<p><a href="https://www.npmjs.com/package/jsonpath-plus"><img src="https://img.shields.io/npm/v/jsonpath-plus.svg" alt="npm"></a>
+					<a href="https://david-dm.org/s3u/JSONPath"><img src="https://img.shields.io/david/s3u/JSONPath.svg" alt="Dependencies"></a>
+				<a href="https://david-dm.org/s3u/JSONPath?type=dev"><img src="https://img.shields.io/david/dev/s3u/JSONPath.svg" alt="devDependencies"></a></p>
+				<p><a href="badges/tests-badge.svg"><img src="https://raw.githubusercontent.com/s3u/JSONPath/master/badges/tests-badge.svg?sanitize=true" alt="testing badge"></a>
+				<a href="badges/coverage-badge.svg"><img src="https://raw.githubusercontent.com/s3u/JSONPath/master/badges/coverage-badge.svg?sanitize=true" alt="coverage badge"></a></p>
+				<p><a href="https://snyk.io/test/github/s3u/JSONPath"><img src="https://snyk.io/test/github/s3u/JSONPath/badge.svg" alt="Known Vulnerabilities"></a>
+					<a href="https://lgtm.com/projects/g/s3u/JSONPath/alerts"><img src="https://img.shields.io/lgtm/alerts/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18" alt="Total Alerts"></a>
+				<a href="https://lgtm.com/projects/g/s3u/JSONPath/context:javascript"><img src="https://img.shields.io/lgtm/grade/javascript/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18" alt="Code Quality: Javascript"></a></p>
+				<!--[![License](https://img.shields.io/npm/l/JSONPath.svg)](LICENSE-MIT.txt)-->
+				<p><a href="badges/licenses-badge.svg"><img src="https://raw.githubusercontent.com/s3u/JSONPath/master/badges/licenses-badge.svg?sanitize=true" alt="Licenses badge"></a></p>
+				<p><small>(see also <a href="https://raw.githubusercontent.com/s3u/JSONPath/master/badges/licenses-badge-dev.svg?sanitize=true">licenses for dev. deps.</a>)</small></p>
+				<a href="#jsonpath-plus-" id="jsonpath-plus-" style="color: inherit; text-decoration: none;">
+					<h1>JSONPath Plus <a href="http://travis-ci.org/s3u/JSONPath"><img src="https://secure.travis-ci.org/s3u/JSONPath.png" alt="build status"></a></h1>
+				</a>
+				<p>Analyse, transform, and selectively extract data from JSON
+				documents (and JavaScript objects).</p>
+				<p><code>jsonpath-plus</code> expands on the original specification to add some
+					additional operators and makes explicit some behaviors the original
+				did not spell out.</p>
+				<p>Try the <a href="https://jsonpath-plus.github.io/JSONPath/demo/">browser demo</a> or
+				<a href="https://npm.runkit.com/jsonpath-plus">Runkit (Node)</a>.</p>
+				<a href="#features" id="features" style="color: inherit; text-decoration: none;">
+					<h2>Features</h2>
+				</a>
+				<ul>
+					<li><strong>Compliant</strong> with the original jsonpath spec</li>
+					<li>Convenient <strong>additions or elaborations</strong> not provided in the original spec:<ul>
+							<li><code>^</code> for grabbing the <strong>parent</strong> of a matching item</li>
+							<li><code>~</code> for grabbing <strong>property names</strong> of matching items (as array)</li>
+							<li><strong>Type selectors</strong> for obtaining:<ul>
+									<li>Basic JSON types: <code>@null()</code>, <code>@boolean()</code>, <code>@number()</code>, <code>@string()</code>, <code>@array()</code>, <code>@object()</code></li>
+									<li><code>@integer()</code></li>
+									<li>The compound type <code>@scalar()</code> (which also accepts <code>undefined</code> and
+									non-finite numbers when querying JavaScript objects as well as all of the basic non-object/non-function types)</li>
+									<li><code>@other()</code> usable in conjunction with a user-defined <code>otherTypeCallback</code></li>
+									<li>Non-JSON types that can nevertheless be used when querying
+									non-JSON JavaScript objects (<code>@undefined()</code>, <code>@function()</code>, <code>@nonFinite()</code>)</li>
+								</ul>
+							</li>
+							<li><code>@path</code>/<code>@parent</code>/<code>@property</code>/<code>@parentProperty</code>/<code>@root</code> <strong>shorthand selectors</strong> within filters</li>
+							<li><strong>Escaping</strong><ul>
+									<li><code>`</code> for escaping remaining sequence</li>
+									<li><code>@[&#39;...&#39;]</code>/<code>?@[&#39;...&#39;]</code> syntax for escaping special characters within
+									property names in filters</li>
+								</ul>
+							</li>
+							<li>Documents <code>$..</code> (<strong>getting all parent components</strong>)</li>
+						</ul>
+					</li>
+					<li><strong>ESM</strong> and <strong>UMD</strong> export formats</li>
+					<li>In addition to queried values, <strong>can return various meta-information</strong>
+						including paths or pointers to the value, as well as the parent
+					object and parent property name (to allow for modification).</li>
+					<li><strong>Utilities for converting</strong> between paths, arrays, and pointers</li>
+					<li>Option to <strong>prevent evaluations</strong> permitted in the original spec or supply
+					a <strong>sandbox</strong> for evaluated values.</li>
+					<li>Option for <strong>callback to handle results</strong> as they are obtained.</li>
+				</ul>
+				<a href="#benchmarking" id="benchmarking" style="color: inherit; text-decoration: none;">
+					<h2>Benchmarking</h2>
+				</a>
+				<p><code>jsonpath-plus</code> is consistently performant with both large and small datasets compared to other json querying libraries per <a href="https://github.com/andykais/json-querying-performance-testing">json-querying-performance-testing</a>. You can verify these findings by <a href="https://github.com/andykais/json-querying-performance-testing#how-to-run">running the project yourself</a> and adding more perf cases.</p>
+				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+					<h2>Install</h2>
+				</a>
+				<pre><code class="language-shell">npm install jsonpath-plus</code></pre>
+				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
+					<h2>Setup</h2>
+				</a>
+				<a href="#nodejs" id="nodejs" style="color: inherit; text-decoration: none;">
+					<h3>Node.js</h3>
+				</a>
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> {JSONPath} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;jsonpath-plus&#x27;</span>);
+
+<span class="hljs-keyword">const</span> result = JSONPath({<span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;...&#x27;</span>, json});</code></pre>
+				<a href="#browser" id="browser" style="color: inherit; text-decoration: none;">
+					<h3>Browser</h3>
+				</a>
+				<p>For browser usage you can directly include <code>dist/index-umd.js</code>; no Browserify
+				magic is necessary:</p>
+				<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Polyfill recommended by Babel for items not covered for older
+      browsers in dist --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;node_modules/core-js-bundle/minified.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;node_modules/jsonpath-plus/dist/index-umd.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+<span class="hljs-keyword">const</span> result = JSONPath.JSONPath({<span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;...&#x27;</span>, <span class="hljs-attr">json</span>: ...});
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+				<a href="#esm-modern-browsers" id="esm-modern-browsers" style="color: inherit; text-decoration: none;">
+					<h3>ESM (Modern browsers)</h3>
+				</a>
+				<p>You may also use ES6 Module imports (for modern browsers):</p>
+				<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;module&quot;</span>&gt;</span><span class="javascript">
+<span class="hljs-keyword">import</span> {JSONPath} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./node_modules/jsonpath-plus/dist/index-es.js&#x27;</span>;
+<span class="hljs-keyword">const</span> result = JSONPath({<span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;...&#x27;</span>, <span class="hljs-attr">json</span>: ...});
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+				<a href="#esm-bundlers" id="esm-bundlers" style="color: inherit; text-decoration: none;">
+					<h3>ESM (Bundlers)</h3>
+				</a>
+				<p>Or if you are bundling your JavaScript (e.g., with Rollup), just use:</p>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> {JSONPath} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;jsonpath-plus&#x27;</span>;
+
+<span class="hljs-keyword">const</span> result = JSONPath({<span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;...&#x27;</span>, json});</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<p>The full signature available is:</p>
+				<pre><code>const result = <span class="hljs-constructor">JSONPath([<span class="hljs-params">options</span>,] <span class="hljs-params">path</span>, <span class="hljs-params">json</span>, <span class="hljs-params">callback</span>, <span class="hljs-params">otherTypeCallback</span>)</span>;</code></pre><p>The arguments <code>path</code>, <code>json</code>, <code>callback</code>, and <code>otherTypeCallback</code>
+					can alternatively be expressed (along with any other of the
+				available properties) on <code>options</code>.</p>
+				<p>Note that <code>result</code> will contain all items found (optionally
+					wrapped into an array) whereas <code>callback</code> can be used if you
+					wish to perform some operation as each item is discovered, with
+					the callback function being executed 0 to N times depending
+					on the number of independent items to be found in the result.
+				See the docs below for more on <code>JSONPath</code>&#39;s available arguments.</p>
+				<a href="#properties" id="properties" style="color: inherit; text-decoration: none;">
+					<h3>Properties</h3>
+				</a>
+				<p>The properties that can be supplied on the options object or
+				evaluate method (as the first argument) include:</p>
+				<ul>
+					<li><strong><em>path</em></strong> (<strong>required</strong>) - The JSONPath expression as a (normalized
+					or unnormalized) string or array</li>
+					<li><strong><em>json</em></strong> (<strong>required</strong>) - The JSON object to evaluate (whether of
+					null, boolean, number, string, object, or array type).</li>
+					<li><strong><em>autostart</em></strong> (<strong>default: true</strong>) - If this is supplied as <code>false</code>,
+					one may call the <code>evaluate</code> method manually.</li>
+					<li><strong><em>flatten</em></strong> (<strong>default: false</strong>) - Whether the returned array of results
+					will be flattened to a single dimension array.</li>
+					<li><strong><em>resultType</em></strong> (<strong>default: &quot;value&quot;</strong>) - Can be case-insensitive form of
+						&quot;value&quot;, &quot;path&quot;, &quot;pointer&quot;, &quot;parent&quot;, or &quot;parentProperty&quot; to determine
+						respectively whether to return results as the values of the found items,
+						as their absolute paths, as <a href="http://www.rfc-base.org/txt/rfc-6901.txt">JSON Pointers</a>
+						to the absolute paths, as their parent objects, or as their parent&#39;s
+						property name. If set to &quot;all&quot;, all of these types will be returned on
+					an object with the type as key name.</li>
+					<li><strong><em>sandbox</em></strong> (<strong>default: {}</strong>) - Key-value map of variables to be
+						available to code evaluations such as filtering expressions. (Note
+						that the current path and value will also be available to those
+					expressions; see the Syntax section for details.)</li>
+					<li><strong><em>wrap</em></strong> (<strong>default: true</strong>) - Whether or not to wrap the results
+						in an array. If <code>wrap</code> is set to <code>false</code>, and no results are found,
+						<code>undefined</code> will be returned (as opposed to an empty array when
+						<code>wrap</code> is set to true). If <code>wrap</code> is set to <code>false</code> and a single
+						non-array result is found, that result will be the only item returned
+						(not within an array). An array will still be returned if multiple
+						results are found, however. To avoid ambiguities (in the case where
+						it is necessary to distinguish between a result which is a failure
+						and one which is an empty array), it is recommended to switch the
+					default to <code>false</code>.</li>
+					<li><strong><em>preventEval</em></strong> (<strong>default: false</strong>) - Although JavaScript evaluation
+						expressions are allowed by default, for security reasons (if one is
+						operating on untrusted user input, for example), one may wish to
+						set this option to <code>true</code> to throw exceptions when these expressions
+					are attempted.</li>
+					<li><strong><em>parent</em></strong> (<strong>default: null</strong>) - In the event that a query could be
+						made to return the root node, this allows the parent of that root node
+					to be returned within results.</li>
+					<li><strong><em>parentProperty</em></strong> (<strong>default: null</strong>) - In the event that a query
+						could be made to return the root node, this allows the <code>parentProperty</code>
+					of that root node to be returned within results.</li>
+					<li><strong><em>callback</em></strong> (<strong>default: (none)</strong>) - If supplied, a callback will be
+						called immediately upon retrieval of an end point value. The three arguments
+						supplied will be the value of the payload (according to <code>resultType</code>),
+						the type of the payload (whether it is a normal &quot;value&quot; or a &quot;property&quot;
+					name), and a full payload object (with all <code>resultType</code>s).</li>
+					<li><strong><em>otherTypeCallback</em></strong> (<strong>default: &lt;A function that throws an error</strong>
+						<strong>when @other() is encountered&gt;</strong>) - In the current absence of JSON
+						Schema support, one can determine types beyond the built-in types by
+						adding the operator <code>@other()</code> at the end of one&#39;s query. If such a
+						path is encountered, the <code>otherTypeCallback</code> will be invoked with the
+						value of the item, its path, its parent, and its parent&#39;s property name,
+						and it should return a boolean indicating whether the supplied value
+						belongs to the &quot;other&quot; type or not (or it may handle transformations and
+					return false).</li>
+				</ul>
+				<a href="#instance-methods" id="instance-methods" style="color: inherit; text-decoration: none;">
+					<h3>Instance methods</h3>
+				</a>
+				<ul>
+					<li><strong><em>evaluate(path, json, callback, otherTypeCallback)</em></strong> OR
+						<strong><em>evaluate({path: &lt;path&gt;, json: &lt;json object&gt;, callback:</em></strong>
+						<strong><em>&lt;callback function&gt;, otherTypeCallback:</em></strong>
+						<strong><em>&lt;otherTypeCallback function&gt;})</em></strong> - This method is only
+						necessary if the <code>autostart</code> property is set to <code>false</code>. It
+						can be used for repeated evaluations using the same configuration.
+						Besides the listed properties, the latter method pattern can
+						accept any of the other allowed instance properties (except
+					for <code>autostart</code> which would have no relevance here).</li>
+				</ul>
+				<a href="#class-properties-and-methods" id="class-properties-and-methods" style="color: inherit; text-decoration: none;">
+					<h3>Class properties and methods</h3>
+				</a>
+				<ul>
+					<li><strong><em>JSONPath.cache</em></strong> - Exposes the cache object for those who wish
+					to preserve and reuse it for optimization purposes.</li>
+					<li><strong><em>JSONPath.toPathArray(pathAsString)</em></strong> - Accepts a normalized or
+						unnormalized path as string and converts to an array: for
+					example, <code>[&#39;$&#39;, &#39;aProperty&#39;, &#39;anotherProperty&#39;]</code>.</li>
+					<li><strong><em>JSONPath.toPathString(pathAsArray)</em></strong> - Accepts a path array and
+						converts to a normalized path string. The string will be in a form
+						like: <code>$[&#39;aProperty&#39;][&#39;anotherProperty][0]</code>. The JSONPath terminal
+						constructions <code>~</code> and <code>^</code> and type operators like <code>@string()</code> are
+					silently stripped.</li>
+					<li><strong><em>JSONPath.toPointer(pathAsArray)</em></strong> - Accepts a path array and
+						converts to a <a href="http://www.rfc-base.org/txt/rfc-6901.txt">JSON Pointer</a>.
+						The string will be in a form like: <code>/aProperty/anotherProperty/0</code>
+						(with any <code>~</code> and <code>/</code> internal characters escaped as per the JSON
+						Pointer spec). The JSONPath terminal constructions <code>~</code> and <code>^</code> and
+					type operators like <code>@string()</code> are silently stripped.</li>
+				</ul>
+				<a href="#syntax-through-examples" id="syntax-through-examples" style="color: inherit; text-decoration: none;">
+					<h2>Syntax through examples</h2>
+				</a>
+				<p>Given the following JSON, taken from <a href="http://goessner.net/articles/JsonPath/">http://goessner.net/articles/JsonPath/</a>:</p>
+				<pre><code class="language-json">{
+<span class="hljs-attr">&quot;store&quot;</span>: {
+  <span class="hljs-attr">&quot;book&quot;</span>: [
+    {
+      <span class="hljs-attr">&quot;category&quot;</span>: <span class="hljs-string">&quot;reference&quot;</span>,
+      <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;Nigel Rees&quot;</span>,
+      <span class="hljs-attr">&quot;title&quot;</span>: <span class="hljs-string">&quot;Sayings of the Century&quot;</span>,
+      <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">8.95</span>
+    },
+    {
+      <span class="hljs-attr">&quot;category&quot;</span>: <span class="hljs-string">&quot;fiction&quot;</span>,
+      <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;Evelyn Waugh&quot;</span>,
+      <span class="hljs-attr">&quot;title&quot;</span>: <span class="hljs-string">&quot;Sword of Honour&quot;</span>,
+      <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">12.99</span>
+    },
+    {
+      <span class="hljs-attr">&quot;category&quot;</span>: <span class="hljs-string">&quot;fiction&quot;</span>,
+      <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;Herman Melville&quot;</span>,
+      <span class="hljs-attr">&quot;title&quot;</span>: <span class="hljs-string">&quot;Moby Dick&quot;</span>,
+      <span class="hljs-attr">&quot;isbn&quot;</span>: <span class="hljs-string">&quot;0-553-21311-3&quot;</span>,
+      <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">8.99</span>
+    },
+    {
+      <span class="hljs-attr">&quot;category&quot;</span>: <span class="hljs-string">&quot;fiction&quot;</span>,
+      <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;J. R. R. Tolkien&quot;</span>,
+      <span class="hljs-attr">&quot;title&quot;</span>: <span class="hljs-string">&quot;The Lord of the Rings&quot;</span>,
+      <span class="hljs-attr">&quot;isbn&quot;</span>: <span class="hljs-string">&quot;0-395-19395-8&quot;</span>,
+      <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">22.99</span>
+    }
+  ],
+  <span class="hljs-attr">&quot;bicycle&quot;</span>: {
+    <span class="hljs-attr">&quot;color&quot;</span>: <span class="hljs-string">&quot;red&quot;</span>,
+    <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">19.95</span>
+  }
+}
+}</code></pre>
+				<p>and the following XML representation:</p>
+				<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">store</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">book</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>reference<span class="hljs-tag">&lt;/<span class="hljs-name">category</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>Nigel Rees<span class="hljs-tag">&lt;/<span class="hljs-name">author</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Sayings of the Century<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>8.95<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">book</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">book</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>fiction<span class="hljs-tag">&lt;/<span class="hljs-name">category</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>Evelyn Waugh<span class="hljs-tag">&lt;/<span class="hljs-name">author</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Sword of Honour<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>12.99<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">book</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">book</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>fiction<span class="hljs-tag">&lt;/<span class="hljs-name">category</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>Herman Melville<span class="hljs-tag">&lt;/<span class="hljs-name">author</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Moby Dick<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">isbn</span>&gt;</span>0-553-21311-3<span class="hljs-tag">&lt;/<span class="hljs-name">isbn</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>8.99<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">book</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">book</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>fiction<span class="hljs-tag">&lt;/<span class="hljs-name">category</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>J. R. R. Tolkien<span class="hljs-tag">&lt;/<span class="hljs-name">author</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>The Lord of the Rings<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">isbn</span>&gt;</span>0-395-19395-8<span class="hljs-tag">&lt;/<span class="hljs-name">isbn</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>22.99<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">book</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">bicycle</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">color</span>&gt;</span>red<span class="hljs-tag">&lt;/<span class="hljs-name">color</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>19.95<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bicycle</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">store</span>&gt;</span></code></pre>
+				<p>Please note that the XPath examples below do not distinguish between
+					retrieving elements and their text content (except where useful for
+					comparisons or to prevent ambiguity). Note: to test the XPath examples
+					(including 2.0 ones), <a href="http://videlibri.sourceforge.net/cgi-bin/xidelcgi">this demo</a>
+				may be helpful (set to <code>xml</code> or <code>xml-strict</code>).</p>
+				<table>
+					<thead>
+						<tr>
+							<th>XPath</th>
+							<th>JSONPath</th>
+							<th>Result</th>
+							<th>Notes</th>
+						</tr>
+					</thead>
+					<tbody><tr>
+							<td>/store/book/author</td>
+							<td>$.store.book[*].author</td>
+							<td>The authors of all books in the store</td>
+							<td>Can also be represented without the <code>$.</code> as <code>store.book[*].author</code> (though this is not present in the original spec); note that some character literals (<code>$</code> and <code>@</code>) require escaping, however</td>
+						</tr>
+						<tr>
+							<td>//author</td>
+							<td>$..author</td>
+							<td>All authors</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>/store/*</td>
+							<td>$.store.*</td>
+							<td>All things in store, which are its books (a book array) and a red bicycle (a bicycle object).</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>/store//price</td>
+							<td>$.store..price</td>
+							<td>The price of everything in the store.</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>//book[3]</td>
+							<td>$..book[2]</td>
+							<td>The third book (book object)</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>//book[last()]</td>
+							<td>$..book[(@.length-1)]<br>$..book[-1:]</td>
+							<td>The last book in order.</td>
+							<td>To access a property with a special character, utilize <code>[(@[&#39;...&#39;])]</code> for the filter (this particular feature is not present in the original spec)</td>
+						</tr>
+						<tr>
+							<td>//book[position()&lt;3]</td>
+							<td>$..book[0,1]<br>$..book[:2]</td>
+							<td>The first two books</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>//book/*[self::category|self::author] or //book/(category,author) in XPath 2.0</td>
+							<td>$..book[0][category,author]</td>
+							<td>The categories and authors of all books</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>//book[isbn]</td>
+							<td>$..book[?(@.isbn)]</td>
+							<td>Filter all books with an ISBN number</td>
+							<td>To access a property with a special character, utilize <code>[?@[&#39;...&#39;]]</code> for the filter (this particular feature is not present in the original spec)</td>
+						</tr>
+						<tr>
+							<td>//book[price&lt;10]</td>
+							<td>$..book[?(@.price&lt;10)]</td>
+							<td>Filter all books cheaper than 10</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>//*[name() = &#39;price&#39; and . != 8.95]</td>
+							<td>$..*[?(@property === &#39;price&#39; &amp;&amp; @ !== 8.95)]</td>
+							<td>Obtain all property values of objects whose property is price and which does not equal 8.95</td>
+							<td>With the bare <code>@</code> allowing filtering objects by property value (not necessarily within arrays), you can add <code>^</code> after the expression to get at the object possessing the filtered properties</td>
+						</tr>
+						<tr>
+							<td>/</td>
+							<td>$</td>
+							<td>The root of the JSON object (i.e., the whole object itself)</td>
+							<td>To get a literal <code>$</code> (by itself or anywhere in the path), you must use the backtick escape</td>
+						</tr>
+						<tr>
+							<td>//*/*|//*/*/text()</td>
+							<td>$..*</td>
+							<td>All Elements (and text) beneath root in an XML document. All members of a JSON structure beneath the root.</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>//*</td>
+							<td>$..</td>
+							<td>All Elements in an XML document. All parent components of a JSON structure including root.</td>
+							<td>This behavior was not directly specified in the original spec</td>
+						</tr>
+						<tr>
+							<td>//*[price&gt;19]/..</td>
+							<td>$..[?(@.price&gt;19)]^</td>
+							<td>Parent of those specific items with a price greater than 19 (i.e., the store value as the parent of the bicycle and the book array as parent of an individual book)</td>
+							<td>Parent (caret) not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>/store/*/name() (in XPath 2.0)</td>
+							<td>$.store.*~</td>
+							<td>The property names of the store sub-object (&quot;book&quot; and &quot;bicycle&quot;). Useful with wildcard properties.</td>
+							<td>Property name (tilde) is not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>/store/book[not(. is /store/book[1])] (in XPath 2.0)</td>
+							<td>$.store.book[?(@path !== &quot;$[&#39;store&#39;][&#39;book&#39;][0]&quot;)]</td>
+							<td>All books besides that at the path pointing to the first</td>
+							<td>@path not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>//book[parent::*/bicycle/color = &quot;red&quot;]/category</td>
+							<td>$..book[?(@parent.bicycle &amp;&amp; @parent.bicycle.color === &quot;red&quot;)].category</td>
+							<td>Grabs all categories of books where the parent object of the book has a bicycle child whose color is red (i.e., all the books)</td>
+							<td>@parent is not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>//book/*[name() != &#39;category&#39;]</td>
+							<td>$..book.*[?(@property !== &quot;category&quot;)]</td>
+							<td>Grabs all children of &quot;book&quot; except for &quot;category&quot; ones</td>
+							<td>@property is not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>//book[position() != 1]</td>
+							<td>$..book[?(@property !== 0)]</td>
+							<td>Grabs all books whose property (which, being that we are reaching inside an array, is the numeric index) is not 0</td>
+							<td>@property is not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>/store/*/*[name(parent::*) != &#39;book&#39;]</td>
+							<td>$.store.*[?(@parentProperty !== &quot;book&quot;)]</td>
+							<td>Grabs the grandchildren of store whose parent property is not book (i.e., bicycle&#39;s children, &quot;color&quot; and &quot;price&quot;)</td>
+							<td>@parentProperty is not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>//book[count(preceding-sibling::*) != 0]/*/text()</td>
+							<td>$..book.*[?(@parentProperty !== 0)]</td>
+							<td>Get the property values of all book instances whereby the parent property of these values (i.e., the array index holding the book item parent object) is not 0</td>
+							<td>@parentProperty is not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>//book[price = /store/book[3]/price]</td>
+							<td>$..book[?(@.price === @root.store.book[2].price)]</td>
+							<td>Filter all books whose price equals the price of the third book</td>
+							<td>@root is not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>//book/../*[. instance of element(*, xs:decimal)] (in XPath 2.0)</td>
+							<td>$..book..*@number()</td>
+							<td>Get the numeric values within the book array</td>
+							<td>@number(), the other basic types (@boolean(), @string()), other low-level derived types (@null(), @object(), @array()), the JSONSchema-added type, @integer(), the compound type @scalar() (which also accepts <code>undefined</code> and non-finite numbers for JavaScript objects as well as all of the basic non-object/non-function types), the type, @other(), to be used in conjunction with a user-defined callback (see <code>otherTypeCallback</code>) and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (@undefined(), @function(), @nonFinite()) are not present in the original spec</td>
+						</tr>
+						<tr>
+							<td>//book/*[name() = &#39;category&#39; and matches(., &#39;tion$&#39;)] (XPath 2.0)</td>
+							<td>$..book.*[?(@property === &quot;category&quot; &amp;&amp; @.match(/TION$/i))]</td>
+							<td>All categories of books which match the regex (end in &#39;TION&#39; case insensitive)</td>
+							<td>@property is not present in the original spec.</td>
+						</tr>
+						<tr>
+							<td>//book/<em>[matches(name(), &#39;bn$&#39;)]/parent::</em> (XPath 2.0)</td>
+							<td>$..book.*[?(@property.match(/bn$/i))]^</td>
+							<td>All books which have a property matching the regex (end in &#39;TION&#39; case insensitive)</td>
+							<td>@property is not present in the original spec. Note: Uses the parent selector ^ at the end of the expression to return to the parent object; without the parent selector, it matches the two <code>isbn</code> key values.</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><code>`</code> (e.g., <code>`$</code> to match a property literally named <code>$</code>)</td>
+							<td>Escapes the entire sequence following (to be treated as a literal)</td>
+							<td><code>`</code> is not present in the original spec; to get a literal backtick, use an additional backtick to escape</td>
+						</tr>
+				</tbody></table>
+				<p>Any additional variables supplied as properties on the optional &quot;sandbox&quot;
+					object option are also available to (parenthetical-based)
+				evaluations.</p>
+				<a href="#potential-sources-of-confusion-for-xpath-users" id="potential-sources-of-confusion-for-xpath-users" style="color: inherit; text-decoration: none;">
+					<h2>Potential sources of confusion for XPath users</h2>
+				</a>
+				<ol>
+					<li>In JSONPath, a filter expression, in addition to its <code>@</code> being a
+						reference to its children, actually selects the immediate children
+						as well, whereas in XPath, filter conditions do not select the children
+					but delimit which of its parent nodes will be obtained in the result.</li>
+					<li>In JSONPath, array indexes are, as in JavaScript, 0-based (they begin
+					from 0), whereas in XPath, they are 1-based.</li>
+					<li>In JSONPath, equality tests utilize (as per JavaScript) multiple equal signs
+					whereas in XPath, they use a single equal sign.</li>
+				</ol>
+				<a href="#ideas" id="ideas" style="color: inherit; text-decoration: none;">
+					<h2>Ideas</h2>
+				</a>
+				<ol>
+					<li>Support OR outside of filters (as in XPath <code>|</code>) and grouping.</li>
+					<li>Create syntax to work like XPath filters in not selecting children?</li>
+					<li>Allow option for parentNode equivalent (maintaining entire chain of
+					parent-and-parentProperty objects up to root)</li>
+				</ol>
+				<a href="#development" id="development" style="color: inherit; text-decoration: none;">
+					<h2>Development</h2>
+				</a>
+				<p>Running the tests on Node:</p>
+				<pre><code class="language-shell">npm test</code></pre>
+				<p>For in-browser tests:</p>
+				<ul>
+					<li>Serve the js/html files:</li>
+				</ul>
+				<pre><code class="language-shell">npm run browser-test</code></pre>
+				<ul>
+					<li>Visit <a href="http://localhost:8082/test/">http://localhost:8082/test/</a>.</li>
+				</ul>
+				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+					<h2>License</h2>
+				</a>
+				<p><a href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_jsonpath_d_.html">&quot;jsonpath.d&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

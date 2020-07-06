@@ -6,7 +6,6 @@ const toStr = Object.prototype.toString;
 Object.prototype.toString = function () {
     if (this === global.process) {
         if (global.forceBuiltinVM) {
-            // eslint-disable-next-line compat/compat
             throw new Error('oops');
         }
         // Native is not doing this here now

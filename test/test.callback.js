@@ -137,14 +137,12 @@ describe('JSONPath - Callback', function () {
             }
         };
 
-        // eslint-disable-next-line compat/compat
         Object.entries(obj1).forEach(([path, valuesToSet]) => {
             jsonpath({
                 json: givenPerson,
                 path,
                 wrap: false,
                 callback (obj) {
-                    // eslint-disable-next-line compat/compat
                     Object.entries(valuesToSet).forEach(([key, val]) => {
                         obj[key] = val;
                     });
