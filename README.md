@@ -86,8 +86,11 @@ magic is necessary:
 <script src="node_modules/core-js-bundle/minified.js"></script>
 
 <script src="node_modules/jsonpath-plus/dist/index-umd.js"></script>
+
 <script>
+
 const result = JSONPath.JSONPath({path: '...', json: ...});
+
 </script>
 ```
 
@@ -97,8 +100,10 @@ You may also use ES6 Module imports (for modern browsers):
 
 ```html
 <script type="module">
+
 import {JSONPath} from './node_modules/jsonpath-plus/dist/index-es.js';
 const result = JSONPath({path: '...', json: ...});
+
 </script>
 ```
 
