@@ -2,6 +2,7 @@
 [![Dependencies](https://img.shields.io/david/s3u/JSONPath.svg)](https://david-dm.org/s3u/JSONPath)
 [![devDependencies](https://img.shields.io/david/dev/s3u/JSONPath.svg)](https://david-dm.org/s3u/JSONPath?type=dev)
 
+[![Build Status](https://travis-ci.org/JSONPath-Plus/JSONPath.svg?branch=master)](https://travis-ci.com/github/JSONPath-Plus/JSONPath)
 [![testing badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/tests-badge.svg?sanitize=true)](badges/tests-badge.svg)
 [![coverage badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/coverage-badge.svg?sanitize=true)](badges/coverage-badge.svg)
 
