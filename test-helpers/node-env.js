@@ -19,12 +19,13 @@ global.expect = expect;
 
 setTimeout(async () => {
     global.forceBuiltinVM = false;
-    const {JSONPath} = await import('../src/jsonpath.js');
+    const {JSONPath} = await import('../src/jsonpath-node.js');
     global.jsonpathNodeVM = JSONPath;
     global.jsonpath = JSONPath;
     global.forceBuiltinVM = true;
-    // eslint-disable-next-line node/no-missing-import
-    const {JSONPath: JSONPath2} = await import('../src/jsonpath.js?');
-    global.jsonpathBuiltin = JSONPath2;
+    const {
+        JSONPath: JSONPathBrowser
+    } = await import('../src/jsonpath-browser.js');
+    global.jsonpathBrowser = JSONPathBrowser;
     run();
 });

@@ -1,5 +1,6 @@
 import babel from '@rollup/plugin-babel';
 import {terser} from 'rollup-plugin-terser';
+import pkg from './package.json';
 
 /**
  * @external RollupConfig
@@ -9,21 +10,40 @@ import {terser} from 'rollup-plugin-terser';
 
 /**
  * @param {PlainObject} config
+ * @param {string} config.input
  * @param {boolean} config.minifying
- * @param {string} [config.format='umd'} = {}]
+ * @param {string} [config.environment=""]
+ * @param {string} [config.format="umd"]
  * @returns {external:RollupConfig}
  */
-function getRollupObject ({minifying, format = 'umd'} = {}) {
+function getRollupObject ({
+    input, minifying, environment, format = 'umd'
+}) {
     const nonMinified = {
-        input: 'src/jsonpath.js',
+        input,
         output: {
             format,
             sourcemap: minifying,
-            file: `dist/index-${format}${minifying ? '.min' : ''}.js`,
+            file: `dist/index${environment ? `-${environment}` : ''}-${
+                format
+            }${minifying ? '.min' : ''}.${
+                environment === 'node' && format === 'esm' ? 'm' : ''
+            }js`,
             name: 'JSONPath'
         },
         plugins: [
             babel({
+                babelrc: false,
+                presets: [
+                    environment === 'node'
+                        ? ['@babel/preset-env', {
+                            targets: [
+                                `node ${pkg.engines.node}`
+                            ]
+                        }]
+                        // Can come up with some browser targets
+                        : ['@babel/preset-env']
+                ],
                 babelHelpers: 'bundled'
             })
         ]
@@ -34,10 +54,30 @@ function getRollupObject ({minifying, format = 'umd'} = {}) {
     return nonMinified;
 }
 
+/**
+ * @param {PlainObject} config
+ * @param {boolean} config.minifying
+ * @param {"node"|"environment"} [config.environment]
+ * @returns {external:RollupConfig[]}
+ */
+function getRollupObjectByEnv ({minifying, environment}) {
+    const input = `src/jsonpath-${environment}.js`;
+    if (environment === 'node') {
+        return [
+            getRollupObject({input, minifying, environment, format: 'cjs'}),
+            getRollupObject({input, minifying, environment, format: 'esm'})
+        ];
+    }
+    return [
+        getRollupObject({input, minifying, environment, format: 'umd'}),
+        getRollupObject({input, minifying, environment, format: 'esm'})
+    ];
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default [
-    getRollupObject({minifying: false, format: 'umd'}),
-    getRollupObject({minifying: true, format: 'umd'}),
-    getRollupObject({minifying: false, format: 'es'}),
-    getRollupObject({minifying: true, format: 'es'})
+    ...getRollupObjectByEnv({minifying: false, environment: 'node'}),
+    // ...getRollupObjectByEnv({minifying: true, environment: 'node'}),
+    ...getRollupObjectByEnv({minifying: false, environment: 'browser'}),
+    ...getRollupObjectByEnv({minifying: true, environment: 'browser'})
 ];

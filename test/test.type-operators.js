@@ -76,7 +76,7 @@ describe('JSONPath - Type Operators', function () {
          * @returns {boolean}
          */
         function endsIn99 (val, path, parent, parentPropName) {
-            return Boolean(val.toString().match(/\.99/u));
+            return Boolean((/\.99/u).test(val.toString()));
         }
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
         assert.deepEqual(result, expected);
@@ -168,9 +168,9 @@ describe('JSONPath - Type Operators', function () {
         const jsonMixed = {
             nested: {
                 a: 50.7,
-                b: -Infinity,
+                b: Number.NEGATIVE_INFINITY,
                 c: [
-                    42, [Infinity, 73, Number.NaN]
+                    42, [Number.POSITIVE_INFINITY, 73, Number.NaN]
                 ]
             }
         };

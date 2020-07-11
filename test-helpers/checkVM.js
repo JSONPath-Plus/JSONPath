@@ -15,16 +15,23 @@
  * @returns {void}
  */
 function checkBuiltInVMAndNodeVM (cb) {
+    if (typeof process === 'undefined') {
+        // eslint-disable-next-line node/no-callback-literal
+        cb('JSONPath vm', () => {
+            //
+        });
+        return;
+    }
     [
         'Node vm',
         'JSONPath vm'
     ].forEach((vmType) => {
-        const checkingBuiltInVM = vmType === 'JSONPath vm';
+        const checkingBrowserVM = vmType === 'JSONPath vm';
         cb(
             vmType,
-            checkingBuiltInVM
+            checkingBrowserVM
                 ? () => {
-                    global.jsonpath = global.jsonpathBuiltin;
+                    global.jsonpath = global.jsonpathBrowser;
                 }
                 : () => {
                     global.jsonpath = global.jsonpathNodeVM;

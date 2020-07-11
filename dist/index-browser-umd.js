@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = global || self, factory(global.JSONPath = {}));
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.JSONPath = {}));
 }(this, (function (exports) { 'use strict';
 
   function _typeof(obj) {
@@ -250,92 +250,11 @@
     };
   }
 
-  /* eslint-disable prefer-named-capture-group */
-  // Disabled `prefer-named-capture-group` due to https://github.com/babel/babel/issues/8951#issuecomment-508045524
-  // Only Node.JS has a process variable that is of [[Class]] process
-  var supportsNodeVM = function supportsNodeVM() {
-    try {
-      return Object.prototype.toString.call(global.process) === '[object process]';
-    } catch (e) {
-      return false;
-    }
-  };
-
   var hasOwnProp = Object.prototype.hasOwnProperty;
   /**
   * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
   */
 
-  /**
-  * @callback ConditionCallback
-  * @param {any} item
-  * @returns {boolean}
-  */
-
-  /**
-   * Copy items out of one array into another.
-   * @param {GenericArray} source Array with items to copy
-   * @param {GenericArray} target Array to which to copy
-   * @param {ConditionCallback} conditionCb Callback passed the current item;
-   *     will move item if evaluates to `true`
-   * @returns {void}
-   */
-
-  var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb) {
-    var il = source.length;
-
-    for (var i = 0; i < il; i++) {
-      var item = source[i];
-
-      if (conditionCb(item)) {
-        target.push(source.splice(i--, 1)[0]);
-      }
-    }
-  };
-
-  JSONPath.nodeVMSupported = supportsNodeVM();
-  var vm = JSONPath.nodeVMSupported ? require('vm') : {
-    /**
-     * @param {string} expr Expression to evaluate
-     * @param {PlainObject} context Object whose items will be added
-     *   to evaluation
-     * @returns {any} Result of evaluated code
-     */
-    runInNewContext: function runInNewContext(expr, context) {
-      var keys = Object.keys(context);
-      var funcs = [];
-      moveToAnotherArray(keys, funcs, function (key) {
-        return typeof context[key] === 'function';
-      });
-      var values = keys.map(function (vr, i) {
-        return context[vr];
-      });
-      var funcString = funcs.reduce(function (s, func) {
-        var fString = context[func].toString();
-
-        if (!/function/.test(fString)) {
-          fString = 'function ' + fString;
-        }
-
-        return 'var ' + func + '=' + fString + ';' + s;
-      }, '');
-      expr = funcString + expr; // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
-
-      if (!expr.match(/(["'])use strict\1/) && !keys.includes('arguments')) {
-        expr = 'var arguments = undefined;' + expr;
-      } // Remove last semi so `return` will be inserted before
-      //  the previous one instead, allowing for the return
-      //  of a bare ending expression
-
-
-      expr = expr.replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
-
-      var lastStatementEnd = expr.lastIndexOf(';');
-      var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func
-
-      return _construct(Function, _toConsumableArray(keys).concat([code])).apply(void 0, _toConsumableArray(values));
-    }
-  };
   /**
    * Copies array and then pushes item into it.
    * @param {GenericArray} arr Array to copy and into which to push
@@ -414,12 +333,13 @@
   * @returns {boolean}
   */
 
+  /* eslint-disable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
+
   /**
    * @typedef {PlainObject} JSONPathOptions
    * @property {JSON} json
    * @property {string|string[]} path
-   * @property {"value"|"path"|"pointer"|"parent"|
-   * "parentProperty"|"all"} [resultType="value"]
+   * @property {"value"|"path"|"pointer"|"parent"|"parentProperty"|"all"} [resultType="value"]
    * @property {boolean} [flatten=false]
    * @property {boolean} [wrap=true]
    * @property {PlainObject} [sandbox={}]
@@ -431,6 +351,8 @@
    *   function which throws on encountering `@other`
    * @property {boolean} [autostart=true]
    */
+
+  /* eslint-enable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 
   /**
    * @param {string|JSONPathOptions} opts If a string, will be treated as `expr`
@@ -976,13 +898,13 @@
       code = code.replace(/@root/g, '_$_root');
     }
 
-    if (code.match(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/)) {
+    if (/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/.test(code)) {
       this.currSandbox._$_v = _v;
       code = code.replace(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/g, '_$_v$1');
     }
 
     try {
-      return vm.runInNewContext(code, this.currSandbox);
+      return this.vm.runInNewContext(code, this.currSandbox);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
@@ -1050,11 +972,11 @@
     .replace(/['\[](\??\((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?\))['\]]/g, function ($0, $1) {
       return '[#' + (subx.push($1) - 1) + ']';
     }) // Escape periods and tildes within properties
-    .replace(/\['((?:[\0-&\(-\\\^-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)'\]/g, function ($0, prop) {
+    .replace(/\['((?:(?!['\]])[\s\S])*)'\]/g, function ($0, prop) {
       return "['" + prop.replace(/\./g, '%@%').replace(/~/g, '%%@@%%') + "']";
     }) // Properties operator
     .replace(/~/g, ';~;') // Split by property boundaries
-    .replace(/'?\.'?(?!(?:[\0-Z\\-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*\])|\['?/g, ';') // Reinsert periods within properties
+    .replace(/'?\.'?(?!(?:(?!\[)[\s\S])*\])|\['?/g, ';') // Reinsert periods within properties
     .replace(/%@%/g, '.') // Reinsert tildes within properties
     .replace(/%%@@%%/g, '~') // Parent
     .replace(/(?:;)?(\^+)(?:;)?/g, function ($0, ups) {
@@ -1068,6 +990,76 @@
     });
     cache[expr] = exprList;
     return cache[expr];
+  };
+
+  /**
+  * @callback ConditionCallback
+  * @param {any} item
+  * @returns {boolean}
+  */
+
+  /**
+   * Copy items out of one array into another.
+   * @param {GenericArray} source Array with items to copy
+   * @param {GenericArray} target Array to which to copy
+   * @param {ConditionCallback} conditionCb Callback passed the current item;
+   *     will move item if evaluates to `true`
+   * @returns {void}
+   */
+
+  var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb) {
+    var il = source.length;
+
+    for (var i = 0; i < il; i++) {
+      var item = source[i];
+
+      if (conditionCb(item)) {
+        target.push(source.splice(i--, 1)[0]);
+      }
+    }
+  };
+
+  JSONPath.prototype.vm = {
+    /**
+     * @param {string} expr Expression to evaluate
+     * @param {PlainObject} context Object whose items will be added
+     *   to evaluation
+     * @returns {any} Result of evaluated code
+     */
+    runInNewContext: function runInNewContext(expr, context) {
+      var keys = Object.keys(context);
+      var funcs = [];
+      moveToAnotherArray(keys, funcs, function (key) {
+        return typeof context[key] === 'function';
+      });
+      var values = keys.map(function (vr, i) {
+        return context[vr];
+      });
+      var funcString = funcs.reduce(function (s, func) {
+        var fString = context[func].toString();
+
+        if (!/function/.test(fString)) {
+          fString = 'function ' + fString;
+        }
+
+        return 'var ' + func + '=' + fString + ';' + s;
+      }, '');
+      expr = funcString + expr; // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
+
+      if (!/(["'])use strict\1/.test(expr) && !keys.includes('arguments')) {
+        expr = 'var arguments = undefined;' + expr;
+      } // Remove last semi so `return` will be inserted before
+      //  the previous one instead, allowing for the return
+      //  of a bare ending expression
+
+
+      expr = expr.replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
+
+      var lastStatementEnd = expr.lastIndexOf(';');
+      var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func
+
+      return _construct(Function, _toConsumableArray(keys).concat([code])).apply(void 0, _toConsumableArray(values));
+    }
   };
 
   exports.JSONPath = JSONPath;

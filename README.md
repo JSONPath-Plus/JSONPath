@@ -86,7 +86,7 @@ magic is necessary:
       browsers in dist -->
 <script src="node_modules/core-js-bundle/minified.js"></script>
 
-<script src="node_modules/jsonpath-plus/dist/index-umd.js"></script>
+<script src="node_modules/jsonpath-plus/dist/index-browser-umd.js"></script>
 
 <script>
 
@@ -102,7 +102,7 @@ You may also use ES6 Module imports (for modern browsers):
 ```html
 <script type="module">
 
-import {JSONPath} from './node_modules/jsonpath-plus/dist/index-es.js';
+import {JSONPath} from './node_modules/jsonpath-plus/dist/index-browser-es.js';
 const result = JSONPath({path: '...', json: ...});
 
 </script>
@@ -110,7 +110,10 @@ const result = JSONPath({path: '...', json: ...});
 
 ### ESM (Bundlers)
 
-Or if you are bundling your JavaScript (e.g., with Rollup), just use:
+Or if you are bundling your JavaScript (e.g., with Rollup), just use,
+noting that [`mainFields`](https://github.com/rollup/plugins/tree/master/packages/node-resolve#mainfields)
+should include `browser` for browser builds (for Node, the default, which
+checks `module`, should be fine):
 
 ```js
 import {JSONPath} from 'jsonpath-plus';

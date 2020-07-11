@@ -1,20 +1,34 @@
 # CHANGES for jsonpath-plus
 
-## ?
+## 5.0.0 (2020-07-11)
 
+- Breaking change: Add `type: 'commonjs'` and `exports: {import, require}`
+    (with `node-import-test` npm script to demo)
+- Breaking change: Change paths for browser (now is
+   `dist/index-browser-umd.js` or `dist/index-browser-es.js`)
+   (for Node, `main` and `module` point to new Node-specific dist)
+- Breaking enhancement:  Add `browser` for browser bundling;
+    allowing static analysis environments, doesn't have however
+    conditional code to require `vm`); for ESM browser bundling,
+    now must check `browser` in Rollup Node resolver plugin;
+    see README
 - Build: Update per latest devDeps.
 - Docs: Add Regex (`.match`) example on value (@jeffreypriebe)
 - Docs: Add Regex (`.match`) example on property
 - Docs: Fix XPath example (@humbertoc-silva)
 - Docs: Link to XPath 2.0 tester
 - Docs: Update badges per latest updates
+- Linting: quote props
 - Linting: As per latest ash-nazg
+- Testing: Fix browser tests
 - Testing: Add test case for setting values in callbacks (issue #126)
 - Testing: Add more at-sign tests
 - Testing: Bump timeout
 - Travis: Check Node 14
+- Travis: add default `dist` field to avoid extra config reporting
 - npm: Update from deprecated `rollup-plugin-babel` to `@rollup/plugin-babel`
     (and make `babelHelpers` explicit)
+- npm: Reorder scripts by test execution order
 - npm: Update devDeps
 
 ## 4.0.0 (2020-04-09)

@@ -20,10 +20,11 @@
 
         <script type="module">
         /* globals chai */
-        import {JSONPath} from '../src/jsonpath.js';
+        import {JSONPath} from '../src/jsonpath-browser.js';
 
         mocha.setup('bdd');
         window.assert = chai.assert;
+        window.expect = chai.expect;
         window.jsonpath = JSONPath;
         mocha.globals(['jsonpath']);
         </script>

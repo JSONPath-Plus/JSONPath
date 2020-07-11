@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for jsonpath-plus">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -38,8 +39,6 @@
 							</div>
 							<input type="checkbox" id="tsd-filter-inherited" checked />
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -49,12 +48,7 @@
 	</div>
 	<div class="tsd-page-title">
 		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="globals.html">Globals</a>
-				</li>
-			</ul>
-			<h1>jsonpath-plus</h1>
+			<h1>Project jsonpath-plus</h1>
 		</div>
 	</div>
 </header>
@@ -65,7 +59,8 @@
 				<p><a href="https://www.npmjs.com/package/jsonpath-plus"><img src="https://img.shields.io/npm/v/jsonpath-plus.svg" alt="npm"></a>
 					<a href="https://david-dm.org/s3u/JSONPath"><img src="https://img.shields.io/david/s3u/JSONPath.svg" alt="Dependencies"></a>
 				<a href="https://david-dm.org/s3u/JSONPath?type=dev"><img src="https://img.shields.io/david/dev/s3u/JSONPath.svg" alt="devDependencies"></a></p>
-				<p><a href="badges/tests-badge.svg"><img src="https://raw.githubusercontent.com/s3u/JSONPath/master/badges/tests-badge.svg?sanitize=true" alt="testing badge"></a>
+				<p><a href="https://travis-ci.com/github/JSONPath-Plus/JSONPath"><img src="https://travis-ci.org/JSONPath-Plus/JSONPath.svg?branch=master" alt="Build Status"></a>
+					<a href="badges/tests-badge.svg"><img src="https://raw.githubusercontent.com/s3u/JSONPath/master/badges/tests-badge.svg?sanitize=true" alt="testing badge"></a>
 				<a href="badges/coverage-badge.svg"><img src="https://raw.githubusercontent.com/s3u/JSONPath/master/badges/coverage-badge.svg?sanitize=true" alt="coverage badge"></a></p>
 				<p><a href="https://snyk.io/test/github/s3u/JSONPath"><img src="https://snyk.io/test/github/s3u/JSONPath/badge.svg" alt="Known Vulnerabilities"></a>
 					<a href="https://lgtm.com/projects/g/s3u/JSONPath/alerts"><img src="https://img.shields.io/lgtm/alerts/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18" alt="Total Alerts"></a>
@@ -127,49 +122,64 @@
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h2>Install</h2>
 				</a>
-				<pre><code class="language-shell">npm install jsonpath-plus</code></pre>
+				<pre><code class="language-shell"><span style="color: #000000">npm install jsonpath-plus</span>
+</code></pre>
 				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
 					<h2>Setup</h2>
 				</a>
 				<a href="#nodejs" id="nodejs" style="color: inherit; text-decoration: none;">
 					<h3>Node.js</h3>
 				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> {JSONPath} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;jsonpath-plus&#x27;</span>);
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> {</span><span style="color: #0070C1">JSONPath</span><span style="color: #000000">} = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;jsonpath-plus&#039;</span><span style="color: #000000">);</span>
 
-<span class="hljs-keyword">const</span> result = JSONPath({<span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;...&#x27;</span>, json});</code></pre>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">result</span><span style="color: #000000"> = </span><span style="color: #795E26">JSONPath</span><span style="color: #000000">({</span><span style="color: #001080">path:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;...&#039;</span><span style="color: #000000">, </span><span style="color: #001080">json</span><span style="color: #000000">});</span>
+</code></pre>
 				<a href="#browser" id="browser" style="color: inherit; text-decoration: none;">
 					<h3>Browser</h3>
 				</a>
 				<p>For browser usage you can directly include <code>dist/index-umd.js</code>; no Browserify
 				magic is necessary:</p>
-				<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Polyfill recommended by Babel for items not covered for older
-      browsers in dist --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;node_modules/core-js-bundle/minified.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+				<pre><code class="language-html"><span style="color: #008000">&lt;!-- Polyfill recommended by Babel for items not covered for older</span>
+<span style="color: #008000">      browsers in dist --&gt;</span>
+<span style="color: #800000">&lt;script</span><span style="color: #000000FF"> </span><span style="color: #FF0000">src</span><span style="color: #000000FF">=</span><span style="color: #0000FF">&quot;node_modules/core-js-bundle/minified.js&quot;</span><span style="color: #800000">&gt;&lt;/script&gt;</span>
 
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;node_modules/jsonpath-plus/dist/index-umd.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
-<span class="hljs-keyword">const</span> result = JSONPath.JSONPath({<span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;...&#x27;</span>, <span class="hljs-attr">json</span>: ...});
-</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+<span style="color: #800000">&lt;script</span><span style="color: #000000FF"> </span><span style="color: #FF0000">src</span><span style="color: #000000FF">=</span><span style="color: #0000FF">&quot;node_modules/jsonpath-plus/dist/index-browser-umd.js&quot;</span><span style="color: #800000">&gt;&lt;/script&gt;</span>
+
+<span style="color: #800000">&lt;script&gt;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000FF"> </span><span style="color: #0070C1">result</span><span style="color: #000000FF"> </span><span style="color: #000000">=</span><span style="color: #000000FF"> </span><span style="color: #001080">JSONPath</span><span style="color: #000000FF">.</span><span style="color: #795E26">JSONPath</span><span style="color: #000000FF">({</span><span style="color: #001080">path:</span><span style="color: #000000FF"> </span><span style="color: #A31515">&#039;...&#039;</span><span style="color: #000000FF">, </span><span style="color: #001080">json:</span><span style="color: #000000FF"> </span><span style="color: #000000">...</span><span style="color: #000000FF">});</span>
+
+<span style="color: #800000">&lt;/script&gt;</span>
+</code></pre>
 				<a href="#esm-modern-browsers" id="esm-modern-browsers" style="color: inherit; text-decoration: none;">
 					<h3>ESM (Modern browsers)</h3>
 				</a>
 				<p>You may also use ES6 Module imports (for modern browsers):</p>
-				<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;module&quot;</span>&gt;</span><span class="javascript">
-<span class="hljs-keyword">import</span> {JSONPath} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./node_modules/jsonpath-plus/dist/index-es.js&#x27;</span>;
-<span class="hljs-keyword">const</span> result = JSONPath({<span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;...&#x27;</span>, <span class="hljs-attr">json</span>: ...});
-</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+				<pre><code class="language-html"><span style="color: #800000">&lt;script</span><span style="color: #000000FF"> </span><span style="color: #FF0000">type</span><span style="color: #000000FF">=</span><span style="color: #0000FF">&quot;module&quot;</span><span style="color: #800000">&gt;</span>
+
+<span style="color: #AF00DB">import</span><span style="color: #000000FF"> {</span><span style="color: #001080">JSONPath</span><span style="color: #000000FF">} </span><span style="color: #AF00DB">from</span><span style="color: #000000FF"> </span><span style="color: #A31515">&#039;./node_modules/jsonpath-plus/dist/index-browser-es.js&#039;</span><span style="color: #000000FF">;</span>
+<span style="color: #0000FF">const</span><span style="color: #000000FF"> </span><span style="color: #0070C1">result</span><span style="color: #000000FF"> </span><span style="color: #000000">=</span><span style="color: #000000FF"> </span><span style="color: #795E26">JSONPath</span><span style="color: #000000FF">({</span><span style="color: #001080">path:</span><span style="color: #000000FF"> </span><span style="color: #A31515">&#039;...&#039;</span><span style="color: #000000FF">, </span><span style="color: #001080">json:</span><span style="color: #000000FF"> </span><span style="color: #000000">...</span><span style="color: #000000FF">});</span>
+
+<span style="color: #800000">&lt;/script&gt;</span>
+</code></pre>
 				<a href="#esm-bundlers" id="esm-bundlers" style="color: inherit; text-decoration: none;">
 					<h3>ESM (Bundlers)</h3>
 				</a>
-				<p>Or if you are bundling your JavaScript (e.g., with Rollup), just use:</p>
-				<pre><code class="language-js"><span class="hljs-keyword">import</span> {JSONPath} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;jsonpath-plus&#x27;</span>;
+				<p>Or if you are bundling your JavaScript (e.g., with Rollup), just use,
+					noting that <a href="https://github.com/rollup/plugins/tree/master/packages/node-resolve#mainfields"><code>mainFields</code></a>
+					should include <code>browser</code> for browser builds (for Node, the default, which
+				checks <code>module</code>, should be fine):</p>
+				<pre><code class="language-js"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">JSONPath</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;jsonpath-plus&#039;</span><span style="color: #000000">;</span>
 
-<span class="hljs-keyword">const</span> result = JSONPath({<span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;...&#x27;</span>, json});</code></pre>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">result</span><span style="color: #000000"> = </span><span style="color: #795E26">JSONPath</span><span style="color: #000000">({</span><span style="color: #001080">path:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;...&#039;</span><span style="color: #000000">, </span><span style="color: #001080">json</span><span style="color: #000000">});</span>
+</code></pre>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
 				<p>The full signature available is:</p>
-				<pre><code>const result = <span class="hljs-constructor">JSONPath([<span class="hljs-params">options</span>,] <span class="hljs-params">path</span>, <span class="hljs-params">json</span>, <span class="hljs-params">callback</span>, <span class="hljs-params">otherTypeCallback</span>)</span>;</code></pre><p>The arguments <code>path</code>, <code>json</code>, <code>callback</code>, and <code>otherTypeCallback</code>
+				<pre><code><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">result</span><span style="color: #000000"> = </span><span style="color: #795E26">JSONPath</span><span style="color: #000000">([</span><span style="color: #001080">options</span><span style="color: #000000">,] </span><span style="color: #001080">path</span><span style="color: #000000">, </span><span style="color: #001080">json</span><span style="color: #000000">, </span><span style="color: #001080">callback</span><span style="color: #000000">, </span><span style="color: #001080">otherTypeCallback</span><span style="color: #000000">);</span>
+</code></pre>
+				<p>The arguments <code>path</code>, <code>json</code>, <code>callback</code>, and <code>otherTypeCallback</code>
 					can alternatively be expressed (along with any other of the
 				available properties) on <code>options</code>.</p>
 				<p>Note that <code>result</code> will contain all items found (optionally
@@ -178,6 +188,7 @@
 					the callback function being executed 0 to N times depending
 					on the number of independent items to be found in the result.
 				See the docs below for more on <code>JSONPath</code>&#39;s available arguments.</p>
+				<p>See also the <a href="https://jsonpath-plus.github.io/JSONPath/docs/ts/">API docs</a>.</p>
 				<a href="#properties" id="properties" style="color: inherit; text-decoration: none;">
 					<h3>Properties</h3>
 				</a>
@@ -195,7 +206,7 @@
 					<li><strong><em>resultType</em></strong> (<strong>default: &quot;value&quot;</strong>) - Can be case-insensitive form of
 						&quot;value&quot;, &quot;path&quot;, &quot;pointer&quot;, &quot;parent&quot;, or &quot;parentProperty&quot; to determine
 						respectively whether to return results as the values of the found items,
-						as their absolute paths, as <a href="http://www.rfc-base.org/txt/rfc-6901.txt">JSON Pointers</a>
+						as their absolute paths, as <a href="https://tools.ietf.org/html/rfc6901">JSON Pointers</a>
 						to the absolute paths, as their parent objects, or as their parent&#39;s
 						property name. If set to &quot;all&quot;, all of these types will be returned on
 					an object with the type as key name.</li>
@@ -229,8 +240,8 @@
 						supplied will be the value of the payload (according to <code>resultType</code>),
 						the type of the payload (whether it is a normal &quot;value&quot; or a &quot;property&quot;
 					name), and a full payload object (with all <code>resultType</code>s).</li>
-					<li><strong><em>otherTypeCallback</em></strong> (<strong>default: &lt;A function that throws an error</strong>
-						<strong>when @other() is encountered&gt;</strong>) - In the current absence of JSON
+					<li><strong><em>otherTypeCallback</em></strong> (<strong>default: &lt;A function that throws an error**
+						**when @other() is encountered&gt;</strong>) - In the current absence of JSON
 						Schema support, one can determine types beyond the built-in types by
 						adding the operator <code>@other()</code> at the end of one&#39;s query. If such a
 						path is encountered, the <code>otherTypeCallback</code> will be invoked with the
@@ -268,7 +279,7 @@
 						constructions <code>~</code> and <code>^</code> and type operators like <code>@string()</code> are
 					silently stripped.</li>
 					<li><strong><em>JSONPath.toPointer(pathAsArray)</em></strong> - Accepts a path array and
-						converts to a <a href="http://www.rfc-base.org/txt/rfc-6901.txt">JSON Pointer</a>.
+						converts to a <a href="https://tools.ietf.org/html/rfc6901">JSON Pointer</a>.
 						The string will be in a form like: <code>/aProperty/anotherProperty/0</code>
 						(with any <code>~</code> and <code>/</code> internal characters escaped as per the JSON
 						Pointer spec). The JSONPath terminal constructions <code>~</code> and <code>^</code> and
@@ -278,75 +289,77 @@
 					<h2>Syntax through examples</h2>
 				</a>
 				<p>Given the following JSON, taken from <a href="http://goessner.net/articles/JsonPath/">http://goessner.net/articles/JsonPath/</a>:</p>
-				<pre><code class="language-json">{
-<span class="hljs-attr">&quot;store&quot;</span>: {
-  <span class="hljs-attr">&quot;book&quot;</span>: [
-    {
-      <span class="hljs-attr">&quot;category&quot;</span>: <span class="hljs-string">&quot;reference&quot;</span>,
-      <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;Nigel Rees&quot;</span>,
-      <span class="hljs-attr">&quot;title&quot;</span>: <span class="hljs-string">&quot;Sayings of the Century&quot;</span>,
-      <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">8.95</span>
-    },
-    {
-      <span class="hljs-attr">&quot;category&quot;</span>: <span class="hljs-string">&quot;fiction&quot;</span>,
-      <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;Evelyn Waugh&quot;</span>,
-      <span class="hljs-attr">&quot;title&quot;</span>: <span class="hljs-string">&quot;Sword of Honour&quot;</span>,
-      <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">12.99</span>
-    },
-    {
-      <span class="hljs-attr">&quot;category&quot;</span>: <span class="hljs-string">&quot;fiction&quot;</span>,
-      <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;Herman Melville&quot;</span>,
-      <span class="hljs-attr">&quot;title&quot;</span>: <span class="hljs-string">&quot;Moby Dick&quot;</span>,
-      <span class="hljs-attr">&quot;isbn&quot;</span>: <span class="hljs-string">&quot;0-553-21311-3&quot;</span>,
-      <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">8.99</span>
-    },
-    {
-      <span class="hljs-attr">&quot;category&quot;</span>: <span class="hljs-string">&quot;fiction&quot;</span>,
-      <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;J. R. R. Tolkien&quot;</span>,
-      <span class="hljs-attr">&quot;title&quot;</span>: <span class="hljs-string">&quot;The Lord of the Rings&quot;</span>,
-      <span class="hljs-attr">&quot;isbn&quot;</span>: <span class="hljs-string">&quot;0-395-19395-8&quot;</span>,
-      <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">22.99</span>
-    }
-  ],
-  <span class="hljs-attr">&quot;bicycle&quot;</span>: {
-    <span class="hljs-attr">&quot;color&quot;</span>: <span class="hljs-string">&quot;red&quot;</span>,
-    <span class="hljs-attr">&quot;price&quot;</span>: <span class="hljs-number">19.95</span>
-  }
-}
-}</code></pre>
+				<pre><code class="language-json"><span style="color: #000000">{</span>
+<span style="color: #0451A5">&quot;store&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;book&quot;</span><span style="color: #000000">: [</span>
+<span style="color: #000000">    {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;category&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;reference&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;author&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Nigel Rees&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;title&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Sayings of the Century&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;price&quot;</span><span style="color: #000000">: </span><span style="color: #098658">8.95</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;category&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;fiction&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;author&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Evelyn Waugh&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;title&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Sword of Honour&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;price&quot;</span><span style="color: #000000">: </span><span style="color: #098658">12.99</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;category&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;fiction&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;author&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Herman Melville&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;title&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Moby Dick&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;isbn&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;0-553-21311-3&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;price&quot;</span><span style="color: #000000">: </span><span style="color: #098658">8.99</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;category&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;fiction&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;author&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;J. R. R. Tolkien&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;title&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;The Lord of the Rings&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;isbn&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;0-395-19395-8&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;price&quot;</span><span style="color: #000000">: </span><span style="color: #098658">22.99</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  ],</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;bicycle&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;color&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;red&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;price&quot;</span><span style="color: #000000">: </span><span style="color: #098658">19.95</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+<span style="color: #000000">}</span>
+</code></pre>
 				<p>and the following XML representation:</p>
-				<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">store</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">book</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>reference<span class="hljs-tag">&lt;/<span class="hljs-name">category</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>Nigel Rees<span class="hljs-tag">&lt;/<span class="hljs-name">author</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Sayings of the Century<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>8.95<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">book</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">book</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>fiction<span class="hljs-tag">&lt;/<span class="hljs-name">category</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>Evelyn Waugh<span class="hljs-tag">&lt;/<span class="hljs-name">author</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Sword of Honour<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>12.99<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">book</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">book</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>fiction<span class="hljs-tag">&lt;/<span class="hljs-name">category</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>Herman Melville<span class="hljs-tag">&lt;/<span class="hljs-name">author</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Moby Dick<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">isbn</span>&gt;</span>0-553-21311-3<span class="hljs-tag">&lt;/<span class="hljs-name">isbn</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>8.99<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">book</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">book</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>fiction<span class="hljs-tag">&lt;/<span class="hljs-name">category</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>J. R. R. Tolkien<span class="hljs-tag">&lt;/<span class="hljs-name">author</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>The Lord of the Rings<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">isbn</span>&gt;</span>0-395-19395-8<span class="hljs-tag">&lt;/<span class="hljs-name">isbn</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>22.99<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">book</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">bicycle</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">color</span>&gt;</span>red<span class="hljs-tag">&lt;/<span class="hljs-name">color</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">price</span>&gt;</span>19.95<span class="hljs-tag">&lt;/<span class="hljs-name">price</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">bicycle</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">store</span>&gt;</span></code></pre>
+				<pre><code class="language-xml"><span style="color: #800000">&lt;store&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;book&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;category&gt;</span><span style="color: #000000">reference</span><span style="color: #800000">&lt;/category&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;author&gt;</span><span style="color: #000000">Nigel Rees</span><span style="color: #800000">&lt;/author&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;title&gt;</span><span style="color: #000000">Sayings of the Century</span><span style="color: #800000">&lt;/title&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;price&gt;</span><span style="color: #000000">8.95</span><span style="color: #800000">&lt;/price&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;/book&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;book&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;category&gt;</span><span style="color: #000000">fiction</span><span style="color: #800000">&lt;/category&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;author&gt;</span><span style="color: #000000">Evelyn Waugh</span><span style="color: #800000">&lt;/author&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;title&gt;</span><span style="color: #000000">Sword of Honour</span><span style="color: #800000">&lt;/title&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;price&gt;</span><span style="color: #000000">12.99</span><span style="color: #800000">&lt;/price&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;/book&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;book&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;category&gt;</span><span style="color: #000000">fiction</span><span style="color: #800000">&lt;/category&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;author&gt;</span><span style="color: #000000">Herman Melville</span><span style="color: #800000">&lt;/author&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;title&gt;</span><span style="color: #000000">Moby Dick</span><span style="color: #800000">&lt;/title&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;isbn&gt;</span><span style="color: #000000">0-553-21311-3</span><span style="color: #800000">&lt;/isbn&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;price&gt;</span><span style="color: #000000">8.99</span><span style="color: #800000">&lt;/price&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;/book&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;book&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;category&gt;</span><span style="color: #000000">fiction</span><span style="color: #800000">&lt;/category&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;author&gt;</span><span style="color: #000000">J. R. R. Tolkien</span><span style="color: #800000">&lt;/author&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;title&gt;</span><span style="color: #000000">The Lord of the Rings</span><span style="color: #800000">&lt;/title&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;isbn&gt;</span><span style="color: #000000">0-395-19395-8</span><span style="color: #800000">&lt;/isbn&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;price&gt;</span><span style="color: #000000">22.99</span><span style="color: #800000">&lt;/price&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;/book&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;bicycle&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;color&gt;</span><span style="color: #000000">red</span><span style="color: #800000">&lt;/color&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;price&gt;</span><span style="color: #000000">19.95</span><span style="color: #800000">&lt;/price&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;/bicycle&gt;</span>
+<span style="color: #800000">&lt;/store&gt;</span>
+</code></pre>
 				<p>Please note that the XPath examples below do not distinguish between
 					retrieving elements and their text content (except where useful for
 					comparisons or to prevent ambiguity). Note: to test the XPath examples
@@ -519,7 +532,7 @@
 						</tr>
 						<tr>
 							<td></td>
-							<td><code>`</code> (e.g., <code>`$</code> to match a property literally named <code>$</code>)</td>
+							<td><code>`</code> (e.g., <code> `$</code> to match a property literally named <code>$</code>)</td>
 							<td>Escapes the entire sequence following (to be treated as a literal)</td>
 							<td><code>`</code> is not present in the original spec; to get a literal backtick, use an additional backtick to escape</td>
 						</tr>
@@ -553,12 +566,14 @@
 					<h2>Development</h2>
 				</a>
 				<p>Running the tests on Node:</p>
-				<pre><code class="language-shell">npm test</code></pre>
+				<pre><code class="language-shell"><span style="color: #000000">npm </span><span style="color: #795E26">test</span>
+</code></pre>
 				<p>For in-browser tests:</p>
 				<ul>
 					<li>Serve the js/html files:</li>
 				</ul>
-				<pre><code class="language-shell">npm run browser-test</code></pre>
+				<pre><code class="language-shell"><span style="color: #000000">npm run browser-test</span>
+</code></pre>
 				<ul>
 					<li>Visit <a href="http://localhost:8082/test/">http://localhost:8082/test/</a>.</li>
 				</ul>
@@ -571,16 +586,37 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="globals.html"><em>Globals</em></a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_jsonpath_d_.html">&quot;jsonpath.d&quot;</a>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/jsonpathclass.html" class="tsd-kind-icon">JSONPath<wbr>Class</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/jsonpathcallable.html" class="tsd-kind-icon">JSONPath<wbr>Callable</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/jsonpathoptions.html" class="tsd-kind-icon">JSONPath<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/jsonpathoptionsautostart.html" class="tsd-kind-icon">JSONPath<wbr>Options<wbr>Auto<wbr>Start</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#jsonpathcallback" class="tsd-kind-icon">JSONPath<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#jsonpathothertypecallback" class="tsd-kind-icon">JSONPath<wbr>Other<wbr>Type<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#jsonpathtype" class="tsd-kind-icon">JSONPath<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#jsonpath" class="tsd-kind-icon">JSONPath</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -590,6 +626,17 @@
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
 		</div>
 	</div>
 </footer>
