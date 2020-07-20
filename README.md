@@ -155,7 +155,7 @@ evaluate method (as the first argument) include:
 - ***resultType*** (**default: "value"**) - Can be case-insensitive form of
   "value", "path", "pointer", "parent", or "parentProperty" to determine
   respectively whether to return results as the values of the found items,
-  as their absolute paths, as [JSON Pointers](http://www.rfc-base.org/txt/rfc-6901.txt)
+  as their absolute paths, as [JSON Pointers](https://tools.ietf.org/html/rfc6901)
   to the absolute paths, as their parent objects, or as their parent's
   property name. If set to "all", all of these types will be returned on
   an object with the type as key name.
@@ -224,7 +224,7 @@ evaluate method (as the first argument) include:
   constructions `~` and `^` and type operators like `@string()` are
   silently stripped.
 - ***JSONPath.toPointer(pathAsArray)*** - Accepts a path array and
-  converts to a [JSON Pointer](http://www.rfc-base.org/txt/rfc-6901.txt).
+  converts to a [JSON Pointer](https://tools.ietf.org/html/rfc6901).
   The string will be in a form like: `/aProperty/anotherProperty/0`
   (with any `~` and `/` internal characters escaped as per the JSON
   Pointer spec). The JSONPath terminal constructions `~` and `^` and
