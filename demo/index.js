@@ -39,10 +39,10 @@ const updateResults = () => {
     $('#results').value = JSON.stringify(result, null, 2);
 };
 
-$('#jsonpath').addEventListener('change', () => {
+$('#jsonpath').addEventListener('input', () => {
     updateResults();
 });
 
-$('#jsonSample').addEventListener('change', () => {
+$('#jsonSample').addEventListener('input', () => {
     updateResults();
 });
