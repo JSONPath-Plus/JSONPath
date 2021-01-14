@@ -1,6 +1,11 @@
 # CHANGES for jsonpath-plus
 
-## 5.0.0 (2020-07-11)
+## 5.0.1 (2021-01-15)
+
+- Fix: Proper Node CommonJS export; fixes #143
+- Docs: Properly indicate new browser paths
+
+## 5.0.0 (2021-01-14)
 
 - Breaking change: Add `type: 'commonjs'` and `exports: {import, require}`
     (with `node-import-test` npm script to demo)

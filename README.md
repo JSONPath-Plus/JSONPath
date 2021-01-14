@@ -78,7 +78,7 @@ const result = JSONPath({path: '...', json});
 
 ### Browser
 
-For browser usage you can directly include `dist/index-umd.js`; no Browserify
+For browser usage you can directly include `dist/index-browser-umd.js`; no Browserify
 magic is necessary:
 
 ```html
@@ -102,7 +102,7 @@ You may also use ES6 Module imports (for modern browsers):
 ```html
 <script type="module">
 
-import {JSONPath} from './node_modules/jsonpath-plus/dist/index-browser-es.js';
+import {JSONPath} from './node_modules/jsonpath-plus/dist/index-browser-esm.js';
 const result = JSONPath({path: '...', json: ...});
 
 </script>

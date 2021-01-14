@@ -1,6 +1,7 @@
 *.iml
 .DS_Store
 .idea
+ignore
 temp
 node_modules
 pids
