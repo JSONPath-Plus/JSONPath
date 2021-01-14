@@ -117,6 +117,7 @@
       "dist",
       "demo",
       "docs",
+      "ignore",
       "test",
       "test-helpers"
     ]

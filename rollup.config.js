@@ -12,15 +12,20 @@ import pkg from './package.json';
  * @param {PlainObject} config
  * @param {string} config.input
  * @param {boolean} config.minifying
+ * @param {string[]} [config.external]
  * @param {string} [config.environment=""]
  * @param {string} [config.format="umd"]
  * @returns {external:RollupConfig}
  */
 function getRollupObject ({
-    input, minifying, environment, format = 'umd'
+    input, minifying, environment,
+    // eslint-disable-next-line no-shadow
+    external,
+    format = 'umd'
 }) {
     const nonMinified = {
         input,
+        external,
         output: {
             format,
             sourcemap: minifying,
@@ -63,9 +68,15 @@ function getRollupObject ({
 function getRollupObjectByEnv ({minifying, environment}) {
     const input = `src/jsonpath-${environment}.js`;
     if (environment === 'node') {
+        // eslint-disable-next-line no-shadow
+        const external = ['vm'];
         return [
-            getRollupObject({input, minifying, environment, format: 'cjs'}),
-            getRollupObject({input, minifying, environment, format: 'esm'})
+            getRollupObject({
+                input, minifying, environment, external, format: 'cjs'
+            }),
+            getRollupObject({
+                input, minifying, environment, external, format: 'esm'
+            })
         ];
     }
     return [
@@ -74,7 +85,7 @@ function getRollupObjectByEnv ({minifying, environment}) {
     ];
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
+// eslint-disable-next-line import/no-anonymous-default-export -- Rollup config
 export default [
     ...getRollupObjectByEnv({minifying: false, environment: 'node'}),
     // ...getRollupObjectByEnv({minifying: true, environment: 'node'}),
