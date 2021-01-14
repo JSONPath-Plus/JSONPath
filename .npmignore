@@ -16,3 +16,4 @@ mocha-multi-reporters.json
 .mocharc.js
 .github
 .nojekyll
+ignore
