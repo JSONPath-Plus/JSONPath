@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 5.0.2 (2021-01-15)
+
+- Fix: Proper Node CommonJS export; fixes #144
+
 ## 5.0.1 (2021-01-15)
 
 - Fix: Proper Node CommonJS export; fixes #143
