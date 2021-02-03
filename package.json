@@ -2,11 +2,15 @@
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
   "version": "5.0.2",
-  "type": "commonjs",
   "main": "dist/index-node-cjs.js",
   "exports": {
-    "import": "./dist/index-node-esm.mjs",
-    "require": "./dist/index-node-cjs.js"
+    ".": {
+      "browser": "./dist/index-browser-esm.js",
+      "umd": "./dist/index-browser-umd.js",
+      "import": "./dist/index-node-esm.mjs",
+      "require": "./dist/index-node-cjs.js",
+      "default": "./dist/index-browser-esm.js"
+    }
   },
   "module": "dist/index-node-esm.mjs",
   "browser": "dist/index-browser-esm.js",
