@@ -2,7 +2,6 @@
 [![Dependencies](https://img.shields.io/david/s3u/JSONPath.svg)](https://david-dm.org/s3u/JSONPath)
 [![devDependencies](https://img.shields.io/david/dev/s3u/JSONPath.svg)](https://david-dm.org/s3u/JSONPath?type=dev)
 
-[![Build Status](https://travis-ci.org/JSONPath-Plus/JSONPath.svg?branch=master)](https://travis-ci.com/github/JSONPath-Plus/JSONPath)
 [![testing badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/tests-badge.svg?sanitize=true)](badges/tests-badge.svg)
 [![coverage badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/coverage-badge.svg?sanitize=true)](badges/coverage-badge.svg)
 
@@ -15,7 +14,7 @@
 
 <small>(see also [licenses for dev. deps.](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/licenses-badge-dev.svg?sanitize=true))</small>
 
-# JSONPath Plus [![build status](https://secure.travis-ci.org/s3u/JSONPath.png)](http://travis-ci.org/s3u/JSONPath)
+# JSONPath Plus [![Node.js CI status](https://github.com/git://github.com/s3u/JSONPath.git/workflows/Node.js%20CI/badge.svg)](https://github.com/git://github.com/s3u/JSONPath.git/actions)
 
 Analyse, transform, and selectively extract data from JSON
 documents (and JavaScript objects).
