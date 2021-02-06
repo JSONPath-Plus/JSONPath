@@ -122,6 +122,10 @@
 
 - Add TypeScript declaration
 
+## 0.20.2 (July 9, 2019)
+
+- `supportsNodeVM` check that works in GOJA, node and ReactNative. (@legander)
+
 ## 0.20.1 (June 12, 2019)
 
 - npm: Avoid adding `core-js-bundle` as peerDep. (fixes #95)
