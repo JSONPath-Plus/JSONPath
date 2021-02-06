@@ -1,5 +1,7 @@
 import vm from 'vm';
 
+/* eslint-disable unicorn/prefer-spread -- IIRC, Babel's performance
+  with this not good */
 const {
   hasOwnProperty: hasOwnProp
 } = Object.prototype;
@@ -175,7 +177,6 @@ function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
 
 
 JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback) {
-  const that = this;
   let currParent = this.parent,
       currParentProperty = this.parentProperty;
   let {
@@ -246,8 +247,8 @@ JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback)
     return this._getPreferredOutput(result[0]);
   }
 
-  return result.reduce(function (rslt, ea) {
-    const valOrPath = that._getPreferredOutput(ea);
+  return result.reduce((rslt, ea) => {
+    const valOrPath = this._getPreferredOutput(ea);
 
     if (flatten && Array.isArray(valOrPath)) {
       rslt = rslt.concat(valOrPath);
@@ -315,7 +316,6 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
   // No expr to follow? return path and value as the result of
   //  this trace branch
   let retObj;
-  const that = this;
 
   if (!expr.length) {
     retObj = {
@@ -360,21 +360,21 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr));
   } else if (loc === '*') {
     // all child properties
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
-      addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true, true));
+    this._walk(loc, x, val, path, parent, parentPropName, callback, (m, l, _x, v, p, par, pr, cb) => {
+      addRet(this._trace(unshift(m, _x), v, p, par, pr, cb, true, true));
     });
   } else if (loc === '..') {
     // all descendent parent properties
     // Check remaining expression with val's immediate children
     addRet(this._trace(x, val, path, parent, parentPropName, callback, hasArrExpr));
 
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
+    this._walk(loc, x, val, path, parent, parentPropName, callback, (m, l, _x, v, p, par, pr, cb) => {
       // We don't join m and x here because we only want parents,
       //   not scalar values
       if (typeof v[m] === 'object') {
         // Keep going with recursive descent on val's
         //   object children
-        addRet(that._trace(unshift(l, _x), v[m], push(p, m), v, m, cb, true));
+        addRet(this._trace(unshift(l, _x), v[m], push(p, m), v, m, cb, true));
       }
     }); // The parent sel computation is handled in the frame above using the
     // ancestor object of val
@@ -411,9 +411,9 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
       throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
     }
 
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
-      if (that._eval(l.replace(/^\?\((.*?)\)$/u, '$1'), v[m], m, p, par, pr)) {
-        addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true));
+    this._walk(loc, x, val, path, parent, parentPropName, callback, (m, l, _x, v, p, par, pr, cb) => {
+      if (this._eval(l.replace(/^\?\((.*?)\)$/u, '$1'), v[m], m, p, par, pr)) {
+        addRet(this._trace(unshift(m, _x), v, p, par, pr, cb, true));
       }
     });
   } else if (loc[0] === '(') {
@@ -539,7 +539,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
       const rett = ret[t];
 
       if (rett && rett.isParentSelector) {
-        const tmp = that._trace(rett.expr, val, rett.path, parent, parentPropName, callback, hasArrExpr);
+        const tmp = this._trace(rett.expr, val, rett.path, parent, parentPropName, callback, hasArrExpr);
 
         if (Array.isArray(tmp)) {
           ret[t] = tmp[0];

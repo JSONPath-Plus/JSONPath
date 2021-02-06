@@ -1,5 +1,13 @@
 # CHANGES for jsonpath-plus
 
+## 5.0.3 (2021-02-06)
+
+- Fix: Add package exports for browser and umd (#145) (@gjvoosten)
+- Update: Build as per refactoring
+- Docs: Update as per typedoc update
+- Linting: As per latest ash-nazg
+- npm: Update devDeps.
+
 ## 5.0.2 (2021-01-15)
 
 - Fix: Proper Node CommonJS export; fixes #144

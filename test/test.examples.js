@@ -135,9 +135,9 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         });
 
         it('@ as a scalar value', () => {
-            const expected = [json.store.bicycle.price].concat(json.store.book.slice(1).map(function (book) {
+            const expected = [json.store.bicycle.price, ...json.store.book.slice(1).map((book) => {
                 return book.price;
-            }));
+            })];
             const result = jsonpath({json, path: "$..*[?(@property === 'price' && @ !== 8.95)]", wrap: false});
             assert.deepEqual(result, expected);
         });
@@ -156,8 +156,10 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     expected.push(book[p]);
                 });
             });
-            expected.push(json.store.bicycle.color);
-            expected.push(json.store.bicycle.price);
+            expected.push(
+                json.store.bicycle.color,
+                json.store.bicycle.price
+            );
 
             const result = jsonpath({json, path: '$..*'});
             assert.deepEqual(result, expected);
@@ -224,10 +226,10 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
 
             expected = json.store.book.slice(1).reduce(function (rslt, book) {
-                return rslt.concat(Object.keys(book).reduce(function (reslt, prop) {
+                return [...rslt, ...Object.keys(book).reduce((reslt, prop) => {
                     reslt.push(book[prop]);
                     return reslt;
-                }, []));
+                }, [])];
             }, []);
             result = jsonpath({json, path: '$..book.*[?(@parentProperty !== 0)]'});
             assert.deepEqual(result, expected);

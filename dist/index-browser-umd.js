@@ -250,6 +250,8 @@
     };
   }
 
+  /* eslint-disable unicorn/prefer-spread -- IIRC, Babel's performance
+    with this not good */
   var hasOwnProp = Object.prototype.hasOwnProperty;
   /**
   * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
@@ -433,7 +435,8 @@
 
 
   JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback) {
-    var that = this;
+    var _this2 = this;
+
     var currParent = this.parent,
         currParentProperty = this.parentProperty;
     var flatten = this.flatten,
@@ -502,7 +505,7 @@
     }
 
     return result.reduce(function (rslt, ea) {
-      var valOrPath = that._getPreferredOutput(ea);
+      var valOrPath = _this2._getPreferredOutput(ea);
 
       if (flatten && Array.isArray(valOrPath)) {
         rslt = rslt.concat(valOrPath);
@@ -567,10 +570,11 @@
 
 
   JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, hasArrExpr, literalPriority) {
+    var _this3 = this;
+
     // No expr to follow? return path and value as the result of
     //  this trace branch
     var retObj;
-    var that = this;
 
     if (!expr.length) {
       retObj = {
@@ -616,7 +620,7 @@
     } else if (loc === '*') {
       // all child properties
       this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
-        addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true, true));
+        addRet(_this3._trace(unshift(m, _x), v, p, par, pr, cb, true, true));
       });
     } else if (loc === '..') {
       // all descendent parent properties
@@ -629,7 +633,7 @@
         if (_typeof(v[m]) === 'object') {
           // Keep going with recursive descent on val's
           //   object children
-          addRet(that._trace(unshift(l, _x), v[m], push(p, m), v, m, cb, true));
+          addRet(_this3._trace(unshift(l, _x), v[m], push(p, m), v, m, cb, true));
         }
       }); // The parent sel computation is handled in the frame above using the
       // ancestor object of val
@@ -667,8 +671,8 @@
       }
 
       this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
-        if (that._eval(l.replace(/^\?\(((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?)\)$/, '$1'), v[m], m, p, par, pr)) {
-          addRet(that._trace(unshift(m, _x), v, p, par, pr, cb, true));
+        if (_this3._eval(l.replace(/^\?\(((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?)\)$/, '$1'), v[m], m, p, par, pr)) {
+          addRet(_this3._trace(unshift(m, _x), v, p, par, pr, cb, true));
         }
       });
     } else if (loc[0] === '(') {
@@ -804,7 +808,7 @@
         var rett = ret[t];
 
         if (rett && rett.isParentSelector) {
-          var tmp = that._trace(rett.expr, val, rett.path, parent, parentPropName, callback, hasArrExpr);
+          var tmp = this._trace(rett.expr, val, rett.path, parent, parentPropName, callback, hasArrExpr);
 
           if (Array.isArray(tmp)) {
             ret[t] = tmp[0];
