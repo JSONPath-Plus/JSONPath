@@ -7,6 +7,7 @@
 - Docs: Update as per typedoc update
 - Docs: Update license badges per latest
 - Linting: As per latest ash-nazg
+- CI: Update from Travis -> GitHub Actions
 - npm: Switch from `eslint-plugin-sonarjs` to `eslint-plugin-radar`
 - npm: Switch to pnpm
 - npm: Update devDeps.
