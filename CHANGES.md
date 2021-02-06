@@ -93,18 +93,12 @@
 - Enhancement: Throw `TypeError` for missing `json` (fixes #110)
 - Enhancement: Use more efficient `new Function` over `eval`;
     also allows use of cyclic context objects
+- Enhancement: Add `@root` filter selector
 - Maintenance: Add `.editorconfig`
 - Docs: Document options in jsdoc; add return values to callbacks;
     fix constructor doc sig.
 - Testing: Add test for missing `path` or `json`
 - Testing: Remove unneeded closures
-- npm: Update devDeps
-
-## 1.2.0 (October 13, 2019)
-
-- Enhancement: Add `@root` filter selector
-- Enhancement: Use more efficient `new Function` over `eval`;
-    also allows use of cyclic context objects
 - npm: Update devDeps and `package-lock.json`
 
 ## 1.1.0 (September 26, 2019)
