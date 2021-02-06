@@ -21,6 +21,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v1.2.1
+        with:
+          version: 4.11.1
+      - run: pnpm i
+      - run: pnpm run build --if-present
+      - run: pnpm test

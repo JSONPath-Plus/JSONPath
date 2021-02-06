@@ -5,7 +5,10 @@
 - Fix: Add package exports for browser and umd (#145) (@gjvoosten)
 - Update: Build as per refactoring
 - Docs: Update as per typedoc update
+- Docs: Update license badges per latest
 - Linting: As per latest ash-nazg
+- npm: Switch from `eslint-plugin-sonarjs` to `eslint-plugin-radar`
+- npm: Switch to pnpm
 - npm: Update devDeps.
 
 ## 5.0.2 (2021-01-15)
