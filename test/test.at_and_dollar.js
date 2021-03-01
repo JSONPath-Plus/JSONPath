@@ -30,4 +30,26 @@ describe('JSONPath - At and Dollar sign', function () {
         assert.strictEqual(jsonpath({json: t1, path: '$.`$.`@'})[0], t1.$['@']);
         assert.strictEqual(jsonpath({json: t1, path: '\\@'})[1], undefined);
     });
+
+    it('@ as false', () => {
+        const json = {
+            a: {
+                b: false
+            }
+        };
+        const expected = [false];
+        const result = jsonpath({json, path: "$..*[?(@ === false)]", wrap: false});
+        assert.deepEqual(result, expected);
+    });
+
+    it('@ as 0', function () {
+        const json = {
+            a: {
+                b: 0
+            }
+        };
+        const expected = [0];
+        const result = jsonpath({json, path: "$.a[?(@property === 'b' && @ < 1)]", wrap: false});
+        assert.deepEqual(result, expected);
+    });
 });

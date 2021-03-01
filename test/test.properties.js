@@ -37,7 +37,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         it('At signs within properties (null data)', () => {
             const result = jsonpath({json: {
                 datafield: [null]
-            }, path: "$.datafield[?(@.tag=='xxx')]", wrap: false});
+            }, path: "$.datafield[?(@ && @.tag=='xxx')]", wrap: false});
             assert.deepEqual(result, undefined);
         });
 

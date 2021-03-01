@@ -483,7 +483,6 @@
       return undefined;
     }
 
-    this._obj = json;
     var exprList = JSONPath.toPathArray(expr);
 
     if (exprList[0] === '$' && exprList.length > 1) {
@@ -873,10 +872,6 @@
   };
 
   JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropName) {
-    if (!this._obj || !_v) {
-      return false;
-    }
-
     if (code.includes('@parentProperty')) {
       this.currSandbox._$_parentProperty = parentPropName;
       code = code.replace(/@parentProperty/g, '_$_parentProperty');
