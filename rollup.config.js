@@ -85,7 +85,6 @@ function getRollupObjectByEnv ({minifying, environment}) {
     ];
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export -- Rollup config
 export default [
     ...getRollupObjectByEnv({minifying: false, environment: 'node'}),
     // ...getRollupObjectByEnv({minifying: true, environment: 'node'}),

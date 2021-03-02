@@ -1,10 +1,7 @@
 'use strict';
+
 module.exports = {
-    extends: ['ash-nazg/sauron-node'],
-    parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: 'module'
-    },
+    extends: ['ash-nazg/sauron-node-overrides'],
     settings: {
         polyfills: [
             'Array.isArray',
@@ -22,20 +19,14 @@ module.exports = {
     },
     overrides: [
         {
-            files: ['.eslintrc.js', '.mocharc.js'],
-            extends: ['plugin:node/recommended-script'],
-            rules: {
-                'import/no-commonjs': 'off',
-                'import/ambiguous': 'off'
-            }
-        },
-        {
             files: ['src/jsonpath-node.js', 'test-helpers/node-env.js'],
-            // Apparent bug with `overrides` necessitating this
-            globals: {
-                require: 'readonly',
-                run: 'readonly',
-                module: 'readonly'
+            env: {
+                mocha: true
+            },
+            // ESLint doesn't seem to remember this
+            parserOptions: {
+                ecmaVersion: 2020,
+                sourceType: 'module'
             },
             rules: {
                 'node/no-unsupported-features/es-syntax': ['error', {
@@ -46,12 +37,15 @@ module.exports = {
             }
         },
         {
-            files: ['*.md'],
+            files: ['*.md/*.js', '*.md/*.html'],
             rules: {
                 'import/unambiguous': 0,
                 'import/no-commonjs': 0,
                 'import/no-unresolved': ['error', {
                     ignore: ['jsonpath-plus']
+                }],
+                'no-multiple-empty-lines': ['error', {
+                    max: 1, maxEOF: 2, maxBOF: 2
                 }],
                 'no-undef': 0,
                 'no-unused-vars': ['error', {
@@ -64,9 +58,12 @@ module.exports = {
                 'node/no-missing-require': ['error', {
                     allowModules: ['jsonpath-plus']
                 }],
-                'node/no-missing-import': ['error', {
-                    allowModules: ['jsonpath-plus']
-                }]
+                // Unfortunately, with the new processor approach, the filename
+                //  is now README.md so our paths must be `../`. However, even
+                //  with that, eslint-plugin-node is not friendly to such
+                //  imports, so we disable
+                'node/no-missing-import': 'off',
+                'node/no-unpublished-import': 'off'
             }
         },
         {

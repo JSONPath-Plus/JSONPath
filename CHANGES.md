@@ -1,5 +1,15 @@
 # CHANGES for jsonpath-plus
 
+## 5.0.4 (2021-03-02)
+
+- Fix: allow falsey at values in filter (now may require checking for
+    presence of `@` in some cases); fixes #136
+- Docs: Add old missing release info (reconciling with GitHub releases)
+- Docs: Update README to reflect 1.2.0 was not a released version (subsume
+    release details into 2.0.0)
+- Linting: As per latest ash-nazg
+- npm: Update devDeps.
+
 ## 5.0.3 (2021-02-06)
 
 - Fix: Add package exports for browser and umd (#145) (@gjvoosten)

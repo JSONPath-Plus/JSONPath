@@ -89,7 +89,7 @@ magic is necessary:
 
 <script>
 
-const result = JSONPath.JSONPath({path: '...', json: ...});
+const result = JSONPath.JSONPath({path: '...', json: {}});
 
 </script>
 ```
@@ -101,8 +101,11 @@ You may also use ES6 Module imports (for modern browsers):
 ```html
 <script type="module">
 
-import {JSONPath} from './node_modules/jsonpath-plus/dist/index-browser-esm.js';
-const result = JSONPath({path: '...', json: ...});
+import {
+    JSONPath
+} from './node_modules/jsonpath-plus/dist/index-browser-esm.js';
+
+const result = JSONPath({path: '...', json: {}});
 
 </script>
 ```
