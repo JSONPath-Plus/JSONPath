@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "main": "dist/index-node-cjs.js",
   "exports": {
     ".": {
