@@ -48,12 +48,12 @@ describe('JSONPath - toPath*', function () {
     });
 
     it('toPathArray (cache issue)', () => {
-        // We test here a bug where toPathArray did not return a clone of the cached
-        // array. As a result, the evaluate call corrupted the cached value instead
-        // of its local copy.
+        // We test here a bug where toPathArray did not return a clone of the
+        // cached array. As a result, the evaluate call corrupted the cached
+        // value instead of its local copy.
 
-        // Make the path unique by including the test name 'cacheissue' in the path
-        // because we do not want it to be in the cache already.
+        // Make the path unique by including the test name 'cacheissue' in the
+        // path because we do not want it to be in the cache already.
         const expected = ['$', 'store', 'bicycle', 'cacheissue'];
         const path = "$.store['bicycle'].cacheissue";
         const json = {};
