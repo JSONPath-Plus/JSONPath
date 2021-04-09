@@ -699,7 +699,7 @@ JSONPath.toPathArray = function (expr) {
         return !match || !match[1] ? exp : subx[match[1]];
     });
     cache[expr] = exprList;
-    return cache[expr];
+    return cache[expr].concat();
 };
 
 export {JSONPath};
