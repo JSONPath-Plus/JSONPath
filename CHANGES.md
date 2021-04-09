@@ -2,7 +2,7 @@
 
 ## 5.0.6 (2021-04-09)
 
-- Fix: Remove `static` modifiers
+- Fix: Remove `static` modifiers (@sdolski)
 - Linting: As per latest ash-nazg
 - npm: Update devDeps.
 
