@@ -146,14 +146,14 @@ declare module 'jsonpath-plus' {
      * Exposes the cache object for those who wish to preserve and reuse
      *   it for optimization purposes.
      */
-    static cache: any
+    cache: any
 
     /**
      * Accepts a normalized or unnormalized path as string and
      * converts to an array: for example,
      * `['$', 'aProperty', 'anotherProperty']`.
      */
-    static toPathArray(path: string): string[]
+    toPathArray(path: string): string[]
 
     /**
      * Accepts a path array and converts to a normalized path string.
@@ -162,7 +162,7 @@ declare module 'jsonpath-plus' {
      * The JSONPath terminal constructions `~` and `^` and type operators
      *   like `@string()` are silently stripped.
      */
-    static toPathString(path: string[]): string
+    toPathString(path: string[]): string
 
     /**
      * Accepts a path array and converts to a JSON Pointer.
@@ -174,7 +174,7 @@ declare module 'jsonpath-plus' {
      * The JSONPath terminal constructions `~` and `^` and type operators
      *   like `@string()` are silently stripped.
      */
-    static toPointer(path: string[]): any
+    toPointer(path: string[]): any
 
     evaluate(
         path: JSONPathOptions['path'],
