@@ -1,5 +1,10 @@
 # CHANGES for jsonpath-plus
 
+## 5.0.5 (2021-04-09)
+
+- Fix: Avoid cache corruption when the returned structure is modified.
+    Fixes #102. (@tejodorus)
+
 ## 5.0.4 (2021-03-02)
 
 - Fix: allow falsey at values in filter (now may require checking for
