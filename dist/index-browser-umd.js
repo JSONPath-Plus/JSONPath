@@ -250,8 +250,6 @@
     };
   }
 
-  /* eslint-disable unicorn/prefer-spread -- IIRC, Babel's performance
-    with this not good */
   var hasOwnProp = Object.prototype.hasOwnProperty;
   /**
   * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject

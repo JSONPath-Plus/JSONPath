@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/prefer-spread -- IIRC, Babel's performance
-  with this not good */
 const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
 /**

@@ -8,8 +8,6 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var vm__default = /*#__PURE__*/_interopDefaultLegacy(vm);
 
-/* eslint-disable unicorn/prefer-spread -- IIRC, Babel's performance
-  with this not good */
 const {
   hasOwnProperty: hasOwnProp
 } = Object.prototype;
