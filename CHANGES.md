@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 5.0.7 (2021-04-12)
+
+- Fix: Add `packge.json` to `exports` (@sebastiendavid)
+
 ## 5.0.6 (2021-04-09)
 
 - Fix: Remove `static` modifiers (@sdolski)
