@@ -4,6 +4,7 @@
   "version": "5.0.6",
   "main": "dist/index-node-cjs.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "browser": "./dist/index-browser-esm.js",
       "umd": "./dist/index-browser-umd.js",
