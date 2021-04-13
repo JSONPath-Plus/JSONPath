@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## ?
+
+- npm: Update devDeps.
+
 ## 5.0.7 (2021-04-12)
 
 - Fix: Add `packge.json` to `exports` (@sebastiendavid)
