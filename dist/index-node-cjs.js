@@ -502,7 +502,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
 
         break;
 
-      /* istanbul ignore next */
+      /* c8 ignore next 2 */
 
       default:
         throw new TypeError('Unknown value type ' + valueType);
