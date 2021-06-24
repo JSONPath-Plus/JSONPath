@@ -354,7 +354,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
 
   if ((typeof loc !== 'string' || literalPriority) && val && hasOwnProp.call(val, loc)) {
     // simple case--directly follow property
-    addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr));
+    addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr)); // eslint-disable-next-line unicorn/prefer-switch -- Part of larger `if`
   } else if (loc === '*') {
     // all child properties
     this._walk(loc, x, val, path, parent, parentPropName, callback, (m, l, _x, v, p, par, pr, cb) => {
