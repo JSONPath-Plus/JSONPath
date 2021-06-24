@@ -2,7 +2,13 @@
 
 ## 6.0.0 (2021-06-24)
 
-- Enhancement: Create as true ESM module
+- Breaking enhancement: Create as true ESM module
+- Breaking change: Utilize `.cjs` extension for UMD and CJS builds (very
+    old browsers might not support, but needed with the change given that
+    Webpack may complain if there even exists CJS within what it thinks is
+    an ESM file, the ".js", our default)
+- Breaking change: Utilize `.js` extension instead of `.mjs` for now default
+    ESM builds
 
 ## 5.1.0 (2021-06-24)
 

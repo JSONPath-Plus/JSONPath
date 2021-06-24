@@ -8,9 +8,9 @@
     "./package.json": "./package.json",
     ".": {
       "browser": "./dist/index-browser-esm.js",
-      "umd": "./dist/index-browser-umd.js",
-      "import": "./dist/index-node-esm.mjs",
-      "require": "./dist/index-node-cjs.js",
+      "umd": "./dist/index-browser-umd.cjs",
+      "import": "./dist/index-node-esm.js",
+      "require": "./dist/index-node-cjs.cjs",
       "default": "./dist/index-browser-esm.js"
     }
   },

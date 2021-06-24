@@ -32,7 +32,7 @@ function getRollupObject ({
             file: `dist/index${environment ? `-${environment}` : ''}-${
                 format
             }${minifying ? '.min' : ''}.${
-                environment === 'node' && format === 'esm' ? 'm' : ''
+                format === 'esm' ? '' : 'c'
             }js`,
             name: 'JSONPath'
         },

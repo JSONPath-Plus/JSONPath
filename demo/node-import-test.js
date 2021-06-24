@@ -1,4 +1,4 @@
-import {JSONPath} from '../dist/index-node-esm.mjs';
+import {JSONPath} from '../dist/index-node-esm.js';
 
 /* eslint-disable quotes, quote-props */
 const json = {
