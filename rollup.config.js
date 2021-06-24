@@ -12,7 +12,7 @@ import pkg from './package.json';
  * @param {PlainObject} config
  * @param {string} config.input
  * @param {boolean} config.minifying
- * @param {string[]} [config.external]
+ * @param {string[]} [config."external"]
  * @param {string} [config.environment=""]
  * @param {string} [config.format="umd"]
  * @returns {external:RollupConfig}

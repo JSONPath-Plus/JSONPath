@@ -97,6 +97,7 @@ module.exports = {
         // Reenable as have time and confirming no longer needing:
         // https://github.com/babel/babel/issues/8951#issuecomment-508045524 is no
         'prefer-named-capture-group': 0,
+        'unicorn/prefer-spread': 0,
 
         // Reenable when no longer having problems
         'unicorn/no-unsafe-regex': 0,

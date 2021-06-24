@@ -1,8 +1,9 @@
 # CHANGES for jsonpath-plus
 
-## ?
+## 5.1.0 (2021-06-24)
 
 - Enhancement: support double-quoted bracket notation
+- Linting: As per latest ash-nazg
 - npm: Update devDeps.
 
 ## 5.0.7 (2021-04-12)
