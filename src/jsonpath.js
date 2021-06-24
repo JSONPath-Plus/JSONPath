@@ -669,7 +669,7 @@ JSONPath.toPathArray = function (expr) {
             return '[#' + (subx.push($1) - 1) + ']';
         })
         // Escape periods and tildes within properties
-        .replace(/\['([^'\]]*)'\]/gu, function ($0, prop) {
+        .replace(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
             return "['" + prop
                 .replace(/\./gu, '%@%')
                 .replace(/~/gu, '%%@@%%') +
@@ -678,7 +678,7 @@ JSONPath.toPathArray = function (expr) {
         // Properties operator
         .replace(/~/gu, ';~;')
         // Split by property boundaries
-        .replace(/'?\.'?(?![^[]*\])|\['?/gu, ';')
+        .replace(/['"]?\.['"]?(?![^[]*\])|\[['"]?/gu, ';')
         // Reinsert periods within properties
         .replace(/%@%/gu, '.')
         // Reinsert tildes within properties

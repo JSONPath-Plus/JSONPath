@@ -963,11 +963,11 @@ JSONPath.toPathArray = function (expr) {
   .replace(/['\[](\??\((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?\))['\]]/g, function ($0, $1) {
     return '[#' + (subx.push($1) - 1) + ']';
   }) // Escape periods and tildes within properties
-  .replace(/\['((?:(?!['\]])[\s\S])*)'\]/g, function ($0, prop) {
+  .replace(/\[["']((?:(?!['\]])[\s\S])*)["']\]/g, function ($0, prop) {
     return "['" + prop.replace(/\./g, '%@%').replace(/~/g, '%%@@%%') + "']";
   }) // Properties operator
   .replace(/~/g, ';~;') // Split by property boundaries
-  .replace(/'?\.'?(?!(?:(?!\[)[\s\S])*\])|\['?/g, ';') // Reinsert periods within properties
+  .replace(/["']?\.["']?(?!(?:(?!\[)[\s\S])*\])|\[["']?/g, ';') // Reinsert periods within properties
   .replace(/%@%/g, '.') // Reinsert tildes within properties
   .replace(/%%@@%%/g, '~') // Parent
   .replace(/(?:;)?(\^+)(?:;)?/g, function ($0, ups) {

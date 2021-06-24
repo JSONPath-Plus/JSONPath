@@ -702,11 +702,11 @@ JSONPath.toPathArray = function (expr) {
   .replace(/[['](\??\(.*?\))[\]']/gu, function ($0, $1) {
     return '[#' + (subx.push($1) - 1) + ']';
   }) // Escape periods and tildes within properties
-  .replace(/\['([^'\]]*)'\]/gu, function ($0, prop) {
+  .replace(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
     return "['" + prop.replace(/\./gu, '%@%').replace(/~/gu, '%%@@%%') + "']";
   }) // Properties operator
   .replace(/~/gu, ';~;') // Split by property boundaries
-  .replace(/'?\.'?(?![^[]*\])|\['?/gu, ';') // Reinsert periods within properties
+  .replace(/['"]?\.['"]?(?![^[]*\])|\[['"]?/gu, ';') // Reinsert periods within properties
   .replace(/%@%/gu, '.') // Reinsert tildes within properties
   .replace(/%%@@%%/gu, '~') // Parent
   .replace(/(?:;)?(\^+)(?:;)?/gu, function ($0, ups) {

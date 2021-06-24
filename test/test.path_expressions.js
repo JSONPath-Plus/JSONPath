@@ -52,6 +52,13 @@ describe('JSONPath - Path expressions', function () {
         assert.deepEqual(result, expected);
     });
 
+    it('bracket notation (double quoted)', () => {
+        const books = json.store.book;
+        const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
+        const result = jsonpath({json, path: '$["store"]["book"][*]["author"]'});
+        assert.deepEqual(result, expected);
+    });
+
     it('bracket notation without quotes', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];

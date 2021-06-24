@@ -2,6 +2,7 @@
 
 ## ?
 
+- Enhancement: support double-quoted bracket notation
 - npm: Update devDeps.
 
 ## 5.0.7 (2021-04-12)
