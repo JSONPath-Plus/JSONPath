@@ -56,7 +56,6 @@
   "react-native": {
     "vm": false
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
