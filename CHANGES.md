@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 6.0.0 (2021-06-24)
+
+- Enhancement: Create as true ESM module
+
 ## 5.1.0 (2021-06-24)
 
 - Enhancement: support double-quoted bracket notation
