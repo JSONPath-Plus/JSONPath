@@ -13,7 +13,7 @@ docs
 coverage
 badges
 mocha-multi-reporters.json
-.mocharc.js
+.mocharc.cjs
 .github
 .nojekyll
 ignore
