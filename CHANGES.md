@@ -2,6 +2,8 @@
 
 ## 6.0.0 (2021-07-05)
 
+### User-impacting
+
 - Breaking enhancement: Create as true ESM module
 - Breaking change: Utilize `.cjs` extension for UMD and CJS builds (very
     old browsers might not support, but needed with the change given that
@@ -9,6 +11,11 @@
     an ESM file, the ".js", our default)
 - Breaking change: Utilize `.js` extension instead of `.mjs` for now default
     ESM builds
+
+### Dev-impacting
+
+- npm: Add `lint` script
+- npm: Update devDeps.
 
 ## 5.1.0 (2021-06-24)
 
