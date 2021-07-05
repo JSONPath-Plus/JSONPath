@@ -1,6 +1,6 @@
 # CHANGES for jsonpath-plus
 
-## 6.0.0 (2021-06-24)
+## 6.0.0 (2021-07-05)
 
 - Breaking enhancement: Create as true ESM module
 - Breaking change: Utilize `.cjs` extension for UMD and CJS builds (very
