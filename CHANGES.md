@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 7.0.0 (UNRELEASED)
+
+- Breaking change: Bump `engines` to 12
+
 ## 6.0.1 (2021-07-07)
 
 - Fix: Some `package.json` paths needed updating (@matushorvath)
