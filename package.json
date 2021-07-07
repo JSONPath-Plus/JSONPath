@@ -3,7 +3,7 @@
   "name": "jsonpath-plus",
   "version": "6.0.0",
   "type": "module",
-  "main": "dist/index-node-cjs.js",
+  "main": "dist/index-node-cjs.cjs",
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -14,7 +14,7 @@
       "default": "./dist/index-browser-esm.js"
     }
   },
-  "module": "dist/index-node-esm.mjs",
+  "module": "dist/index-node-esm.js",
   "browser": "dist/index-browser-esm.js",
   "types": "./src/jsonpath.d.ts",
   "description": "A JS implementation of JSONPath with some additional operators",
