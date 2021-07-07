@@ -27,5 +27,4 @@ setTimeout(async () => {
         JSONPath: JSONPathBrowser
     } = await import('../src/jsonpath-browser.js');
     global.jsonpathBrowser = JSONPathBrowser;
-    run();
 });
