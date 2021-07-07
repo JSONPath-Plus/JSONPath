@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "type": "module",
   "main": "dist/index-node-cjs.cjs",
   "exports": {
@@ -67,7 +67,7 @@
     "core-js-bundle": "^3.15.2",
     "coveradge": "^0.7.0",
     "eslint": "^7.30.0",
-    "eslint-config-ash-nazg": "^30.0.1",
+    "eslint-config-ash-nazg": "^30.1.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-array-func": "^3.1.7",
     "eslint-plugin-chai-expect": "^2.2.0",
@@ -82,7 +82,7 @@
     "eslint-plugin-no-use-extend-native": "^0.5.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-sonarjs": "^0.8.0-125",
+    "eslint-plugin-sonarjs": "^0.9.1",
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-unicorn": "^34.0.1",
     "http-server": "^0.12.3",
@@ -144,7 +144,7 @@
     "mocha": "mocha --require test-helpers/node-env.js --reporter-options configFile=mocha-multi-reporters.json test",
     "c8": "rm -Rf ./coverage && rm -Rf ./node_modules/.cache && c8 --all npm run mocha && npm run coverage-badge",
     "rollup": "rollup -c",
-    "eslint": "eslint --ext js,md,html .",
+    "eslint": "eslint --ext js,cjs,md,html .",
     "lint": "npm run eslint",
     "test": "npm run eslint && npm run rollup && npm run c8 && npm run typescript",
     "browser-test": "npm run eslint && npm run rollup && open-cli http://localhost:8084/test/ && npm start"

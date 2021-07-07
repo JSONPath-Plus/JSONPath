@@ -10,7 +10,7 @@ specifiers:
   core-js-bundle: ^3.15.2
   coveradge: ^0.7.0
   eslint: ^7.30.0
-  eslint-config-ash-nazg: ^30.0.1
+  eslint-config-ash-nazg: ^30.1.0
   eslint-config-standard: ^16.0.3
   eslint-plugin-array-func: ^3.1.7
   eslint-plugin-chai-expect: ^2.2.0
@@ -25,7 +25,7 @@ specifiers:
   eslint-plugin-no-use-extend-native: ^0.5.0
   eslint-plugin-node: ^11.1.0
   eslint-plugin-promise: ^5.1.0
-  eslint-plugin-sonarjs: ^0.8.0-125
+  eslint-plugin-sonarjs: ^0.9.1
   eslint-plugin-standard: ^4.1.0
   eslint-plugin-unicorn: ^34.0.1
   http-server: ^0.12.3
@@ -52,7 +52,7 @@ devDependencies:
   core-js-bundle: 3.15.2
   coveradge: 0.7.0
   eslint: 7.30.0
-  eslint-config-ash-nazg: 30.0.1_c00bd2539dc40677f355104d43bda32f
+  eslint-config-ash-nazg: 30.1.0_969b17ffd376dc695d41d55c1cc9088b
   eslint-config-standard: 16.0.3_68aba462ebcb9819879db75ba6ea05da
   eslint-plugin-array-func: 3.1.7_eslint@7.30.0
   eslint-plugin-chai-expect: 2.2.0_eslint@7.30.0
@@ -67,7 +67,7 @@ devDependencies:
   eslint-plugin-no-use-extend-native: 0.5.0
   eslint-plugin-node: 11.1.0_eslint@7.30.0
   eslint-plugin-promise: 5.1.0_eslint@7.30.0
-  eslint-plugin-sonarjs: 0.8.0-125_eslint@7.30.0
+  eslint-plugin-sonarjs: 0.9.1_eslint@7.30.0
   eslint-plugin-standard: 4.1.0_eslint@7.30.0
   eslint-plugin-unicorn: 34.0.1_eslint@7.30.0
   http-server: 0.12.3
@@ -2557,12 +2557,12 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-config-ash-nazg/30.0.1_c00bd2539dc40677f355104d43bda32f:
-    resolution: {integrity: sha512-xczNPwsKtk1mtTiBcDboFeCp91zBJ3SnoH8aD3KCy+eSVmGO71VD7SF/S/dUmLBY+Q/Vv7qgOxuQtXnDfasR5Q==}
+  /eslint-config-ash-nazg/30.1.0_969b17ffd376dc695d41d55c1cc9088b:
+    resolution: {integrity: sha512-2i4zjl8QvBGn/RAqQ3Mw4Vux1XyZZcXIR2Qn4+SO7H44IpupoyzfcVnmmEm4J+hXgqMEYXlYm5gHo2gEZmacAQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       '@brettz9/eslint-plugin': ^1.0.3
-      eslint: ^7.29.0
+      eslint: ^7.30.0
       eslint-config-standard: ^16.0.3
       eslint-plugin-array-func: ^3.1.7
       eslint-plugin-compat: ^3.9.0
@@ -2575,7 +2575,7 @@ packages:
       eslint-plugin-no-use-extend-native: ^0.5.0
       eslint-plugin-node: ^11.1.0
       eslint-plugin-promise: ^5.1.0
-      eslint-plugin-sonarjs: ^0.8.0-125
+      eslint-plugin-sonarjs: ^0.9.1
       eslint-plugin-unicorn: ^34.0.1
     dependencies:
       '@brettz9/eslint-plugin': 1.0.3_eslint@7.30.0
@@ -2592,7 +2592,7 @@ packages:
       eslint-plugin-no-use-extend-native: 0.5.0
       eslint-plugin-node: 11.1.0_eslint@7.30.0
       eslint-plugin-promise: 5.1.0_eslint@7.30.0
-      eslint-plugin-sonarjs: 0.8.0-125_eslint@7.30.0
+      eslint-plugin-sonarjs: 0.9.1_eslint@7.30.0
       eslint-plugin-unicorn: 34.0.1_eslint@7.30.0
       semver: 7.3.5
     dev: true
@@ -2796,8 +2796,8 @@ packages:
       eslint: 7.30.0
     dev: true
 
-  /eslint-plugin-sonarjs/0.8.0-125_eslint@7.30.0:
-    resolution: {integrity: sha512-/nl3Yzy8cHxCj5ohQL8dEqK2AhQqjTM/oXz5K3bU/7XbsBTz0BgyEsDvdz7gdtRlAe0Hzrf2v3qLVHA506Qheg==}
+  /eslint-plugin-sonarjs/0.9.1_eslint@7.30.0:
+    resolution: {integrity: sha512-KKFofk1LPjGHWeAZijYWv32c/C4mz+OAeBNVxhxHu1hknrTOhu415MWC8qKdAdsmOlBPShs9evM4mI1o7MNMhw==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^5.0.0 || ^6.0.0 || ^7.0.0

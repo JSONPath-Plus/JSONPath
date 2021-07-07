@@ -1,5 +1,10 @@
 # CHANGES for jsonpath-plus
 
+## 6.0.1 (2021-07-07)
+
+- Fix: Some `package.json` paths needed updating (@matushorvath)
+- npm: Update devDeps.
+
 ## 6.0.0 (2021-07-05)
 
 ### User-impacting
