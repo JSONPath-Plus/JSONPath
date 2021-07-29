@@ -58,7 +58,7 @@ declare module 'jsonpath-plus' {
      * (Note that the current path and value will also be available to those
      *   expressions; see the Syntax section for details.)
      */
-    sandbox?: { [k: string]: any }
+    sandbox?: { [key: string]: any }
     /**
      * Whether or not to wrap the results in an array.
      *
