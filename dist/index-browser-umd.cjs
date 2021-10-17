@@ -531,6 +531,8 @@
       case 'parent':
       case 'parentProperty':
         return ea[resultType];
+      case 'keyvaluetype':
+        return {'key':ea['parentProperty'],'value':ea['value'],'type':typeof ea['value']}
 
       case 'path':
         return JSONPath.toPathString(ea[resultType]);
