@@ -3,22 +3,26 @@
  */
 declare module 'jsonpath-plus' {
   type JSONPathCallback = (
-      payload: any, payloadType: any, fullPayload: any
-  ) => any
+      payload: any, payloadType: "value"|"property", fullPayload: any
+  ) => void
 
-  type JSONPathOtherTypeCallback = (...args: any[]) => void
+  type JSONPathOtherTypeCallback = (
+      val: JSON|any, path: string[], parent: object|any[], parentPropName: string
+  ) => boolean
+
+  type JSON = null|boolean|number|string|{[key: string]: JSON}|JSON[]
 
   interface JSONPathOptions {
     /**
      * The JSONPath expression as a (normalized or unnormalized) string or
      *   array.
      */
-    path: string | any[]
+    path?: string | string[]
     /**
      * The JSON object to evaluate (whether of null, boolean, number,
      *   string, object, or array type).
      */
-    json: null | boolean | number | string | object | any[]
+    json?: JSON|any
     /**
      * If this is supplied as false, one may call the evaluate method
      *  manually.
@@ -54,7 +58,7 @@ declare module 'jsonpath-plus' {
      * (Note that the current path and value will also be available to those
      *   expressions; see the Syntax section for details.)
      */
-    sandbox?: Map<string, any>
+    sandbox?: { [key: string]: any }
     /**
      * Whether or not to wrap the results in an array.
      *
@@ -95,7 +99,7 @@ declare module 'jsonpath-plus' {
      *
      * @default null
      */
-    parentProperty?: null | any
+    parentProperty?: null | string
     /**
      * If supplied, a callback will be called immediately upon retrieval of
      * an end point value.
@@ -146,7 +150,9 @@ declare module 'jsonpath-plus' {
      * Exposes the cache object for those who wish to preserve and reuse
      *   it for optimization purposes.
      */
-    cache: any
+    cache: {
+        [key: string]: string[]
+    }
 
     /**
      * Accepts a normalized or unnormalized path as string and
@@ -174,7 +180,7 @@ declare module 'jsonpath-plus' {
      * The JSONPath terminal constructions `~` and `^` and type operators
      *   like `@string()` are silently stripped.
      */
-    toPointer(path: string[]): any
+    toPointer(path: string[]): string
 
     evaluate(
         path: JSONPathOptions['path'],
@@ -182,12 +188,7 @@ declare module 'jsonpath-plus' {
         callback: JSONPathOptions['callback'],
         otherTypeCallback: JSONPathOptions['otherTypeCallback']
     ): any
-    evaluate(options: {
-        path: JSONPathOptions['path'],
-        json: JSONPathOptions['json'],
-        callback: JSONPathOptions['callback'],
-        otherTypeCallback: JSONPathOptions['otherTypeCallback']
-    }): any
+    evaluate(options?: JSONPathOptions): any
   }
 
   type JSONPathType = JSONPathCallable & JSONPathClass

@@ -70,7 +70,7 @@ describe('JSONPath - Type Operators', function () {
         /**
          *
          * @param {any} val
-         * @param {string} path
+         * @param {string[]} path
          * @param {PlainObject|GenericArray} parent
          * @param {string} parentPropName
          * @returns {boolean}

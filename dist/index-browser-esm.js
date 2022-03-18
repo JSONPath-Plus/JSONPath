@@ -246,7 +246,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
 
 var hasOwnProp = Object.prototype.hasOwnProperty;
 /**
-* @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
+* @typedef {null|boolean|number|string|object<string, JSON>|JSON[]} JSON
 */
 
 /**
@@ -304,8 +304,8 @@ var NewError = /*#__PURE__*/function (_Error) {
 }( /*#__PURE__*/_wrapNativeSuper(Error));
 /**
 * @typedef {PlainObject} ReturnObject
-* @property {string} path
-* @property {JSONObject} value
+* @property {string[]} path
+* @property {JSON} value
 * @property {PlainObject|GenericArray} parent
 * @property {string} parentProperty
 */
@@ -320,8 +320,8 @@ var NewError = /*#__PURE__*/function (_Error) {
 
 /**
 * @callback OtherTypeCallback
-* @param {JSONObject} val
-* @param {string} path
+* @param {JSON} val
+* @param {string[]} path
 * @param {PlainObject|GenericArray} parent
 * @param {string} parentPropName
 * @returns {boolean}
@@ -549,8 +549,8 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
 /**
  *
  * @param {string} expr
- * @param {JSONObject} val
- * @param {string} path
+ * @param {JSON} val
+ * @param {string[]} path
  * @param {PlainObject|GenericArray} parent
  * @param {string} parentPropName
  * @param {JSONPathCallback} callback
