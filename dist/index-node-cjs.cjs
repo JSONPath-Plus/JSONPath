@@ -730,6 +730,6 @@ JSONPath.toPathArray = function (expr) {
   return cache[expr].concat();
 };
 
-JSONPath.prototype.vm = vm__default['default'];
+JSONPath.prototype.vm = vm__default["default"];
 
 exports.JSONPath = JSONPath;

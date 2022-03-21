@@ -3,6 +3,7 @@
 ## 7.0.0 (UNRELEASED)
 
 - Breaking change: Bump `engines` to 12
+- chore: update devDeps.
 
 ## 6.0.1 (2021-07-07)
 
