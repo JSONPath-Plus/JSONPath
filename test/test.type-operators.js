@@ -67,9 +67,13 @@ describe('JSONPath - Type Operators', function () {
 
     it('@other()', () => {
         const expected = [12.99, 8.99, 22.99];
+
+        /**
+         * @typedef {any} Value
+         */
         /**
          *
-         * @param {any} val
+         * @param {Value} val
          * @param {string} path
          * @param {PlainObject|GenericArray} parent
          * @param {string} parentPropName

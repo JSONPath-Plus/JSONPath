@@ -58,18 +58,17 @@
   }
 
   function _getPrototypeOf(o) {
-    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
       return o.__proto__ || Object.getPrototypeOf(o);
     };
     return _getPrototypeOf(o);
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
-
     return _setPrototypeOf(o, p);
   }
 
@@ -88,7 +87,7 @@
 
   function _construct(Parent, args, Class) {
     if (_isNativeReflectConstruct()) {
-      _construct = Reflect.construct;
+      _construct = Reflect.construct.bind();
     } else {
       _construct = function _construct(Parent, args, Class) {
         var a = [null];
@@ -270,13 +269,21 @@
 
   var hasOwnProp = Object.prototype.hasOwnProperty;
   /**
-  * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
-  */
+   * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
+   */
+
+  /**
+   * @typedef {any} AnyItem
+   */
+
+  /**
+   * @typedef {any} AnyResult
+   */
 
   /**
    * Copies array and then pushes item into it.
    * @param {GenericArray} arr Array to copy and into which to push
-   * @param {any} item Array item to add (to end)
+   * @param {AnyItem} item Array item to add (to end)
    * @returns {GenericArray} Copy of the original array
    */
 
@@ -287,7 +294,7 @@
   }
   /**
    * Copies array and then unshifts item into it.
-   * @param {any} item Array item to add (to beginning)
+   * @param {AnyItem} item Array item to add (to beginning)
    * @param {GenericArray} arr Array to copy and into which to unshift
    * @returns {GenericArray} Copy of the original array
    */
@@ -310,7 +317,7 @@
     var _super = _createSuper(NewError);
 
     /**
-     * @param {any} value The evaluated scalar value
+     * @param {AnyResult} value The evaluated scalar value
      */
     function NewError(value) {
       var _this;
@@ -565,7 +572,7 @@
     if (callback) {
       var preferredOutput = this._getPreferredOutput(fullRetObj);
 
-      fullRetObj.path = typeof fullRetObj.path === 'string' ? fullRetObj.path : JSONPath.toPathString(fullRetObj.path); // eslint-disable-next-line node/callback-return
+      fullRetObj.path = typeof fullRetObj.path === 'string' ? fullRetObj.path : JSONPath.toPathString(fullRetObj.path); // eslint-disable-next-line n/callback-return
 
       callback(preferredOutput, type, fullRetObj);
     }
@@ -921,8 +928,6 @@
     try {
       return this.vm.runInNewContext(code, this.currSandbox);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
       throw new Error('jsonPath: ' + e.message + ': ' + code);
     }
   }; // PUBLIC CLASS PROPERTIES AND METHODS
@@ -1008,10 +1013,18 @@
   };
 
   /**
-  * @callback ConditionCallback
-  * @param {any} item
-  * @returns {boolean}
-  */
+   * @typedef {any} ContextItem
+   */
+
+  /**
+   * @typedef {any} EvaluatedResult
+   */
+
+  /**
+   * @callback ConditionCallback
+   * @param {ContextItem} item
+   * @returns {boolean}
+   */
 
   /**
    * Copy items out of one array into another.
@@ -1039,7 +1052,7 @@
      * @param {string} expr Expression to evaluate
      * @param {PlainObject} context Object whose items will be added
      *   to evaluation
-     * @returns {any} Result of evaluated code
+     * @returns {EvaluatedResult} Result of evaluated code
      */
     runInNewContext: function runInNewContext(expr, context) {
       var keys = Object.keys(context);

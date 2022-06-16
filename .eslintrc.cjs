@@ -29,7 +29,7 @@ module.exports = {
                 sourceType: 'module'
             },
             rules: {
-                'node/no-unsupported-features/es-syntax': ['error', {
+                'n/no-unsupported-features/es-syntax': ['error', {
                     ignores: [
                         'regexpNamedCaptureGroups', 'modules', 'dynamicImport'
                     ]
@@ -52,18 +52,18 @@ module.exports = {
                     varsIgnorePattern: 'json|result'
                 }],
                 'import/no-extraneous-dependencies': 0,
-                'node/no-extraneous-import': ['error', {
+                'n/no-extraneous-import': ['error', {
                     allowModules: ['jsonpath-plus']
                 }],
-                'node/no-missing-require': ['error', {
+                'n/no-missing-require': ['error', {
                     allowModules: ['jsonpath-plus']
                 }],
                 // Unfortunately, with the new processor approach, the filename
                 //  is now README.md so our paths must be `../`. However, even
                 //  with that, eslint-plugin-node is not friendly to such
                 //  imports, so we disable
-                'node/no-missing-import': 'off',
-                'node/no-unpublished-import': 'off'
+                'n/no-missing-import': 'off',
+                'n/no-unpublished-import': 'off'
             }
         },
         {

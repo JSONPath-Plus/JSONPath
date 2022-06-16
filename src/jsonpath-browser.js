@@ -1,10 +1,18 @@
 import {JSONPath} from './jsonpath.js';
 
 /**
-* @callback ConditionCallback
-* @param {any} item
-* @returns {boolean}
-*/
+ * @typedef {any} ContextItem
+ */
+
+/**
+ * @typedef {any} EvaluatedResult
+ */
+
+/**
+ * @callback ConditionCallback
+ * @param {ContextItem} item
+ * @returns {boolean}
+ */
 
 /**
  * Copy items out of one array into another.
@@ -29,7 +37,7 @@ JSONPath.prototype.vm = {
      * @param {string} expr Expression to evaluate
      * @param {PlainObject} context Object whose items will be added
      *   to evaluation
-     * @returns {any} Result of evaluated code
+     * @returns {EvaluatedResult} Result of evaluated code
      */
     runInNewContext (expr, context) {
         const keys = Object.keys(context);
