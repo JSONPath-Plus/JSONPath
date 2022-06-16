@@ -607,8 +607,6 @@ JSONPath.prototype._eval = function (
     try {
         return this.vm.runInNewContext(code, this.currSandbox);
     } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(e);
         throw new Error('jsonPath: ' + e.message + ': ' + code);
     }
 };
