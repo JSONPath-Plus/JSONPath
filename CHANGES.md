@@ -1,8 +1,9 @@
 # CHANGES for jsonpath-plus
 
-## 7.0.0 (UNRELEASED)
+## 7.0.0
 
 - Breaking change: Bump `engines` to 12
+- fix: remove `console.log` when error is thrown (@sh33dafi)
 - chore: update devDeps.
 
 ## 6.0.1 (2021-07-07)
