@@ -26,6 +26,10 @@ did not spell out.
 Try the [browser demo](https://jsonpath-plus.github.io/JSONPath/demo/) or
 [Runkit (Node)](https://npm.runkit.com/jsonpath-plus).
 
+***Please note: This project is not currently being actively maintained. We
+may accept well-documented PRs or some simple updates, but are not looking
+to make fixes or add new features ourselves.***
+
 ## Features
 
 * **Compliant** with the original jsonpath spec
