@@ -32,14 +32,24 @@ const moveToAnotherArray = function (source, target, conditionCb) {
     }
 };
 
-JSONPath.prototype.vm = {
+/**
+ * In-browser replacement for NodeJS' VM.Script.
+ */
+class Script {
     /**
      * @param {string} expr Expression to evaluate
+     */
+    constructor (expr) {
+        this.code = expr;
+    }
+
+    /**
      * @param {PlainObject} context Object whose items will be added
      *   to evaluation
      * @returns {EvaluatedResult} Result of evaluated code
      */
-    runInNewContext (expr, context) {
+    runInNewContext (context) {
+        let expr = this.code;
         const keys = Object.keys(context);
         const funcs = [];
         moveToAnotherArray(keys, funcs, (key) => {
@@ -81,6 +91,10 @@ JSONPath.prototype.vm = {
         // eslint-disable-next-line no-new-func
         return (new Function(...keys, code))(...values);
     }
+}
+
+JSONPath.prototype.vm = {
+    Script
 };
 
 export {JSONPath};

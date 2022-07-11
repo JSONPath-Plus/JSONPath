@@ -588,32 +588,34 @@ JSONPath.prototype._slice = function (
 JSONPath.prototype._eval = function (
     code, _v, _vname, path, parent, parentPropName
 ) {
-    if (code.includes('@parentProperty')) {
-        this.currSandbox._$_parentProperty = parentPropName;
-        code = code.replace(/@parentProperty/gu, '_$_parentProperty');
-    }
-    if (code.includes('@parent')) {
-        this.currSandbox._$_parent = parent;
-        code = code.replace(/@parent/gu, '_$_parent');
-    }
-    if (code.includes('@property')) {
-        this.currSandbox._$_property = _vname;
-        code = code.replace(/@property/gu, '_$_property');
-    }
-    if (code.includes('@path')) {
+    this.currSandbox._$_parentProperty = parentPropName;
+    this.currSandbox._$_parent = parent;
+    this.currSandbox._$_property = _vname;
+    this.currSandbox._$_root = this.json;
+    this.currSandbox._$_v = _v;
+
+    const containsPath = code.includes('@path');
+    if (containsPath) {
         this.currSandbox._$_path = JSONPath.toPathString(path.concat([_vname]));
-        code = code.replace(/@path/gu, '_$_path');
     }
-    if (code.includes('@root')) {
-        this.currSandbox._$_root = this.json;
-        code = code.replace(/@root/gu, '_$_root');
+
+    const scriptCacheKey = 'script:' + code;
+    if (!JSONPath.cache[scriptCacheKey]) {
+        let script = code
+            .replace(/@parentProperty/gu, '_$_parentProperty')
+            .replace(/@parent/gu, '_$_parent')
+            .replace(/@property/gu, '_$_property')
+            .replace(/@root/gu, '_$_root')
+            .replace(/@([.\s)[])/gu, '_$_v$1');
+        if (containsPath) {
+            script = script.replace(/@path/gu, '_$_path');
+        }
+
+        JSONPath.cache[scriptCacheKey] = new this.vm.Script(script);
     }
-    if ((/@([.\s)[])/u).test(code)) {
-        this.currSandbox._$_v = _v;
-        code = code.replace(/@([.\s)[])/gu, '_$_v$1');
-    }
+
     try {
-        return this.vm.runInNewContext(code, this.currSandbox);
+        return JSONPath.cache[scriptCacheKey].runInNewContext(this.currSandbox);
     } catch (e) {
         throw new Error('jsonPath: ' + e.message + ': ' + code);
     }
