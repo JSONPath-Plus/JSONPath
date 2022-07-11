@@ -20,7 +20,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         it('should throw with a bad filter', () => {
             expect(() => {
                 jsonpath({json: {book: []}, path: '$..[?(@.category === category)]'});
-            }).to.throw(Error, 'jsonPath: category is not defined: _$_v.category === category');
+            }).to.throw(Error, 'jsonPath: category is not defined: @.category === category');
         });
 
         it('should throw with a bad result type', () => {
