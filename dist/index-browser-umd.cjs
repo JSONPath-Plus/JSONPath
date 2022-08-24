@@ -895,38 +895,31 @@
   };
 
   JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropName) {
-    if (code.includes('@parentProperty')) {
-      this.currSandbox._$_parentProperty = parentPropName;
-      code = code.replace(/@parentProperty/g, '_$_parentProperty');
-    }
+    this.currSandbox._$_parentProperty = parentPropName;
+    this.currSandbox._$_parent = parent;
+    this.currSandbox._$_property = _vname;
+    this.currSandbox._$_root = this.json;
+    this.currSandbox._$_v = _v;
+    var containsPath = code.includes('@path');
 
-    if (code.includes('@parent')) {
-      this.currSandbox._$_parent = parent;
-      code = code.replace(/@parent/g, '_$_parent');
-    }
-
-    if (code.includes('@property')) {
-      this.currSandbox._$_property = _vname;
-      code = code.replace(/@property/g, '_$_property');
-    }
-
-    if (code.includes('@path')) {
+    if (containsPath) {
       this.currSandbox._$_path = JSONPath.toPathString(path.concat([_vname]));
-      code = code.replace(/@path/g, '_$_path');
     }
 
-    if (code.includes('@root')) {
-      this.currSandbox._$_root = this.json;
-      code = code.replace(/@root/g, '_$_root');
-    }
+    var scriptCacheKey = 'script:' + code;
 
-    if (/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/.test(code)) {
-      this.currSandbox._$_v = _v;
-      code = code.replace(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/g, '_$_v$1');
+    if (!JSONPath.cache[scriptCacheKey]) {
+      var script = code.replace(/@parentProperty/g, '_$_parentProperty').replace(/@parent/g, '_$_parent').replace(/@property/g, '_$_property').replace(/@root/g, '_$_root').replace(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/g, '_$_v$1');
+
+      if (containsPath) {
+        script = script.replace(/@path/g, '_$_path');
+      }
+
+      JSONPath.cache[scriptCacheKey] = new this.vm.Script(script);
     }
 
     try {
-      return this.vm.runInNewContext(code, this.currSandbox);
+      return JSONPath.cache[scriptCacheKey].runInNewContext(this.currSandbox);
     } catch (e) {
       throw new Error('jsonPath: ' + e.message + ': ' + code);
     }
@@ -1046,48 +1039,71 @@
       }
     }
   };
+  /**
+   * In-browser replacement for NodeJS' VM.Script.
+   */
 
-  JSONPath.prototype.vm = {
+
+  var Script = /*#__PURE__*/function () {
     /**
      * @param {string} expr Expression to evaluate
+     */
+    function Script(expr) {
+      _classCallCheck(this, Script);
+
+      this.code = expr;
+    }
+    /**
      * @param {PlainObject} context Object whose items will be added
      *   to evaluation
      * @returns {EvaluatedResult} Result of evaluated code
      */
-    runInNewContext: function runInNewContext(expr, context) {
-      var keys = Object.keys(context);
-      var funcs = [];
-      moveToAnotherArray(keys, funcs, function (key) {
-        return typeof context[key] === 'function';
-      });
-      var values = keys.map(function (vr, i) {
-        return context[vr];
-      });
-      var funcString = funcs.reduce(function (s, func) {
-        var fString = context[func].toString();
-
-        if (!/function/.test(fString)) {
-          fString = 'function ' + fString;
-        }
-
-        return 'var ' + func + '=' + fString + ';' + s;
-      }, '');
-      expr = funcString + expr; // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
-
-      if (!/(["'])use strict\1/.test(expr) && !keys.includes('arguments')) {
-        expr = 'var arguments = undefined;' + expr;
-      } // Remove last semi so `return` will be inserted before
-      //  the previous one instead, allowing for the return
-      //  of a bare ending expression
 
 
-      expr = expr.replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
+    _createClass(Script, [{
+      key: "runInNewContext",
+      value: function runInNewContext(context) {
+        var expr = this.code;
+        var keys = Object.keys(context);
+        var funcs = [];
+        moveToAnotherArray(keys, funcs, function (key) {
+          return typeof context[key] === 'function';
+        });
+        var values = keys.map(function (vr, i) {
+          return context[vr];
+        });
+        var funcString = funcs.reduce(function (s, func) {
+          var fString = context[func].toString();
 
-      var lastStatementEnd = expr.lastIndexOf(';');
-      var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func
+          if (!/function/.test(fString)) {
+            fString = 'function ' + fString;
+          }
 
-      return _construct(Function, _toConsumableArray(keys).concat([code])).apply(void 0, _toConsumableArray(values));
-    }
+          return 'var ' + func + '=' + fString + ';' + s;
+        }, '');
+        expr = funcString + expr; // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
+
+        if (!/(["'])use strict\1/.test(expr) && !keys.includes('arguments')) {
+          expr = 'var arguments = undefined;' + expr;
+        } // Remove last semi so `return` will be inserted before
+        //  the previous one instead, allowing for the return
+        //  of a bare ending expression
+
+
+        expr = expr.replace(/;[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/, ''); // Insert `return`
+
+        var lastStatementEnd = expr.lastIndexOf(';');
+        var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func
+
+        return _construct(Function, _toConsumableArray(keys).concat([code])).apply(void 0, _toConsumableArray(values));
+      }
+    }]);
+
+    return Script;
+  }();
+
+  JSONPath.prototype.vm = {
+    Script: Script
   };
 
   exports.JSONPath = JSONPath;
