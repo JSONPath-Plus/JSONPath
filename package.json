@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "type": "module",
   "main": "dist/index-node-cjs.cjs",
   "exports": {
@@ -56,6 +56,8 @@
   },
   "react-native": {
     "vm": false
+  },
+  "dependencies": {
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
