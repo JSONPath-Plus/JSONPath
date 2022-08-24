@@ -1089,7 +1089,7 @@ var Script = /*#__PURE__*/function () {
       var lastStatementEnd = expr.lastIndexOf(';');
       var code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr; // eslint-disable-next-line no-new-func
 
-      return _construct(Function, _toConsumableArray(keys).concat([code])).apply(void 0, _toConsumableArray(values));
+      return _construct(Function, keys.concat([code])).apply(void 0, _toConsumableArray(values));
     }
   }]);
 
