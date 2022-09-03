@@ -635,21 +635,21 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr)); // eslint-disable-next-line unicorn/prefer-switch -- Part of larger `if`
   } else if (loc === '*') {
     // all child properties
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
-      addRet(_this3._trace(unshift(m, _x), v, p, par, pr, cb, true, true));
+    this._walk(val, function (m) {
+      addRet(_this3._trace(x, val[m], push(path, m), val, m, callback, true, true));
     });
   } else if (loc === '..') {
     // all descendent parent properties
     // Check remaining expression with val's immediate children
     addRet(this._trace(x, val, path, parent, parentPropName, callback, hasArrExpr));
 
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
+    this._walk(val, function (m) {
       // We don't join m and x here because we only want parents,
       //   not scalar values
-      if (_typeof(v[m]) === 'object') {
+      if (_typeof(val[m]) === 'object') {
         // Keep going with recursive descent on val's
         //   object children
-        addRet(_this3._trace(unshift(l, _x), v[m], push(p, m), v, m, cb, true));
+        addRet(_this3._trace(expr.slice(), val[m], push(path, m), val, m, callback, true));
       }
     }); // The parent sel computation is handled in the frame above using the
     // ancestor object of val
@@ -686,9 +686,11 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
       throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
     }
 
-    this._walk(loc, x, val, path, parent, parentPropName, callback, function (m, l, _x, v, p, par, pr, cb) {
-      if (_this3._eval(l.replace(/^\?\(((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?)\)$/, '$1'), v[m], m, p, par, pr)) {
-        addRet(_this3._trace(unshift(m, _x), v, p, par, pr, cb, true));
+    var safeLoc = loc.replace(/^\?\(((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?)\)$/, '$1');
+
+    this._walk(val, function (m) {
+      if (_this3._eval(safeLoc, val[m], m, path, parent, parentPropName)) {
+        addRet(_this3._trace(x, val[m], push(path, m), val, m, callback, true));
       }
     });
   } else if (loc[0] === '(') {
@@ -844,16 +846,16 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
   return ret;
 };
 
-JSONPath.prototype._walk = function (loc, expr, val, path, parent, parentPropName, callback, f) {
+JSONPath.prototype._walk = function (val, f) {
   if (Array.isArray(val)) {
     var n = val.length;
 
     for (var i = 0; i < n; i++) {
-      f(i, loc, expr, val, path, parent, parentPropName, callback);
+      f(i);
     }
   } else if (val && _typeof(val) === 'object') {
     Object.keys(val).forEach(function (m) {
-      f(m, loc, expr, val, path, parent, parentPropName, callback);
+      f(m);
     });
   }
 };

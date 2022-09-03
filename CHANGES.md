@@ -1,5 +1,14 @@
 # CHANGES for jsonpath-plus
 
+## 7.2.0
+
+- perf: optimize walk method by 10%-34% (@jacobroschen)
+- chore: add types to exports field (@awlayton)
+
+## 7.1.0
+
+- perf: improve evaluation speed of conditional queries (@jacobroschen)
+
 ## 7.0.0
 
 - Breaking change: Bump `engines` to 12
