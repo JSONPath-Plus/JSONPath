@@ -69,7 +69,7 @@
     "chai": "^4.3.6",
     "core-js-bundle": "^3.25.0",
     "coveradge": "^0.8.1",
-    "eslint": "^8.22.0",
+    "eslint": "^8.23.0",
     "eslint-config-ash-nazg": "^34.1.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-array-func": "^3.1.7",
@@ -84,7 +84,7 @@
     "eslint-plugin-n": "^15.2.5",
     "eslint-plugin-no-unsanitized": "^4.0.1",
     "eslint-plugin-no-use-extend-native": "^0.5.0",
-    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-promise": "^6.0.1",
     "eslint-plugin-sonarjs": "^0.15.0",
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-unicorn": "^43.0.2",
@@ -94,10 +94,10 @@
     "mocha-badge-generator": "^0.9.0",
     "mocha-multi-reporters": "^1.5.1",
     "open-cli": "^7.0.1",
-    "rollup": "2.78.1",
+    "rollup": "2.79.0",
     "rollup-plugin-terser": "^7.0.2",
-    "typedoc": "^0.23.10",
-    "typescript": "^4.7.4"
+    "typedoc": "^0.23.13",
+    "typescript": "^4.8.2"
   },
   "keywords": [
     "json",
