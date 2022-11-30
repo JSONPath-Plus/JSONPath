@@ -14,7 +14,7 @@
 
 <small>(see also [licenses for dev. deps.](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/licenses-badge-dev.svg?sanitize=true))</small>
 
-# JSONPath Plus [![Node.js CI status](https://github.com/git://github.com/s3u/JSONPath.git/workflows/Node.js%20CI/badge.svg)](https://github.com/git://github.com/s3u/JSONPath.git/actions)
+# JSONPath Plus [![Node.js CI status](https://github.com/JSONPath-Plus/JSONPath/actions/workflows/node.js.yml/badge.svg)](https://github.com/JSONPath-Plus/JSONPath/actions/workflows/node.js.yml)
 
 Analyse, transform, and selectively extract data from JSON
 documents (and JavaScript objects).
