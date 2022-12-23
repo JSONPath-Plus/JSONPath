@@ -17,6 +17,7 @@ module.exports = {
             'XMLHttpRequest'
         ]
     },
+    parser: '@babel/eslint-parser',
     overrides: [
         {
             files: ['src/jsonpath-node.js', 'test-helpers/node-env.js'],

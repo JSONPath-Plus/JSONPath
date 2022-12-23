@@ -1,6 +1,7 @@
-node_modules
-dist
+node_modules/
+dist/
 docs/ts
 coverage
 ignore
 !*.js
+!.config.js

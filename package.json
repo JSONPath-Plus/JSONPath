@@ -59,12 +59,16 @@
     "vm": false
   },
   "dependencies": {
+    "@jsep-plugin/regex": "^1.0.3",
+    "jsep": "^1.3.8"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
+    "@babel/eslint-parser": "^7.19.1",
     "@babel/preset-env": "^7.18.10",
     "@brettz9/eslint-plugin": "^1.0.4",
     "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
     "c8": "^7.12.0",
     "chai": "^4.3.6",
     "core-js-bundle": "^3.25.0",

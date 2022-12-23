@@ -1,3 +1,6 @@
+/* eslint-disable no-bitwise */
+import jsep from 'jsep';
+import jsepRegex from '@jsep-plugin/regex';
 import {JSONPath} from './jsonpath.js';
 
 /**
@@ -31,6 +34,146 @@ const moveToAnotherArray = function (source, target, conditionCb) {
         }
     }
 };
+
+// register plugins
+jsep.plugins.register(jsepRegex);
+
+const SafeEval = {
+    eval (code, substitions = {}) {
+        const ast = jsep(code);
+        return SafeEval.evalAst(ast, substitions);
+    },
+    /**
+     * @param {jsep.Expression} ast
+     * @param {Record<string, any>} subs
+     */
+    evalAst (ast, subs) {
+        switch (ast.type) {
+        case 'BinaryExpression':
+        case 'LogicalExpression':
+            return SafeEval.evalBinaryExpression(ast, subs);
+        case 'Compound':
+            return SafeEval.evalCompound(ast, subs);
+        case 'ConditionalExpression':
+            return SafeEval.evalConditionalExpression(ast, subs);
+        case 'Identifier':
+            return SafeEval.evalIdentifier(ast, subs);
+        case 'Literal':
+            return SafeEval.evalLiteral(ast, subs);
+        case 'MemberExpression':
+            return SafeEval.evalMemberExpression(ast, subs);
+        case 'UnaryExpression':
+            return SafeEval.evalUnaryExpression(ast, subs);
+        case 'ArrayExpression':
+            return SafeEval.evalArrayExpression(ast, subs);
+        case 'CallExpression':
+            return SafeEval.evalCallExpression(ast, subs);
+        default:
+            throw SyntaxError('Unexpected expression', ast);
+        }
+    },
+    evalBinaryExpression (ast, subs) {
+        const result = ({
+            '||': (a, b) => a || b(),
+            '&&': (a, b) => a && b(),
+            '|': (a, b) => a | b(),
+            '^': (a, b) => a ^ b(),
+            '&': (a, b) => a & b(),
+            // eslint-disable-next-line eqeqeq
+            '==': (a, b) => a == b(),
+            // eslint-disable-next-line eqeqeq
+            '!=': (a, b) => a != b(),
+            '===': (a, b) => a === b(),
+            '!==': (a, b) => a !== b(),
+            '<': (a, b) => a < b(),
+            '>': (a, b) => a > b(),
+            '<=': (a, b) => a <= b(),
+            '>=': (a, b) => a >= b(),
+            '<<': (a, b) => a << b(),
+            '>>': (a, b) => a >> b(),
+            '>>>': (a, b) => a >>> b(),
+            '+': (a, b) => a + b(),
+            '-': (a, b) => a - b(),
+            '*': (a, b) => a * b(),
+            '/': (a, b) => a / b(),
+            '%': (a, b) => a % b()
+        })[ast.operator](SafeEval.evalAst(ast.left, subs), () => SafeEval.evalAst(ast.right, subs));
+        return result;
+    },
+    evalCompound (ast, subs) {
+        let last;
+        for (const expr of ast.body) {
+            last = this.evalAst(expr, subs);
+        }
+        return last;
+    },
+    evalConditionalExpression (ast, subs) {
+        if (SafeEval.evalAst(ast.test, subs)) {
+            return SafeEval.evalAst(ast.consequent, subs);
+        }
+        return SafeEval.evalAst(ast.alternate, subs);
+    },
+    evalIdentifier (ast, subs) {
+        if (ast.name in subs) {
+            return subs[ast.name];
+        }
+        throw ReferenceError(`${ast.name} is not defined`);
+    },
+    evalLiteral (ast, subs) {
+        return ast.value;
+    },
+    evalMemberExpression (ast, subs) {
+        const prop = ast.computed
+            ? SafeEval.evalAst(ast.property) // `object[property]`
+            : ast.property.name; // `object.property` property is identifier
+        const obj = SafeEval.evalAst(ast.object, subs);
+        const result = obj[prop];
+        if (typeof result === 'function') {
+            return result.bind(obj); // arrow functions aren't affected by bind.
+        }
+        return result;
+    },
+    evalUnaryExpression (ast, subs) {
+        const result = ({
+            '-': (a) => -SafeEval.evalAst(a),
+            '!': (a) => !SafeEval.evalAst(a),
+            '~': (a) => ~SafeEval.evalAst(a),
+            // eslint-disable-next-line no-implicit-coercion
+            '+': (a) => +SafeEval.evalAst(a)
+        })[ast.operator](ast.argument);
+        return result;
+    },
+    evalArrayExpression (ast, subs) {
+        return ast.elements.map((el) => SafeEval.evalAst(el, subs));
+    },
+    evalCallExpression (ast, subs) {
+        const args = ast.arguments.map((arg) => SafeEval.evalAst(arg, subs));
+        const func = SafeEval.evalAst(ast.callee, subs);
+        return func(...args);
+    }
+};
+
+/**
+ * In-browser replacement for NodeJS' VM.Script.
+ */
+class SafeScript {
+    /**
+     * @param {string} expr Expression to evaluate
+     */
+    constructor (expr) {
+        this.code = expr;
+    }
+
+    /**
+     * @param {PlainObject} context Object whose items will be added
+     *   to evaluation
+     * @returns {EvaluatedResult} Result of evaluated code
+     */
+    runInNewContext (context) {
+        const keyMap = {...context};
+        return SafeEval.eval(this.code, keyMap);
+    }
+}
 
 /**
  * In-browser replacement for NodeJS' VM.Script.
@@ -95,6 +238,10 @@ class Script {
 
 JSONPath.prototype.vm = {
     Script
+};
+
+JSONPath.prototype.safeVm = {
+    Script: SafeScript
 };
 
 export {JSONPath};
