@@ -1,7 +1,7 @@
 import {checkBuiltInVMAndNodeVM} from '../test-helpers/checkVM.js';
 
 checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
-    describe(`JSONPath - Eval (${vmType} - native)`, function () {
+    describe(`JSONPath - Eval (${vmType} - safe)`, function () {
         before(setBuiltInState);
         const json = {
             "store": {
@@ -31,7 +31,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const selector = '$..[?(' +
                          'var sum = @.price && @.price[0]+@.price[1];' +
                          'sum > 20;)]';
-            const result = jsonpath({json, path: selector, wrap: false, evalType: 'native'});
+            const result = jsonpath({json, path: selector, wrap: false, evalType: 'safe'});
             assert.deepEqual(result, expected);
         });
         it('multi statement eval (with use strict)', () => {
@@ -40,18 +40,13 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                          '"use strict";' +
                          'var sum = @.price && @.price[0]+@.price[1];' +
                          'sum > 20;)]';
-            const result = jsonpath({json, path: selector, wrap: false,
-                evalType: 'native'});
+            const result = jsonpath({json, path: selector, wrap: false, evalType: 'safe'});
             assert.deepEqual(result, expected);
         });
 
         it('accessing current path', () => {
             const expected = [json.store.books[1]];
-            const result = jsonpath({json,
-                path: "$..[?(@path==\"$['store']['books'][1]\")]",
-                wrap: false,
-                evalType: 'native'
-            });
+            const result = jsonpath({json, path: "$..[?(@path==\"$['store']['books'][1]\")]", wrap: false, evalType: 'safe'});
             assert.deepEqual(result, expected);
         });
 
@@ -61,7 +56,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 json,
                 sandbox: {category: 'reference'},
                 path: "$..[?(@.category === category)]", wrap: false,
-                evalType: 'native'
+                evalType: 'safe'
             });
             assert.deepEqual(result, expected);
         });
@@ -76,7 +71,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     arguments: 'reference'
                 },
                 wrap: false,
-                evalType: 'native'
+                evalType: 'safe'
             });
             assert.deepEqual(result, expected);
         });
@@ -91,7 +86,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     }
                 },
                 path: "$..[?(@.category === category())]", wrap: false,
-                evalType: 'native'
+                evalType: 'safe'
             });
             assert.deepEqual(result, expected);
         });
@@ -107,7 +102,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     }
                 },
                 path: "$..[?(@.category === category())]", wrap: false,
-                evalType: 'native'
+                evalType: 'safe'
             });
             assert.deepEqual(result, expected);
         });
@@ -122,7 +117,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     }
                 },
                 path: "$..[?(filter(@))]", wrap: false,
-                evalType: 'native'
+                evalType: 'safe'
             });
             assert.deepEqual(result, expected);
         });
@@ -137,7 +132,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     json: circular,
                     path: '$.a.b',
                     wrap: false,
-                    evalType: 'native'
+                    evalType: 'safe'
                 });
                 assert.deepEqual(result, expected);
             });
@@ -152,7 +147,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                         aCircularReference: circular
                     },
                     wrap: false,
-                    evalType: 'native'
+                    evalType: 'safe'
                 });
                 assert.deepEqual(result, expected);
             });

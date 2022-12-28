@@ -82,6 +82,18 @@ declare module 'jsonpath-plus' {
      */
     preventEval?: false | boolean
     /**
+     * Script evaluation method.
+     * 
+     * `safe`: In browser, it will use a minimal scripting engine which doesn't use `eval` or `Function` and satisfies Content Security Policy. In NodeJS, it has no effect and is equivalent to native as scripting is safe there.
+     * 
+     * `native`: uses the native scripting capabilities. i.e. unsafe `eval` or `Function` in browser and `vm.Script` in nodejs.
+     * 
+     * `none`: Disabled scripting. This is equivalent to `preventEval: true`
+     * 
+     * @default 'safe'
+     */
+    evalType?: 'safe' | 'native' | 'none'
+    /**
      * In the event that a query could be made to return the root node,
      * this allows the parent of that root node to be returned within results.
      *

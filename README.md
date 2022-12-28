@@ -187,6 +187,13 @@ evaluate method (as the first argument) include:
   operating on untrusted user input, for example), one may wish to
   set this option to `true` to throw exceptions when these expressions
   are attempted.
+- ***evalType*** (**default: "safe"**) - Script evaluation method.
+  `safe`: In browser, it will use a minimal scripting engine which doesn't
+  use `eval` or `Function` and satisfies Content Security Policy. In NodeJS,
+  it has no effect and is equivalent to native as scripting is safe there.
+  `native`: uses the native scripting capabilities. i.e. unsafe `eval` or
+  `Function` in browser and `vm.Script` in nodejs. `none`: Disabled scripting.
+  This is equivalent to  `preventEval: true`
 - ***parent*** (**default: null**) - In the event that a query could be
   made to return the root node, this allows the parent of that root node
   to be returned within results.
