@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise */
 import jsep from 'jsep';
 import jsepRegex from '@jsep-plugin/regex';
+import jsepAssignment from '@jsep-plugin/assignment';
 import {JSONPath} from './jsonpath.js';
 
 /**
@@ -36,7 +37,7 @@ const moveToAnotherArray = function (source, target, conditionCb) {
 };
 
 // register plugins
-jsep.plugins.register(jsepRegex);
+jsep.plugins.register(jsepRegex, jsepAssignment);
 
 const SafeEval = {
     eval (code, substitions = {}) {
@@ -68,6 +69,8 @@ const SafeEval = {
             return SafeEval.evalArrayExpression(ast, subs);
         case 'CallExpression':
             return SafeEval.evalCallExpression(ast, subs);
+        case 'AssignmentExpression':
+            return SafeEval.evalAssignmentExpression(ast, subs);
         default:
             throw SyntaxError('Unexpected expression', ast);
         }
@@ -97,13 +100,27 @@ const SafeEval = {
             '*': (a, b) => a * b(),
             '/': (a, b) => a / b(),
             '%': (a, b) => a % b()
-        })[ast.operator](SafeEval.evalAst(ast.left, subs), () => SafeEval.evalAst(ast.right, subs));
+        })[ast.operator](
+            SafeEval.evalAst(ast.left, subs),
+            () => SafeEval.evalAst(ast.right, subs)
+        );
         return result;
     },
     evalCompound (ast, subs) {
         let last;
-        for (const expr of ast.body) {
-            last = this.evalAst(expr, subs);
+        for (let i = 0; i < ast.body.length; i++) {
+            if (
+                ast.body[i].type === 'Identifier' &&
+                ['var', 'let', 'const'].includes(ast.body[i].name) &&
+                ast.body[i + 1] &&
+                ast.body[i + 1].type === 'AssignmentExpression'
+            ) {
+                // var x=2; is detected as
+                // [{Identifier var}, {AssignmentExpression x=2}]
+                i += 1;
+            }
+            const expr = ast.body[i];
+            last = SafeEval.evalAst(expr, subs);
         }
         return last;
     },
@@ -125,7 +142,7 @@ const SafeEval = {
     evalMemberExpression (ast, subs) {
         const prop = ast.computed
             ? SafeEval.evalAst(ast.property) // `object[property]`
-            : ast.property.name; // `object.property` property is identifier
+            : ast.property.name; // `object.property` property is Identifier
         const obj = SafeEval.evalAst(ast.object, subs);
         const result = obj[prop];
         if (typeof result === 'function') {
@@ -150,6 +167,15 @@ const SafeEval = {
         const args = ast.arguments.map((arg) => SafeEval.evalAst(arg, subs));
         const func = SafeEval.evalAst(ast.callee, subs);
         return func(...args);
+    },
+    evalAssignmentExpression (ast, subs) {
+        if (ast.left.type !== 'Identifier') {
+            throw SyntaxError('Invalid left-hand side in assignment');
+        }
+        const id = ast.left.name;
+        const value = SafeEval.evalAst(ast.right, subs);
+        subs[id] = value;
+        return subs[id];
     }
 };
 

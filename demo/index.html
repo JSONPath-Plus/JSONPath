@@ -14,6 +14,13 @@
         <label><b>JSONPath:</b>
           <input type="text" id="jsonpath" placeholder="$.books" value="$..book[?(@parent.bicycle && @parent.bicycle.color === &quot;red&quot;)].category" />
         </label>
+        <label><b>evalType:</b>
+          <select id="evalType">
+            <option value="safe">safe</option>
+            <option value="native">native</option>
+            <option value="none">none</option>
+          </select>
+        </label>
       </div>
       <div id="jsonSampleContainer" class="container">
         <label><b>JSON sample:</b>

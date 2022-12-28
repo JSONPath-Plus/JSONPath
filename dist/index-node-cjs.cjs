@@ -102,7 +102,7 @@ class NewError extends Error {
  * @property {boolean} [wrap=true]
  * @property {PlainObject} [sandbox={}]
  * @property {boolean} [preventEval=false]
- * @property {"safe"|"native"|"none"} [evalType='safe']
+ * @property {"safe"|"native"|"none"} [evalType="safe"]
  * @property {PlainObject|GenericArray|null} [parent=null]
  * @property {string|null} [parentProperty=null]
  * @property {JSONPathCallback} [callback]

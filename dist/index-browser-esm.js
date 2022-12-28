@@ -1637,6 +1637,89 @@ var index = {
   }
 };
 
+var PLUS_CODE = 43; // +
+
+var MINUS_CODE = 45; // -
+
+var plugin = {
+  name: 'assignment',
+  assignmentOperators: new Set(['=', '*=', '**=', '/=', '%=', '+=', '-=', '<<=', '>>=', '>>>=', '&=', '^=', '|=']),
+  updateOperators: [PLUS_CODE, MINUS_CODE],
+  assignmentPrecedence: 0.9,
+  init: function init(jsep) {
+    var updateNodeTypes = [jsep.IDENTIFIER, jsep.MEMBER_EXP];
+    plugin.assignmentOperators.forEach(function (op) {
+      return jsep.addBinaryOp(op, plugin.assignmentPrecedence, true);
+    });
+    jsep.hooks.add('gobble-token', function gobbleUpdatePrefix(env) {
+      var _this = this;
+
+      var code = this.code;
+
+      if (plugin.updateOperators.some(function (c) {
+        return c === code && c === _this.expr.charCodeAt(_this.index + 1);
+      })) {
+        this.index += 2;
+        env.node = {
+          type: 'UpdateExpression',
+          operator: code === PLUS_CODE ? '++' : '--',
+          argument: this.gobbleTokenProperty(this.gobbleIdentifier()),
+          prefix: true
+        };
+
+        if (!env.node.argument || !updateNodeTypes.includes(env.node.argument.type)) {
+          this.throwError("Unexpected ".concat(env.node.operator));
+        }
+      }
+    });
+    jsep.hooks.add('after-token', function gobbleUpdatePostfix(env) {
+      var _this2 = this;
+
+      if (env.node) {
+        var code = this.code;
+
+        if (plugin.updateOperators.some(function (c) {
+          return c === code && c === _this2.expr.charCodeAt(_this2.index + 1);
+        })) {
+          if (!updateNodeTypes.includes(env.node.type)) {
+            this.throwError("Unexpected ".concat(env.node.operator));
+          }
+
+          this.index += 2;
+          env.node = {
+            type: 'UpdateExpression',
+            operator: code === PLUS_CODE ? '++' : '--',
+            argument: env.node,
+            prefix: false
+          };
+        }
+      }
+    });
+    jsep.hooks.add('after-expression', function gobbleAssignment(env) {
+      if (env.node) {
+        // Note: Binaries can be chained in a single expression to respect
+        // operator precedence (i.e. a = b = 1 + 2 + 3)
+        // Update all binary assignment nodes in the tree
+        updateBinariesToAssignments(env.node);
+      }
+    });
+
+    function updateBinariesToAssignments(node) {
+      if (plugin.assignmentOperators.has(node.operator)) {
+        node.type = 'AssignmentExpression';
+        updateBinariesToAssignments(node.left);
+        updateBinariesToAssignments(node.right);
+      } else if (!node.operator) {
+        Object.values(node).forEach(function (val) {
+          if (val && _typeof(val) === 'object') {
+            updateBinariesToAssignments(val);
+          }
+        });
+      }
+    }
+  }
+};
+
 var hasOwnProp = Object.prototype.hasOwnProperty;
 /**
  * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
@@ -1739,7 +1822,7 @@ var NewError = /*#__PURE__*/function (_Error) {
  * @property {boolean} [wrap=true]
  * @property {PlainObject} [sandbox={}]
  * @property {boolean} [preventEval=false]
- * @property {"safe"|"native"|"none"} [evalType='safe']
+ * @property {"safe"|"native"|"none"} [evalType="safe"]
  * @property {PlainObject|GenericArray|null} [parent=null]
  * @property {string|null} [parentProperty=null]
  * @property {JSONPathCallback} [callback]
@@ -2421,7 +2504,7 @@ var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb
 }; // register plugins
 
 
-jsep.plugins.register(index);
+jsep.plugins.register(index, plugin);
 var SafeEval = {
   eval: function _eval(code) {
     var substitions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -2462,6 +2545,9 @@ var SafeEval = {
 
       case 'CallExpression':
         return SafeEval.evalCallExpression(ast, subs);
+
+      case 'AssignmentExpression':
+        return SafeEval.evalAssignmentExpression(ast, subs);
 
       default:
         throw SyntaxError('Unexpected expression', ast);
@@ -2542,18 +2628,15 @@ var SafeEval = {
   evalCompound: function evalCompound(ast, subs) {
     var last;
 
-    var _iterator = _createForOfIteratorHelper(ast.body),
-        _step;
-
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var expr = _step.value;
-        last = this.evalAst(expr, subs);
+    for (var i = 0; i < ast.body.length; i++) {
+      if (ast.body[i].type === 'Identifier' && ['var', 'let', 'const'].includes(ast.body[i].name) && ast.body[i + 1] && ast.body[i + 1].type === 'AssignmentExpression') {
+        // var x=2; is detected as
+        // [{Identifier var}, {AssignmentExpression x=2}]
+        i += 1;
       }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
+
+      var expr = ast.body[i];
+      last = SafeEval.evalAst(expr, subs);
     }
 
     return last;
@@ -2577,7 +2660,7 @@ var SafeEval = {
   },
   evalMemberExpression: function evalMemberExpression(ast, subs) {
     var prop = ast.computed ? SafeEval.evalAst(ast.property) // `object[property]`
-    : ast.property.name; // `object.property` property is identifier
+    : ast.property.name; // `object.property` property is Identifier
 
     var obj = SafeEval.evalAst(ast.object, subs);
     var result = obj[prop];
@@ -2617,6 +2700,16 @@ var SafeEval = {
     });
     var func = SafeEval.evalAst(ast.callee, subs);
     return func.apply(void 0, _toConsumableArray(args));
+  },
+  evalAssignmentExpression: function evalAssignmentExpression(ast, subs) {
+    if (ast.left.type !== 'Identifier') {
+      throw SyntaxError('Invalid left-hand side in assignment');
+    }
+
+    var id = ast.left.name;
+    var value = SafeEval.evalAst(ast.right, subs);
+    subs[id] = value;
+    return subs[id];
   }
 };
 /**
