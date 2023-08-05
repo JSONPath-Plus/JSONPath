@@ -1811,6 +1811,24 @@ var NewError = /*#__PURE__*/function (_Error) {
 * @returns {boolean}
 */
 
+/**
+ * @typedef {any} ContextItem
+ */
+
+/**
+ * @typedef {any} EvaluatedResult
+ */
+
+/**
+* @callback EvalCallback
+* @param {string} code
+* @param {ContextItem} context
+* @returns {EvaluatedResult}
+*/
+// /**
+//  * @typedef {@typeof import('./jsonpath-browser').SafeScript} EvalClass
+//  */
+
 /* eslint-disable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 
 /**
@@ -1821,8 +1839,7 @@ var NewError = /*#__PURE__*/function (_Error) {
  * @property {boolean} [flatten=false]
  * @property {boolean} [wrap=true]
  * @property {PlainObject} [sandbox={}]
- * @property {boolean} [preventEval=false]
- * @property {"safe"|"native"|"none"} [evalType="safe"]
+ * @property {EvalCallback | EvalClass | 'safe' | 'native' | boolean} [eval = 'safe']
  * @property {PlainObject|GenericArray|null} [parent=null]
  * @property {string|null} [parentProperty=null]
  * @property {JSONPathCallback} [callback]
@@ -1880,8 +1897,7 @@ function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
   this.flatten = opts.flatten || false;
   this.wrap = hasOwnProp.call(opts, 'wrap') ? opts.wrap : true;
   this.sandbox = opts.sandbox || {};
-  this.preventEval = opts.preventEval || false;
-  this.evalType = opts.evalType || 'safe';
+  this.eval = opts.eval === undefined ? 'safe' : opts.eval;
   this.parent = opts.parent || null;
   this.parentProperty = opts.parentProperty || null;
   this.callback = opts.callback || callback || null;
@@ -1920,8 +1936,7 @@ JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback)
   var flatten = this.flatten,
       wrap = this.wrap;
   this.currResultType = this.resultType;
-  this.currPreventEval = this.preventEval;
-  this.currEvalType = this.evalType;
+  this.currEval = this.eval;
   this.currSandbox = this.sandbox;
   callback = callback || this.callback;
   this.currOtherTypeCallback = otherTypeCallback || this.otherTypeCallback;
@@ -1943,8 +1958,7 @@ JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback)
     this.currResultType = hasOwnProp.call(expr, 'resultType') ? expr.resultType : this.currResultType;
     this.currSandbox = hasOwnProp.call(expr, 'sandbox') ? expr.sandbox : this.currSandbox;
     wrap = hasOwnProp.call(expr, 'wrap') ? expr.wrap : wrap;
-    this.currPreventEval = hasOwnProp.call(expr, 'preventEval') ? expr.preventEval : this.currPreventEval;
-    this.currEvalType = hasOwnProp.call(expr, 'evalType') ? expr.evalType : this.currEvalType;
+    this.currEval = hasOwnProp.call(expr, 'eval') ? expr.eval : this.currEval;
     callback = hasOwnProp.call(expr, 'callback') ? expr.callback : callback;
     this.currOtherTypeCallback = hasOwnProp.call(expr, 'otherTypeCallback') ? expr.otherTypeCallback : this.currOtherTypeCallback;
     currParent = hasOwnProp.call(expr, 'parent') ? expr.parent : currParent;
@@ -2145,7 +2159,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     addRet(this._slice(loc, x, val, path, parent, parentPropName, callback));
   } else if (loc.indexOf('?(') === 0) {
     // [?(expr)] (filtering)
-    if (this.currPreventEval || this.currEvalType === 'none') {
+    if (this.currEval === false) {
       throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
     }
 
@@ -2158,7 +2172,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     });
   } else if (loc[0] === '(') {
     // [(expr)] (dynamic property/index)
-    if (this.currPreventEval || this.currEvalType === 'none') {
+    if (this.currEval === false) {
       throw new Error('Eval [(expr)] prevented in JSONPath expression.');
     } // As this will resolve to a property name (but we don't know it
     //  yet), property and parent information is relative to the
@@ -2354,6 +2368,8 @@ JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropNa
 };
 
 JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropName) {
+  var _this4 = this;
+
   this.currSandbox._$_parentProperty = parentPropName;
   this.currSandbox._$_parent = parent;
   this.currSandbox._$_property = _vname;
@@ -2365,7 +2381,7 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
     this.currSandbox._$_path = JSONPath.toPathString(path.concat([_vname]));
   }
 
-  var scriptCacheKey = this.currEvalType + 'Script:' + code;
+  var scriptCacheKey = this.currEval + 'Script:' + code;
 
   if (!JSONPath.cache[scriptCacheKey]) {
     var script = code.replace(/@parentProperty/g, '_$_parentProperty').replace(/@parent/g, '_$_parent').replace(/@property/g, '_$_property').replace(/@root/g, '_$_root').replace(/@([\t-\r \)\.\[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])/g, '_$_v$1');
@@ -2374,10 +2390,19 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
       script = script.replace(/@path/g, '_$_path');
     }
 
-    if (this.currEvalType === 'safe') {
+    if (this.currEval === 'safe' || this.currEval === true || this.currEval === undefined) {
       JSONPath.cache[scriptCacheKey] = new this.safeVm.Script(script);
-    } else if (this.currEvalType === 'native') {
+    } else if (this.currEval === 'native') {
       JSONPath.cache[scriptCacheKey] = new this.vm.Script(script);
+    } else if (typeof this.currEval === 'function' && this.currEval.prototype && hasOwnProp.call(this.currEval.prototype, 'runInNewContext')) {
+      var CurrEval = this.currEval;
+      JSONPath.cache[scriptCacheKey] = new CurrEval(script);
+    } else if (typeof this.currEval === 'function') {
+      JSONPath.cache[scriptCacheKey] = {
+        runInNewContext: function runInNewContext(context) {
+          return _this4.currEval(script, context);
+        }
+      };
     }
   }
 
@@ -2506,12 +2531,6 @@ var moveToAnotherArray = function moveToAnotherArray(source, target, conditionCb
 
 jsep.plugins.register(index, plugin);
 var SafeEval = {
-  eval: function _eval(code) {
-    var substitions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    var ast = jsep(code);
-    return SafeEval.evalAst(ast, substitions);
-  },
-
   /**
    * @param {jsep.Expression} ast
    * @param {Record<string, any>} subs
@@ -2674,17 +2693,17 @@ var SafeEval = {
   evalUnaryExpression: function evalUnaryExpression(ast, subs) {
     var result = {
       '-': function _(a) {
-        return -SafeEval.evalAst(a);
+        return -SafeEval.evalAst(a, subs);
       },
       '!': function _(a) {
-        return !SafeEval.evalAst(a);
+        return !SafeEval.evalAst(a, subs);
       },
       '~': function _(a) {
-        return ~SafeEval.evalAst(a);
+        return ~SafeEval.evalAst(a, subs);
       },
       // eslint-disable-next-line no-implicit-coercion
       '+': function _(a) {
-        return +SafeEval.evalAst(a);
+        return +SafeEval.evalAst(a, subs);
       }
     }[ast.operator](ast.argument);
     return result;
@@ -2713,7 +2732,7 @@ var SafeEval = {
   }
 };
 /**
- * In-browser replacement for NodeJS' VM.Script.
+ * A replacement for NodeJS' VM.Script which is also {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP | Content Security Policy} friendly.
  */
 
 var SafeScript = /*#__PURE__*/function () {
@@ -2724,6 +2743,7 @@ var SafeScript = /*#__PURE__*/function () {
     _classCallCheck(this, SafeScript);
 
     this.code = expr;
+    this.ast = jsep(this.code);
   }
   /**
    * @param {PlainObject} context Object whose items will be added
@@ -2737,7 +2757,7 @@ var SafeScript = /*#__PURE__*/function () {
     value: function runInNewContext(context) {
       var keyMap = _objectSpread2({}, context);
 
-      return SafeEval.eval(this.code, keyMap);
+      return SafeEval.evalAst(this.ast, keyMap);
     }
   }]);
 
@@ -2813,4 +2833,4 @@ JSONPath.prototype.safeVm = {
   Script: SafeScript
 };
 
-export { JSONPath };
+export { JSONPath, SafeScript };

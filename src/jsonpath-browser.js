@@ -40,10 +40,6 @@ const moveToAnotherArray = function (source, target, conditionCb) {
 jsep.plugins.register(jsepRegex, jsepAssignment);
 
 const SafeEval = {
-    eval (code, substitions = {}) {
-        const ast = jsep(code);
-        return SafeEval.evalAst(ast, substitions);
-    },
     /**
      * @param {jsep.Expression} ast
      * @param {Record<string, any>} subs
@@ -151,13 +147,13 @@ const SafeEval = {
         return result;
     },
     evalUnaryExpression (ast, subs) {
-        const result = ({
-            '-': (a) => -SafeEval.evalAst(a),
-            '!': (a) => !SafeEval.evalAst(a),
-            '~': (a) => ~SafeEval.evalAst(a),
+        const result = {
+            '-': (a) => -SafeEval.evalAst(a, subs),
+            '!': (a) => !SafeEval.evalAst(a, subs),
+            '~': (a) => ~SafeEval.evalAst(a, subs),
             // eslint-disable-next-line no-implicit-coercion
-            '+': (a) => +SafeEval.evalAst(a)
-        })[ast.operator](ast.argument);
+            '+': (a) => +SafeEval.evalAst(a, subs)
+        }[ast.operator](ast.argument);
         return result;
     },
     evalArrayExpression (ast, subs) {
@@ -180,7 +176,7 @@ const SafeEval = {
 };
 
 /**
- * In-browser replacement for NodeJS' VM.Script.
+ * A replacement for NodeJS' VM.Script which is also {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP | Content Security Policy} friendly.
  */
 class SafeScript {
     /**
@@ -188,6 +184,7 @@ class SafeScript {
      */
     constructor (expr) {
         this.code = expr;
+        this.ast = jsep(this.code);
     }
 
     /**
@@ -197,7 +194,7 @@ class SafeScript {
      */
     runInNewContext (context) {
         const keyMap = {...context};
-        return SafeEval.eval(this.code, keyMap);
+        return SafeEval.evalAst(this.ast, keyMap);
     }
 }
 
@@ -270,4 +267,4 @@ JSONPath.prototype.safeVm = {
     Script: SafeScript
 };
 
-export {JSONPath};
+export {JSONPath, SafeScript};
