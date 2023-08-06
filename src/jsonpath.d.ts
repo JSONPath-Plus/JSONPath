@@ -8,6 +8,11 @@ declare module 'jsonpath-plus' {
 
   type JSONPathOtherTypeCallback = (...args: any[]) => void
 
+  class EvalClass {
+    constructor(code: string);
+    runInNewContext(context: object): any;
+  }
+
   interface JSONPathOptions {
     /**
      * The JSONPath expression as a (normalized or unnormalized) string or
@@ -73,26 +78,28 @@ declare module 'jsonpath-plus' {
      */
     wrap?: true | boolean
     /**
-     * Although JavaScript evaluation expressions are allowed by default,
-     * for security reasons (if one is operating on untrusted user input,
-     * for example), one may wish to set this option to true to throw
-     * exceptions when these expressions are attempted.
-     *
-     * @default false
-     */
-    preventEval?: false | boolean
-    /**
      * Script evaluation method.
-     * 
-     * `safe`: In browser, it will use a minimal scripting engine which doesn't use `eval` or `Function` and satisfies Content Security Policy. In NodeJS, it has no effect and is equivalent to native as scripting is safe there.
-     * 
-     * `native`: uses the native scripting capabilities. i.e. unsafe `eval` or `Function` in browser and `vm.Script` in nodejs.
-     * 
-     * `none`: Disabled scripting. This is equivalent to `preventEval: true`
-     * 
+     *
+     * `safe`: In browser, it will use a minimal scripting engine which doesn't
+     * use `eval` or `Function` and satisfies Content Security Policy. In NodeJS,
+     * it has no effect and is equivalent to native as scripting is safe there.
+     *
+     * `native`: uses the native scripting capabilities. i.e. unsafe `eval` or
+     * `Function` in browser and `vm.Script` in nodejs.
+     *
+     * `true`: Same as 'safe'
+     *
+     * `false`: Disable Javascript executions in path string. Same as `preventEval: true` in previous versions.
+     *
+     * `callback [ (code, context) => value]`: A custom implementation which is called
+     * with `code` and `context` as arguments to return the evaluated value.
+     *
+     * `class`: A class similar to nodejs vm.Script. It will be created with `code` as constructor argument and the code
+     * is evaluated by calling `runInNewContext` with `context`.
+     *
      * @default 'safe'
      */
-    evalType?: 'safe' | 'native' | 'none'
+    eval?: 'safe' | 'native' | boolean | ((code: string, context: object) => any) | typeof EvalClass
     /**
      * In the event that a query could be made to return the root node,
      * this allows the parent of that root node to be returned within results.

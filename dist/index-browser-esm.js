@@ -1720,6 +1720,7 @@ var plugin = {
   }
 };
 
+/* eslint-disable jsdoc/valid-types */
 var hasOwnProp = Object.prototype.hasOwnProperty;
 /**
  * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
@@ -1825,9 +1826,10 @@ var NewError = /*#__PURE__*/function (_Error) {
 * @param {ContextItem} context
 * @returns {EvaluatedResult}
 */
-// /**
-//  * @typedef {@typeof import('./jsonpath-browser').SafeScript} EvalClass
-//  */
+
+/**
+ * @typedef {@typeof import('./jsonpath-browser').SafeScript} EvalClass
+ */
 
 /* eslint-disable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 

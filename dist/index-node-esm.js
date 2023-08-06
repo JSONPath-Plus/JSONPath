@@ -1,5 +1,6 @@
 import vm from 'vm';
 
+/* eslint-disable jsdoc/valid-types */
 const {
   hasOwnProperty: hasOwnProp
 } = Object.prototype;
@@ -97,9 +98,10 @@ class NewError extends Error {
 * @param {ContextItem} context
 * @returns {EvaluatedResult}
 */
-// /**
-//  * @typedef {@typeof import('./jsonpath-browser').SafeScript} EvalClass
-//  */
+
+/**
+ * @typedef {@typeof import('./jsonpath-browser').SafeScript} EvalClass
+ */
 
 /* eslint-disable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 
