@@ -20,7 +20,7 @@
 
         <script type="module">
         /* globals chai */
-        import {JSONPath} from '../src/jsonpath-browser.js';
+        import {JSONPath} from '../dist/index-browser-esm.js';
 
         mocha.setup('bdd');
         window.assert = chai.assert;
@@ -38,6 +38,7 @@
         import './test.errors.js';
         import './test.escaping.js';
         import './test.eval.js';
+        import './test.safe-eval.js';
         import './test.examples.js';
         import './test.intermixed.arr.js';
         import './test.parent-selector.js';

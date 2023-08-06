@@ -4,3 +4,4 @@ docs/ts
 coverage
 ignore
 !*.js
+!.config.js

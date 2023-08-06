@@ -1,4 +1,5 @@
 import {babel} from '@rollup/plugin-babel';
+import {nodeResolve} from '@rollup/plugin-node-resolve';
 import {terser} from 'rollup-plugin-terser';
 import pkg from './package.json';
 
@@ -50,7 +51,8 @@ function getRollupObject ({
                         : ['@babel/preset-env']
                 ],
                 babelHelpers: 'bundled'
-            })
+            }),
+            nodeResolve()
         ]
     };
     if (minifying) {

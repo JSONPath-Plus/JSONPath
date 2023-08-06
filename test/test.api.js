@@ -82,7 +82,7 @@ describe('JSONPath - API', function () {
             json,
             path: '$.store.book[*].author',
             sandbox: {category: 'reference'},
-            preventEval: true,
+            eval: false,
             flatten: true,
             wrap: false,
             resultType: 'value',

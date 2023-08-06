@@ -17,6 +17,9 @@ module.exports = {
             'XMLHttpRequest'
         ]
     },
+    parserOptions: {
+        ecmaVersion: 2020
+    },
     overrides: [
         {
             files: ['src/jsonpath-node.js', 'test-helpers/node-env.js'],
