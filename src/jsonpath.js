@@ -1,4 +1,3 @@
-const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
 /**
  * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
@@ -11,6 +10,17 @@ const {hasOwnProperty: hasOwnProp} = Object.prototype;
 /**
  * @typedef {any} AnyResult
  */
+
+/**
+ * Check if the provided property name exists on the object.
+ * @param {string} name Name of the property to check
+ * @returns {boolean} Whether the object has the property or not
+ */
+function hasOwnProp (name) {
+    return typeof this === 'object'
+        ? name in this
+        : Object.prototype.hasOwnProperty.call(this, name);
+}
 
 /**
  * Copies array and then pushes item into it.
