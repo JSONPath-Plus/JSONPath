@@ -692,13 +692,30 @@
         throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
       }
 
-      var safeLoc = loc.replace(/^\?\(((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?)\)$/, '$1');
+      var safeLoc = loc.replace(/^\?\(((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?)\)$/, '$1'); // check for a nested filter expression
 
-      this._walk(val, function (m) {
-        if (_this3._eval(safeLoc, val[m], m, path, parent, parentPropName)) {
-          addRet(_this3._trace(x, val[m], push(path, m), val, m, callback, true));
-        }
-      });
+      var nested = /@(?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])?((?:(?!\?)[\s\S])*)['\[](\??\((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?\))(?!(?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])\)\])['\]]/g.exec(safeLoc);
+
+      if (nested) {
+        // find if there are matches in the nested expression
+        // add them to the result set if there is at least one match
+        this._walk(val, function (m) {
+          var npath = [nested[2]];
+          var nvalue = nested[1] ? val[m][nested[1]] : val[m];
+
+          var filterResults = _this3._trace(npath, nvalue, path, parent, parentPropName, callback, true);
+
+          if (filterResults.length > 0) {
+            addRet(_this3._trace(x, val[m], push(path, m), val, m, callback, true));
+          }
+        });
+      } else {
+        this._walk(val, function (m) {
+          if (_this3._eval(safeLoc, val[m], m, path, parent, parentPropName)) {
+            addRet(_this3._trace(x, val[m], push(path, m), val, m, callback, true));
+          }
+        });
+      }
     } else if (loc[0] === '(') {
       // [(expr)] (dynamic property/index)
       if (this.currPreventEval) {
@@ -984,7 +1001,7 @@
     var normalized = expr // Properties
     .replace(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/g, ';$&;') // Parenthetical evaluations (filtering and otherwise), directly
     //   within brackets or single quotes
-    .replace(/['\[](\??\((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?\))['\]]/g, function ($0, $1) {
+    .replace(/['\[](\??\((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*?\))['\]](?!(?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])\])/g, function ($0, $1) {
       return '[#' + (subx.push($1) - 1) + ']';
     }) // Escape periods and tildes within properties
     .replace(/\[["']((?:(?!['\]])[\s\S])*)["']\]/g, function ($0, prop) {

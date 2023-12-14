@@ -416,13 +416,30 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
       throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
     }
 
-    const safeLoc = loc.replace(/^\?\((.*?)\)$/u, '$1');
+    const safeLoc = loc.replace(/^\?\((.*?)\)$/u, '$1'); // check for a nested filter expression
 
-    this._walk(val, m => {
-      if (this._eval(safeLoc, val[m], m, path, parent, parentPropName)) {
-        addRet(this._trace(x, val[m], push(path, m), val, m, callback, true));
-      }
-    });
+    const nested = /@.?([^?]*)[['](\??\(.*?\))(?!.\)\])[\]']/gu.exec(safeLoc);
+
+    if (nested) {
+      // find if there are matches in the nested expression
+      // add them to the result set if there is at least one match
+      this._walk(val, m => {
+        const npath = [nested[2]];
+        const nvalue = nested[1] ? val[m][nested[1]] : val[m];
+
+        const filterResults = this._trace(npath, nvalue, path, parent, parentPropName, callback, true);
+
+        if (filterResults.length > 0) {
+          addRet(this._trace(x, val[m], push(path, m), val, m, callback, true));
+        }
+      });
+    } else {
+      this._walk(val, m => {
+        if (this._eval(safeLoc, val[m], m, path, parent, parentPropName)) {
+          addRet(this._trace(x, val[m], push(path, m), val, m, callback, true));
+        }
+      });
+    }
   } else if (loc[0] === '(') {
     // [(expr)] (dynamic property/index)
     if (this.currPreventEval) {
@@ -700,7 +717,7 @@ JSONPath.toPathArray = function (expr) {
   const normalized = expr // Properties
   .replace(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/gu, ';$&;') // Parenthetical evaluations (filtering and otherwise), directly
   //   within brackets or single quotes
-  .replace(/[['](\??\(.*?\))[\]']/gu, function ($0, $1) {
+  .replace(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {
     return '[#' + (subx.push($1) - 1) + ']';
   }) // Escape periods and tildes within properties
   .replace(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
