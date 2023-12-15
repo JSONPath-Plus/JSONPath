@@ -112,13 +112,13 @@ describe('JSONPath - Callback', function () {
                 abc: 1,
                 quantity: 11
             },
-            first_name: 'John',
-            last_name: 'Doe'
+            firstName: 'John',
+            lastName: 'Doe'
         };
         const givenPerson = {
             age: 30,
             email: 'abc@example.com',
-            // let's add first_name, last_name fields
+            // let's add firstName, lastName fields
             'something_deeper': {
                 abc: 1
                 // let's add quantity here
@@ -129,8 +129,8 @@ describe('JSONPath - Callback', function () {
         // made sure it is not a deep object.
         const obj1 = {
             $: {
-                'first_name': 'John',
-                'last_name': 'Doe'
+                'firstName': 'John',
+                'lastName': 'Doe'
             },
             '$.something_deeper': {
                 quantity: 11

@@ -74,12 +74,9 @@ describe('JSONPath - Type Operators', function () {
         /**
          *
          * @param {Value} val
-         * @param {string} path
-         * @param {PlainObject|GenericArray} parent
-         * @param {string} parentPropName
          * @returns {boolean}
          */
-        function endsIn99 (val, path, parent, parentPropName) {
+        function endsIn99 (val /* , path, parent, parentPropName */) {
             return Boolean((/\.99/u).test(val.toString()));
         }
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});

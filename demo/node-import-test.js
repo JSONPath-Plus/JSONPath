@@ -1,6 +1,6 @@
-import {JSONPath} from '../dist/index-node-esm.js';
+import {JSONPath as jsonpath} from '../dist/index-node-esm.js';
 
-/* eslint-disable quotes, quote-props */
+/* eslint-disable @stylistic/quotes, @stylistic/quote-props */
 const json = {
     "store": {
         "book": [{
@@ -35,9 +35,9 @@ const json = {
         }
     }
 };
-/* eslint-enable quotes, quote-props */
+/* eslint-enable @stylistic/quotes, @stylistic/quote-props */
 
-const result = JSONPath({
+const result = jsonpath({
     json,
     path: '$.store.book[*].author'
 });

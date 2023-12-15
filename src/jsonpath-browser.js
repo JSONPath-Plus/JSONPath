@@ -55,7 +55,7 @@ class Script {
         moveToAnotherArray(keys, funcs, (key) => {
             return typeof context[key] === 'function';
         });
-        const values = keys.map((vr, i) => {
+        const values = keys.map((vr) => {
             return context[vr];
         });
 

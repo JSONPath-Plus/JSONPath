@@ -209,7 +209,9 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         it('Custom property: @property', () => {
             let expected = json.store.book.reduce(function (arr, book) {
                 arr.push(book.author, book.title);
-                if (book.isbn) { arr.push(book.isbn); }
+                if (book.isbn) {
+                    arr.push(book.isbn);
+                }
                 arr.push(book.price);
                 return arr;
             }, []);

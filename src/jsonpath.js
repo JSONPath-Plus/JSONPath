@@ -1,3 +1,5 @@
+/* eslint-disable camelcase, unicorn/prefer-string-replace-all,
+  unicorn/prefer-at */
 const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
 /**
@@ -79,7 +81,7 @@ class NewError extends Error {
 * @returns {boolean}
 */
 
-/* eslint-disable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
+/* eslint-disable @stylistic/max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 /**
  * @typedef {PlainObject} JSONPathOptions
  * @property {JSON} json
@@ -96,7 +98,7 @@ class NewError extends Error {
  *   function which throws on encountering `@other`
  * @property {boolean} [autostart=true]
  */
-/* eslint-enable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
+/* eslint-enable @stylistic/max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 
 /**
  * @param {string|JSONPathOptions} opts If a string, will be treated as `expr`
@@ -233,15 +235,21 @@ JSONPath.prototype.evaluate = function (
     }
 
     const exprList = JSONPath.toPathArray(expr);
-    if (exprList[0] === '$' && exprList.length > 1) { exprList.shift(); }
+    if (exprList[0] === '$' && exprList.length > 1) {
+        exprList.shift();
+    }
     this._hasParentSelector = null;
     const result = this
         ._trace(
             exprList, json, ['$'], currParent, currParentProperty, callback
         )
-        .filter(function (ea) { return ea && !ea.isParentSelector; });
+        .filter(function (ea) {
+            return ea && !ea.isParentSelector;
+        });
 
-    if (!result.length) { return wrap ? [] : undefined; }
+    if (!result.length) {
+        return wrap ? [] : undefined;
+    }
     if (!wrap && result.length === 1 && !result[0].hasArrExpr) {
         return this._getPreferredOutput(result[0]);
     }
@@ -454,7 +462,6 @@ JSONPath.prototype._trace = function (
             }
             break;
         case 'boolean': case 'string': case 'undefined': case 'function':
-            // eslint-disable-next-line valid-typeof
             if (typeof val === valueType) {
                 addType = true;
             }
@@ -475,7 +482,6 @@ JSONPath.prototype._trace = function (
             }
             break;
         case 'object':
-            // eslint-disable-next-line valid-typeof
             if (val && typeof val === valueType) {
                 addType = true;
             }
@@ -572,7 +578,9 @@ JSONPath.prototype._walk = function (val, f) {
 JSONPath.prototype._slice = function (
     loc, expr, val, path, parent, parentPropName, callback
 ) {
-    if (!Array.isArray(val)) { return undefined; }
+    if (!Array.isArray(val)) {
+        return undefined;
+    }
     const len = val.length, parts = loc.split(':'),
         step = (parts[2] && Number.parseInt(parts[2])) || 1;
     let start = (parts[0] && Number.parseInt(parts[0])) || 0,
@@ -675,7 +683,9 @@ JSONPath.toPointer = function (pointer) {
  */
 JSONPath.toPathArray = function (expr) {
     const {cache} = JSONPath;
-    if (cache[expr]) { return cache[expr].concat(); }
+    if (cache[expr]) {
+        return cache[expr].concat();
+    }
     const subx = [];
     const normalized = expr
         // Properties
