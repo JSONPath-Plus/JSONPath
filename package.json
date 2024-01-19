@@ -65,7 +65,7 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-terser": "^0.4.4",
     "c8": "^9.1.0",
-    "chai": "^4.4.1",
+    "chai": "^5.0.0",
     "core-js-bundle": "^3.35.0",
     "coveradge": "^0.8.2",
     "eslint": "^8.56.0",

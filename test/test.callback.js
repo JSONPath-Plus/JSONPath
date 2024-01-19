@@ -91,16 +91,7 @@ describe('JSONPath - Callback', function () {
         }
         jsonpath({json, path: '$.store.bicycle', resultType: 'all', wrap: false, callback});
         assert.deepEqual(result[0], expected[0]);
-        // Todo[chai@>=5]: Error with circular perhaps will be resolved per https://github.com/chaijs/chai/issues/1109#issuecomment-395980733
-        //   so can try directly comparing whole object (as commented out) rather
-        //   than in parts as below that
-        // assert.deepEqual(result, expected);
-        Object.keys(result[1]).forEach((prop) => {
-            assert.deepEqual(result[1][prop], expected[1][prop]);
-        });
-        Object.keys(result[2]).forEach((prop) => {
-            assert.deepEqual(result[2][prop], expected[2][prop]);
-        });
+        assert.deepEqual(result, expected);
     });
 
     // https://github.com/s3u/JSONPath/issues/126
