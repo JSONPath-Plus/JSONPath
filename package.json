@@ -3,6 +3,9 @@
   "name": "jsonpath-plus",
   "version": "8.0.0",
   "type": "module",
+  "bin": {
+    "jsonp-cli": "./dist/jsonp-cli.js"
+  },
   "main": "dist/index-node-cjs.cjs",
   "exports": {
     "./package.json": "./package.json",
