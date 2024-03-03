@@ -21,6 +21,7 @@ function runQuery(json, path) {
         path,
     });
 
-    // eslint-disable-next-line no-console
-    console.log("result", result);
+// eslint-disable-next-line no-console -- CLI
+
+    console.log(result);
 }
