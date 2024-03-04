@@ -4,7 +4,8 @@
   "version": "8.0.0",
   "type": "module",
   "bin": {
-    "jsonpath": "./dist/jsonpath-cli.js"
+    "jsonpath": "./dist/jsonpath-cli.js",
+    "jsonpath-plus": "./dist/jsonpath-cli.js"
   },
   "main": "dist/index-node-cjs.cjs",
   "exports": {
