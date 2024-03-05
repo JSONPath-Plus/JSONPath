@@ -5,9 +5,8 @@ rollup.config.js
 lgtm.yml
 .travis.yml
 .DS_Store
-.babelrc
+.babelrc.json
 .idea
-.remarkrc
 docs
 .nyc_output
 coverage
@@ -18,3 +17,9 @@ mocha-multi-reporters.json
 .nojekyll
 ignore
 pnpm-lock.yaml
+.eslintrc.cjs
+.editorconfig
+.eslintignore
+licenseInfo.json
+tsconfig.json
+demo
