@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 8.1.0
+
+- feat: add basic cli (#206) (@vid)
+
 ## 8.0.0
 
 - Breaking change: Bump Node `engines` to 14
