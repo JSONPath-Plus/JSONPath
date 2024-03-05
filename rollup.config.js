@@ -42,7 +42,7 @@ function getRollupObject ({
             babel({
                 babelrc: false,
                 presets: [
-                    environment === 'node'
+                    environment === 'node' || environment === 'cli'
                         ? ['@babel/preset-env', {
                             targets: [
                                 `node ${pkg.engines.node}`
@@ -90,6 +90,11 @@ function getRollupObjectByEnv ({minifying, environment}) {
 export default [
     ...getRollupObjectByEnv({minifying: false, environment: 'node'}),
     // ...getRollupObjectByEnv({minifying: true, environment: 'node'}),
+    // getRollupObject({
+    //     input: 'bin/jsonpath-cli.js', format: 'esm',
+    //     minifying: false, environment: 'cli',
+    //     external: ['fs/promises', 'vm']
+    // }),
     ...getRollupObjectByEnv({minifying: false, environment: 'browser'}),
     ...getRollupObjectByEnv({minifying: true, environment: 'browser'})
 ];

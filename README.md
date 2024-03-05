@@ -368,6 +368,10 @@ from 0), whereas in XPath, they are 1-based.
 1. In JSONPath, equality tests utilize (as per JavaScript) multiple equal signs
 whereas in XPath, they use a single equal sign.
 
+## Command line interface
+
+A basic command line interface (CLI) is provided. Access it using `npx jsonpath-plus <json-file> <jsonpath-query>`.
+
 ## Ideas
 
 1. Support OR outside of filters (as in XPath `|`) and grouping.
@@ -396,3 +400,4 @@ npm run browser-test
 ## License
 
 [MIT License](https://opensource.org/license/mit/).
+

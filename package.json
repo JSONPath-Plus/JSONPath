@@ -3,6 +3,10 @@
   "name": "jsonpath-plus",
   "version": "8.0.0",
   "type": "module",
+  "bin": {
+    "jsonpath": "./bin/jsonpath-cli.js",
+    "jsonpath-plus": "./bin/jsonpath-cli.js"
+  },
   "main": "dist/index-node-cjs.cjs",
   "exports": {
     "./package.json": "./package.json",
@@ -137,6 +141,7 @@
     "node-import-test": "node --experimental-modules demo/node-import-test.mjs",
     "open": "open-cli http://localhost:8084/demo/ && npm start",
     "start": "http-server -p 8084",
+    "cli": "./bin/jsonpath-cli.js package.json name",
     "typescript": "tsc -p src",
     "mocha": "mocha --require test-helpers/node-env.js --reporter-options configFile=mocha-multi-reporters.json test",
     "c8": "rm -Rf ./coverage && rm -Rf ./node_modules/.cache && c8 --all npm run mocha && npm run coverage-badge",
