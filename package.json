@@ -3,6 +3,14 @@
   "name": "jsonpath-plus",
   "version": "8.0.0",
   "type": "module",
+  "files": [
+    "dist",
+    "bin",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
   "bin": {
     "jsonpath": "./bin/jsonpath-cli.js",
     "jsonpath-plus": "./bin/jsonpath-cli.js"
