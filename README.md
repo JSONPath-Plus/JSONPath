@@ -1,20 +1,18 @@
 [![npm](https://img.shields.io/npm/v/jsonpath-plus.svg)](https://www.npmjs.com/package/jsonpath-plus)
-[![Dependencies](https://img.shields.io/david/s3u/JSONPath.svg)](https://david-dm.org/s3u/JSONPath)
-[![devDependencies](https://img.shields.io/david/dev/s3u/JSONPath.svg)](https://david-dm.org/s3u/JSONPath?type=dev)
 
 [![testing badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/tests-badge.svg?sanitize=true)](badges/tests-badge.svg)
 [![coverage badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/coverage-badge.svg?sanitize=true)](badges/coverage-badge.svg)
 
 [![Known Vulnerabilities](https://snyk.io/test/github/s3u/JSONPath/badge.svg)](https://snyk.io/test/github/s3u/JSONPath)
-[![Total Alerts](https://img.shields.io/lgtm/alerts/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/s3u/JSONPath/alerts)
-[![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/s3u/JSONPath.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/s3u/JSONPath/context:javascript)
 
 <!--[![License](https://img.shields.io/npm/l/JSONPath.svg)](LICENSE-MIT.txt)-->
 [![Licenses badge](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/licenses-badge.svg?sanitize=true)](badges/licenses-badge.svg)
 
+[![Node.js CI status](https://github.com/JSONPath-Plus/JSONPath/actions/workflows/node.js.yml/badge.svg)](https://github.com/JSONPath-Plus/JSONPath/actions/workflows/node.js.yml)
+
 <small>(see also [licenses for dev. deps.](https://raw.githubusercontent.com/s3u/JSONPath/master/badges/licenses-badge-dev.svg?sanitize=true))</small>
 
-# JSONPath Plus [![Node.js CI status](https://github.com/JSONPath-Plus/JSONPath/actions/workflows/node.js.yml/badge.svg)](https://github.com/JSONPath-Plus/JSONPath/actions/workflows/node.js.yml)
+# JSONPath Plus
 
 Analyse, transform, and selectively extract data from JSON
 documents (and JavaScript objects).
@@ -85,10 +83,6 @@ For browser usage you can directly include `dist/index-browser-umd.cjs`; no
 Browserify magic is necessary:
 
 ```html
-<!-- Polyfill recommended by Babel for items not covered for older
-      browsers in dist -->
-<script src="node_modules/core-js-bundle/minified.js"></script>
-
 <script src="node_modules/jsonpath-plus/dist/index-browser-umd.cjs"></script>
 
 <script>
@@ -377,6 +371,10 @@ from 0), whereas in XPath, they are 1-based.
 1. In JSONPath, equality tests utilize (as per JavaScript) multiple equal signs
 whereas in XPath, they use a single equal sign.
 
+## Command line interface
+
+A basic command line interface (CLI) is provided. Access it using `npx jsonpath-plus <json-file> <jsonpath-query>`.
+
 ## Ideas
 
 1. Support OR outside of filters (as in XPath `|`) and grouping.
@@ -404,4 +402,4 @@ npm run browser-test
 
 ## License
 
-[MIT License](http://www.opensource.org/licenses/mit-license.php).
+[MIT License](https://opensource.org/license/mit/).

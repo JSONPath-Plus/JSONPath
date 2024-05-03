@@ -5,10 +5,6 @@
         <title>JSONPath Tests</title>
         <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon" />
 
-        <!-- Babel dependencies -->
-        <script src="../node_modules/core-js-bundle/minified.js"></script>
-        <!-- <script src="../node_modules/regenerator-runtime/runtime.js"></script> -->
-
         <!-- Testing dependencies -->
         <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
         <script src="../node_modules/mocha/mocha.js"></script>
@@ -19,8 +15,7 @@
         <div id="mocha"></div>
 
         <script type="module">
-        /* globals chai */
-        import {JSONPath} from '../dist/index-browser-esm.js';
+        import {JSONPath} from '../src/jsonpath-browser.js';
 
         mocha.setup('bdd');
         window.assert = chai.assert;
@@ -41,6 +36,7 @@
         import './test.safe-eval.js';
         import './test.examples.js';
         import './test.intermixed.arr.js';
+        import './test.nested_expression.js';
         import './test.parent-selector.js';
         import './test.path_expressions.js';
         import './test.performance.js';

@@ -31,7 +31,7 @@ const updateResults = () => {
         reportValidity();
         return;
     }
-    const result = JSONPath.JSONPath({
+    const result = new JSONPath.JSONPath({
         path: $('#jsonpath').value,
         json,
         eval: $('#eval').value === 'false' ? false : $('#eval').value

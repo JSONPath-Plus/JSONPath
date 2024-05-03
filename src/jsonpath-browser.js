@@ -72,7 +72,7 @@ const SafeEval = {
         }
     },
     evalBinaryExpression (ast, subs) {
-        const result = ({
+        const result = {
             '||': (a, b) => a || b(),
             '&&': (a, b) => a && b(),
             '|': (a, b) => a | b(),
@@ -96,10 +96,7 @@ const SafeEval = {
             '*': (a, b) => a * b(),
             '/': (a, b) => a / b(),
             '%': (a, b) => a % b()
-        })[ast.operator](
-            SafeEval.evalAst(ast.left, subs),
-            () => SafeEval.evalAst(ast.right, subs)
-        );
+        }[ast.operator](SafeEval.evalAst(ast.left, subs), () => SafeEval.evalAst(ast.right, subs));
         return result;
     },
     evalCompound (ast, subs) {
@@ -132,6 +129,7 @@ const SafeEval = {
         }
         throw ReferenceError(`${ast.name} is not defined`);
     },
+    // eslint-disable-next-line no-unused-vars
     evalLiteral (ast, subs) {
         return ast.value;
     },
@@ -221,7 +219,7 @@ class Script {
         moveToAnotherArray(keys, funcs, (key) => {
             return typeof context[key] === 'function';
         });
-        const values = keys.map((vr, i) => {
+        const values = keys.map((vr) => {
             return context[vr];
         });
 
@@ -236,9 +234,7 @@ class Script {
         expr = funcString + expr;
 
         // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
-        if (!(/(['"])use strict\1/u).test(expr) &&
-            !keys.includes('arguments')
-        ) {
+        if (!(/(['"])use strict\1/u).test(expr) && !keys.includes('arguments')) {
             expr = 'var arguments = undefined;' + expr;
         }
 
@@ -249,13 +245,15 @@ class Script {
 
         // Insert `return`
         const lastStatementEnd = expr.lastIndexOf(';');
-        const code = (lastStatementEnd > -1
-            ? expr.slice(0, lastStatementEnd + 1) +
-                ' return ' + expr.slice(lastStatementEnd + 1)
-            : ' return ' + expr);
+        const code =
+            lastStatementEnd > -1
+                ? expr.slice(0, lastStatementEnd + 1) +
+                  ' return ' +
+                  expr.slice(lastStatementEnd + 1)
+                : ' return ' + expr;
 
         // eslint-disable-next-line no-new-func
-        return (new Function(...keys, code))(...values);
+        return new Function(...keys, code)(...values);
     }
 }
 

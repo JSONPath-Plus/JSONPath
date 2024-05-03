@@ -2,6 +2,9 @@
 
 module.exports = {
     extends: ['ash-nazg/sauron-node-overrides'],
+    parserOptions: {
+        ecmaVersion: 2022
+    },
     settings: {
         polyfills: [
             'Array.isArray',
@@ -17,9 +20,6 @@ module.exports = {
             'XMLHttpRequest'
         ]
     },
-    parserOptions: {
-        ecmaVersion: 2020
-    },
     overrides: [
         {
             files: ['src/jsonpath-node.js', 'test-helpers/node-env.js'],
@@ -28,7 +28,7 @@ module.exports = {
             },
             // ESLint doesn't seem to remember this
             parserOptions: {
-                ecmaVersion: 2020,
+                ecmaVersion: 2022,
                 sourceType: 'module'
             },
             rules: {
@@ -82,20 +82,22 @@ module.exports = {
             },
             env: {mocha: true},
             rules: {
-                quotes: 0,
-                'quote-props': 0,
+                '@stylistic/quotes': 0,
+                '@stylistic/quote-props': 0,
                 'import/unambiguous': 0,
                 // Todo: Reenable
-                'max-len': 0
+                '@stylistic/max-len': 0
             }
         }
     ],
     rules: {
-        indent: ['error', 4, {outerIIFEBody: 0}],
+        '@stylistic/indent': ['error', 4, {outerIIFEBody: 0}],
         'promise/prefer-await-to-callbacks': 0,
         'require-jsdoc': 0,
 
         // Disable for now
+        'new-cap': 0,
+        '@stylistic/dot-location': 0,
         'eslint-comments/require-description': 0,
         // Reenable as have time and confirming no longer needing:
         // https://github.com/babel/babel/issues/8951#issuecomment-508045524 is no

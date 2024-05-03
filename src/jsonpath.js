@@ -1,4 +1,5 @@
-/* eslint-disable jsdoc/valid-types */
+/* eslint-disable camelcase, jsdoc/valid-types, unicorn/prefer-string-replace-all,
+  unicorn/prefer-at */
 const {hasOwnProperty: hasOwnProp} = Object.prototype;
 
 /**
@@ -99,7 +100,7 @@ class NewError extends Error {
  * @typedef {@typeof import('./jsonpath-browser').SafeScript} EvalClass
  */
 
-/* eslint-disable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
+/* eslint-disable @stylistic/max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 /**
  * @typedef {PlainObject} JSONPathOptions
  * @property {JSON} json
@@ -116,7 +117,7 @@ class NewError extends Error {
  *   function which throws on encountering `@other`
  * @property {boolean} [autostart=true]
  */
-/* eslint-enable max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
+/* eslint-enable @stylistic/max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 
 /**
  * @param {string|JSONPathOptions} opts If a string, will be treated as `expr`
@@ -253,15 +254,21 @@ JSONPath.prototype.evaluate = function (
     }
 
     const exprList = JSONPath.toPathArray(expr);
-    if (exprList[0] === '$' && exprList.length > 1) { exprList.shift(); }
+    if (exprList[0] === '$' && exprList.length > 1) {
+        exprList.shift();
+    }
     this._hasParentSelector = null;
     const result = this
         ._trace(
             exprList, json, ['$'], currParent, currParentProperty, callback
         )
-        .filter(function (ea) { return ea && !ea.isParentSelector; });
+        .filter(function (ea) {
+            return ea && !ea.isParentSelector;
+        });
 
-    if (!result.length) { return wrap ? [] : undefined; }
+    if (!result.length) {
+        return wrap ? [] : undefined;
+    }
     if (!wrap && result.length === 1 && !result[0].hasArrExpr) {
         return this._getPreferredOutput(result[0]);
     }
@@ -424,12 +431,32 @@ JSONPath.prototype._trace = function (
             throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
         }
         const safeLoc = loc.replace(/^\?\((.*?)\)$/u, '$1');
-        this._walk(val, (m) => {
-            if (this._eval(safeLoc, val[m], m, path, parent, parentPropName)) {
-                addRet(this._trace(x, val[m], push(path, m), val, m, callback,
-                    true));
-            }
-        });
+        // check for a nested filter expression
+        const nested = (/@.?([^?]*)[['](\??\(.*?\))(?!.\)\])[\]']/gu).exec(safeLoc);
+        if (nested) {
+            // find if there are matches in the nested expression
+            // add them to the result set if there is at least one match
+            this._walk(val, (m) => {
+                const npath = [nested[2]];
+                const nvalue = nested[1]
+                    ? val[m][nested[1]]
+                    : val[m];
+                const filterResults = this._trace(npath, nvalue, path,
+                    parent, parentPropName, callback, true);
+                if (filterResults.length > 0) {
+                    addRet(this._trace(x, val[m], push(path, m), val,
+                        m, callback, true));
+                }
+            });
+        } else {
+            this._walk(val, (m) => {
+                if (this._eval(safeLoc, val[m], m, path, parent,
+                    parentPropName)) {
+                    addRet(this._trace(x, val[m], push(path, m), val, m,
+                        callback, true));
+                }
+            });
+        }
     } else if (loc[0] === '(') { // [(expr)] (dynamic property/index)
         if (this.currEval === false) {
             throw new Error('Eval [(expr)] prevented in JSONPath expression.');
@@ -454,7 +481,6 @@ JSONPath.prototype._trace = function (
             }
             break;
         case 'boolean': case 'string': case 'undefined': case 'function':
-            // eslint-disable-next-line valid-typeof
             if (typeof val === valueType) {
                 addType = true;
             }
@@ -475,7 +501,6 @@ JSONPath.prototype._trace = function (
             }
             break;
         case 'object':
-            // eslint-disable-next-line valid-typeof
             if (val && typeof val === valueType) {
                 addType = true;
             }
@@ -572,7 +597,9 @@ JSONPath.prototype._walk = function (val, f) {
 JSONPath.prototype._slice = function (
     loc, expr, val, path, parent, parentPropName, callback
 ) {
-    if (!Array.isArray(val)) { return undefined; }
+    if (!Array.isArray(val)) {
+        return undefined;
+    }
     const len = val.length, parts = loc.split(':'),
         step = (parts[2] && Number.parseInt(parts[2])) || 1;
     let start = (parts[0] && Number.parseInt(parts[0])) || 0,
@@ -693,7 +720,9 @@ JSONPath.toPointer = function (pointer) {
  */
 JSONPath.toPathArray = function (expr) {
     const {cache} = JSONPath;
-    if (cache[expr]) { return cache[expr].concat(); }
+    if (cache[expr]) {
+        return cache[expr].concat();
+    }
     const subx = [];
     const normalized = expr
         // Properties
@@ -703,7 +732,7 @@ JSONPath.toPathArray = function (expr) {
         )
         // Parenthetical evaluations (filtering and otherwise), directly
         //   within brackets or single quotes
-        .replace(/[['](\??\(.*?\))[\]']/gu, function ($0, $1) {
+        .replace(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {
             return '[#' + (subx.push($1) - 1) + ']';
         })
         // Escape periods and tildes within properties

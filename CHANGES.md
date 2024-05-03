@@ -1,5 +1,16 @@
 # CHANGES for jsonpath-plus
 
+## 8.1.0
+
+- feat: add basic cli (#206) (@vid)
+
+## 8.0.0
+
+- Breaking change: Bump Node `engines` to 14
+- feat: add support for nested filter expressions (@carlosingles)
+- docs: update README and license (@akirataguchi115)
+- docs: github workflow badge (@dsanch3z)
+
 ## 7.2.0
 
 - perf: optimize walk method by 10%-34% (@jacobroschen)

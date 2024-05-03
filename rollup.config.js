@@ -1,22 +1,24 @@
+import {readFile} from 'fs/promises';
 import {babel} from '@rollup/plugin-babel';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
-import {terser} from 'rollup-plugin-terser';
-import pkg from './package.json';
+import terser from '@rollup/plugin-terser';
+
+const pkg = JSON.parse(await readFile('./package.json'));
 
 /**
  * @external RollupConfig
- * @type {PlainObject}
+ * @type {object}
  * @see {@link https://rollupjs.org/guide/en#big-list-of-options}
  */
 
 /**
- * @param {PlainObject} config
+ * @param {object} config
  * @param {string} config.input
  * @param {boolean} config.minifying
  * @param {string[]} [config."external"]
- * @param {string} [config.environment=""]
- * @param {string} [config.format="umd"]
- * @returns {external:RollupConfig}
+ * @param {string} [config.environment]
+ * @param {string} [config.format]
+ * @returns {RollupConfig}
  */
 function getRollupObject ({
     input, minifying, environment,
@@ -41,7 +43,7 @@ function getRollupObject ({
             babel({
                 babelrc: false,
                 presets: [
-                    environment === 'node'
+                    environment === 'node' || environment === 'cli'
                         ? ['@babel/preset-env', {
                             targets: [
                                 `node ${pkg.engines.node}`
@@ -65,7 +67,7 @@ function getRollupObject ({
  * @param {PlainObject} config
  * @param {boolean} config.minifying
  * @param {"node"|"environment"} [config.environment]
- * @returns {external:RollupConfig[]}
+ * @returns {RollupConfig[]}
  */
 function getRollupObjectByEnv ({minifying, environment}) {
     const input = `src/jsonpath-${environment}.js`;
@@ -90,6 +92,11 @@ function getRollupObjectByEnv ({minifying, environment}) {
 export default [
     ...getRollupObjectByEnv({minifying: false, environment: 'node'}),
     // ...getRollupObjectByEnv({minifying: true, environment: 'node'}),
+    // getRollupObject({
+    //     input: 'bin/jsonpath-cli.js', format: 'esm',
+    //     minifying: false, environment: 'cli',
+    //     external: ['fs/promises', 'vm']
+    // }),
     ...getRollupObjectByEnv({minifying: false, environment: 'browser'}),
     ...getRollupObjectByEnv({minifying: true, environment: 'browser'})
 ];
