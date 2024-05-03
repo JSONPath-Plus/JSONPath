@@ -188,6 +188,8 @@ evaluate method (as the first argument) include:
   `class`: A class which is created with `code` as constructor argument and code
   is evaluated by calling `runInNewContext` with `context`.
   ``
+- ***ignoreEvalError*** (**default: true**) - Ignore errors encountered during
+  script evaluation.
 - ***parent*** (**default: null**) - In the event that a query could be
   made to return the root node, this allows the parent of that root node
   to be returned within results.
