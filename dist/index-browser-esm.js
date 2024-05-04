@@ -1549,7 +1549,7 @@ var plugin = {
   }
 };
 
-/* eslint-disable camelcase, jsdoc/valid-types, unicorn/prefer-string-replace-all,
+/* eslint-disable camelcase, unicorn/prefer-string-replace-all,
   unicorn/prefer-at */
 var hasOwnProp = Object.prototype.hasOwnProperty;
 
@@ -1643,7 +1643,7 @@ var NewError = /*#__PURE__*/function (_Error) {
 * @returns {EvaluatedResult}
 */
 /**
- * @typedef {@typeof import('./jsonpath-browser').SafeScript} EvalClass
+ * @typedef {typeof import('./jsonpath-browser').SafeScript} EvalClass
  */
 /* eslint-disable @stylistic/max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 /**
@@ -1706,6 +1706,7 @@ function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
   this.wrap = hasOwnProp.call(opts, 'wrap') ? opts.wrap : true;
   this.sandbox = opts.sandbox || {};
   this.eval = opts.eval === undefined ? 'safe' : opts.eval;
+  this.ignoreEvalError = typeof opts.ignoreEvalError === 'undefined' ? false : opts.ignoreEvalError;
   this.parent = opts.parent || null;
   this.parentProperty = opts.parentProperty || null;
   this.callback = opts.callback || callback || null;
@@ -2142,11 +2143,16 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
           return _this4.currEval(script, context);
         }
       };
+    } else {
+      throw new TypeError("Unknown \"eval\" property \"".concat(this.currEval, "\""));
     }
   }
   try {
     return JSONPath.cache[scriptCacheKey].runInNewContext(this.currSandbox);
   } catch (e) {
+    if (this.ignoreEvalError) {
+      return false;
+    }
     throw new Error('jsonPath: ' + e.message + ': ' + code);
   }
 };
@@ -2397,8 +2403,7 @@ var SafeEval = {
     }
     throw ReferenceError("".concat(ast.name, " is not defined"));
   },
-  // eslint-disable-next-line no-unused-vars
-  evalLiteral: function evalLiteral(ast, subs) {
+  evalLiteral: function evalLiteral(ast) {
     return ast.value;
   },
   evalMemberExpression: function evalMemberExpression(ast, subs) {

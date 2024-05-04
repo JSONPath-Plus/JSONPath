@@ -96,7 +96,10 @@ const SafeEval = {
             '*': (a, b) => a * b(),
             '/': (a, b) => a / b(),
             '%': (a, b) => a % b()
-        }[ast.operator](SafeEval.evalAst(ast.left, subs), () => SafeEval.evalAst(ast.right, subs));
+        }[ast.operator](
+            SafeEval.evalAst(ast.left, subs),
+            () => SafeEval.evalAst(ast.right, subs)
+        );
         return result;
     },
     evalCompound (ast, subs) {
@@ -129,8 +132,7 @@ const SafeEval = {
         }
         throw ReferenceError(`${ast.name} is not defined`);
     },
-    // eslint-disable-next-line no-unused-vars
-    evalLiteral (ast, subs) {
+    evalLiteral (ast) {
         return ast.value;
     },
     evalMemberExpression (ast, subs) {

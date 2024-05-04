@@ -26,6 +26,15 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             }
         };
 
+        it('fail if eval is unsupported', () => {
+            expect(() => {
+                jsonpath({json, path: "$..[?(@.category === category)]", eval: 'wrong-eval'});
+            }).to.throw(
+                TypeError,
+                'Unknown "eval" property "wrong-eval"'
+            );
+        });
+
         it('multi statement eval', () => {
             const expected = [json.store.books[0]];
             const selector = '$..[?(' +
@@ -201,6 +210,17 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 json,
                 path: '$..[?(@.category === "reference")]',
                 eval: jsonpath.prototype.safeVm.Script
+            });
+            assert.deepEqual(result, expected);
+        });
+
+        it('treat error as mismatch in eval', () => {
+            const expected = [json.store.book];
+            const result = jsonpath({
+                json,
+                path: '$..[?(@.category.toLowerCase() === "reference")]',
+                eval: jsonpath.prototype.safeVm.Script,
+                ignoreEvalError: true
             });
             assert.deepEqual(result, expected);
         });

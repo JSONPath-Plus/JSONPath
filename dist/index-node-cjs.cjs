@@ -2,7 +2,7 @@
 
 var vm = require('vm');
 
-/* eslint-disable camelcase, jsdoc/valid-types, unicorn/prefer-string-replace-all,
+/* eslint-disable camelcase, unicorn/prefer-string-replace-all,
   unicorn/prefer-at */
 const {
   hasOwnProperty: hasOwnProp
@@ -100,7 +100,7 @@ class NewError extends Error {
 */
 
 /**
- * @typedef {@typeof import('./jsonpath-browser').SafeScript} EvalClass
+ * @typedef {typeof import('./jsonpath-browser').SafeScript} EvalClass
  */
 
 /* eslint-disable @stylistic/max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
@@ -165,6 +165,7 @@ function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
   this.wrap = hasOwnProp.call(opts, 'wrap') ? opts.wrap : true;
   this.sandbox = opts.sandbox || {};
   this.eval = opts.eval === undefined ? 'safe' : opts.eval;
+  this.ignoreEvalError = typeof opts.ignoreEvalError === 'undefined' ? false : opts.ignoreEvalError;
   this.parent = opts.parent || null;
   this.parentProperty = opts.parentProperty || null;
   this.callback = opts.callback || callback || null;
@@ -590,11 +591,16 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
       JSONPath.cache[scriptCacheKey] = {
         runInNewContext: context => this.currEval(script, context)
       };
+    } else {
+      throw new TypeError(`Unknown "eval" property "${this.currEval}"`);
     }
   }
   try {
     return JSONPath.cache[scriptCacheKey].runInNewContext(this.currSandbox);
   } catch (e) {
+    if (this.ignoreEvalError) {
+      return false;
+    }
     throw new Error('jsonPath: ' + e.message + ': ' + code);
   }
 };
