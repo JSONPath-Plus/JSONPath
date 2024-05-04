@@ -192,9 +192,9 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             }
         };
         it('eval as callback function', () => {
-            const evalCb = (code, context) => {
+            const evalCb = (code, ctxt) => {
                 const script = new jsonpath.prototype.safeVm.Script(code);
-                return script.runInNewContext(context);
+                return script.runInNewContext(ctxt);
             };
             const expected = [json.store.book];
             const result = jsonpath({

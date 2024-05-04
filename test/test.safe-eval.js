@@ -183,6 +183,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
         });
         describe('binary operators in safe mode script', () => {
+            // eslint-disable-next-line no-shadow -- Convenient
             const json = {
                 "store": {
                     "book": {
