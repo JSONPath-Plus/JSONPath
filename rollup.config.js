@@ -1,5 +1,6 @@
 import {readFile} from 'fs/promises';
 import {babel} from '@rollup/plugin-babel';
+import {nodeResolve} from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 
 const pkg = JSON.parse(await readFile('./package.json'));
@@ -52,7 +53,8 @@ function getRollupObject ({
                         : ['@babel/preset-env']
                 ],
                 babelHelpers: 'bundled'
-            })
+            }),
+            nodeResolve()
         ]
     };
     if (minifying) {

@@ -176,11 +176,20 @@ evaluate method (as the first argument) include:
   it is necessary to distinguish between a result which is a failure
   and one which is an empty array), it is recommended to switch the
   default to `false`.
-- ***preventEval*** (**default: false**) - Although JavaScript evaluation
-  expressions are allowed by default, for security reasons (if one is
-  operating on untrusted user input, for example), one may wish to
-  set this option to `true` to throw exceptions when these expressions
-  are attempted.
+- ***eval*** (**default: "safe"**) - Script evaluation method.
+  `safe`: In browser, it will use a minimal scripting engine which doesn't
+  use `eval` or `Function` and satisfies Content Security Policy. In NodeJS,
+  it has no effect and is equivalent to native as scripting is safe there.
+  `native`: uses the native scripting capabilities. i.e. unsafe `eval` or
+  `Function` in browser and `vm.Script` in nodejs. `false`: Disable JavaScript
+  evaluation expressions and throw exceptions when these expressions are attempted.
+  `callback [ (code, context) => value]`: A custom implementation which is called
+  with `code` and `context` as arguments to return the evaluated value.
+  `class`: A class which is created with `code` as constructor argument and code
+  is evaluated by calling `runInNewContext` with `context`.
+  ``
+- ***ignoreEvalErrors*** (**default: false**) - Ignore errors encountered during
+  script evaluation.
 - ***parent*** (**default: null**) - In the event that a query could be
   made to return the root node, this allows the parent of that root node
   to be returned within results.

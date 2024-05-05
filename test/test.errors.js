@@ -33,7 +33,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             }).to.throw(TypeError, 'Unknown result type');
         });
 
-        it('should throw with `preventEval` and [?()] filtering expression', () => {
+        it('should throw with `eval: false` and [?()] filtering expression', () => {
             expect(() => {
                 const json = {
                     datafield: [
@@ -45,12 +45,12 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 jsonpath({
                     json,
                     path: "$.datafield[?(@.tag=='035')]",
-                    preventEval: true
+                    eval: false
                 });
             }).to.throw(Error, 'Eval [?(expr)] prevented in JSONPath expression.');
         });
 
-        it('should throw with `preventEval` and [?()] filtering expression', () => {
+        it('should throw with `eval: false` and [?()] filtering expression', () => {
             expect(() => {
                 const json = {
                     datafield: [
@@ -62,9 +62,33 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 jsonpath({
                     json,
                     path: '$..datafield[(@.length-1)]',
-                    preventEval: true
+                    eval: false
                 });
             }).to.throw(Error, 'Eval [(expr)] prevented in JSONPath expression.');
+        });
+
+        it('Syntax error in safe mode script', () => {
+            expect(() => {
+                const json = {tag: 10};
+                jsonpath({
+                    json,
+                    path: '$..[?(this)]',
+                    wrap: false,
+                    eval: 'safe'
+                });
+            }).to.throw(Error, 'jsonPath: Unexpected expression: this');
+        });
+
+        it('Invalid assignment in safe mode script', () => {
+            expect(() => {
+                const json = {tag: 10};
+                jsonpath({
+                    json,
+                    path: '$..[?(2 = 8)]',
+                    wrap: false,
+                    eval: 'safe'
+                });
+            }).to.throw(Error, 'jsonPath: Invalid left-hand side in assignment: 2 = 8');
         });
     });
 });
