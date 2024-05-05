@@ -100,16 +100,17 @@ class NewError extends Error {
  * @typedef {typeof import('./jsonpath-browser').SafeScript} EvalClass
  */
 
-/* eslint-disable @stylistic/max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 /**
  * @typedef {PlainObject} JSONPathOptions
  * @property {JSON} json
  * @property {string|string[]} path
- * @property {"value"|"path"|"pointer"|"parent"|"parentProperty"|"all"} [resultType="value"]
+ * @property {"value"|"path"|"pointer"|"parent"|"parentProperty"|
+ *   "all"} [resultType="value"]
  * @property {boolean} [flatten=false]
  * @property {boolean} [wrap=true]
  * @property {PlainObject} [sandbox={}]
- * @property {EvalCallback | EvalClass | 'safe' | 'native' | boolean} [eval = 'safe']
+ * @property {EvalCallback|EvalClass|'safe'|'native'|
+ *   boolean} [eval = 'safe']
  * @property {PlainObject|GenericArray|null} [parent=null]
  * @property {string|null} [parentProperty=null]
  * @property {JSONPathCallback} [callback]
@@ -117,7 +118,6 @@ class NewError extends Error {
  *   function which throws on encountering `@other`
  * @property {boolean} [autostart=true]
  */
-/* eslint-enable @stylistic/max-len -- Can make multiline type after https://github.com/syavorsky/comment-parser/issues/109 */
 
 /**
  * @param {string|JSONPathOptions} opts If a string, will be treated as `expr`
