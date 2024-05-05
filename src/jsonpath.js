@@ -163,9 +163,9 @@ function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
     this.wrap = hasOwnProp.call(opts, 'wrap') ? opts.wrap : true;
     this.sandbox = opts.sandbox || {};
     this.eval = opts.eval === undefined ? 'safe' : opts.eval;
-    this.ignoreEvalError = (typeof opts.ignoreEvalError === 'undefined')
+    this.ignoreEvalErrors = (typeof opts.ignoreEvalErrors === 'undefined')
         ? false
-        : opts.ignoreEvalError;
+        : opts.ignoreEvalErrors;
     this.parent = opts.parent || null;
     this.parentProperty = opts.parentProperty || null;
     this.callback = opts.callback || callback || null;
@@ -678,7 +678,7 @@ JSONPath.prototype._eval = function (
     try {
         return JSONPath.cache[scriptCacheKey].runInNewContext(this.currSandbox);
     } catch (e) {
-        if (this.ignoreEvalError) {
+        if (this.ignoreEvalErrors) {
             return false;
         }
         throw new Error('jsonPath: ' + e.message + ': ' + code);

@@ -220,7 +220,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 json,
                 path: '$..[?(@.category.toLowerCase() === "reference")]',
                 eval: jsonpath.prototype.safeVm.Script,
-                ignoreEvalError: true
+                ignoreEvalErrors: true
             });
             assert.deepEqual(result, expected);
         });
