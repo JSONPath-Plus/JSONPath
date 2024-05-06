@@ -8,14 +8,14 @@
         <!-- Testing dependencies -->
         <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
         <script src="../node_modules/mocha/mocha.js"></script>
-        <script src="../node_modules/chai/chai.js"></script>
     </head>
     <body>
         <h1>JSONPath Tests</h1>
         <div id="mocha"></div>
 
         <script type="module">
-        import {JSONPath} from '../src/jsonpath-browser.js';
+        import * as chai from '../node_modules/chai/chai.js'
+        import {JSONPath} from '../dist/index-browser-esm.js';
 
         mocha.setup('bdd');
         window.assert = chai.assert;
