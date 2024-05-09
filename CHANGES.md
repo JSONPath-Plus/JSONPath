@@ -1,5 +1,14 @@
 # CHANGES for jsonpath-plus
 
+## 9.0.0
+
+BREAKING CHANGES:
+- Removes `preventEval` property. Prefer `eval: false` instead.
+- Changed behavior of `eval` property. In the browser, `eval`/`Function` won't be used by default to evaluate expressions. Instead, we'll safely evaluate using a subset of JavaScript. To resume using unsafe eval in the browser, pass in the option `eval: "native"`
+
+- feat: add safe eval for browser and `eval` option (#185)
+- feat: add `ignoreEvalErrors` property.
+
 ## 8.1.0
 
 - feat: add basic cli (#206) (@vid)
