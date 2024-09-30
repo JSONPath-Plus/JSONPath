@@ -13,32 +13,42 @@
 
 const $ = (s) => document.querySelector(s);
 
+const jsonpathEl = $('#jsonpath');
 const updateResults = () => {
     const jsonSample = $('#jsonSample');
     const reportValidity = () => {
         // Doesn't work without a timeout
         setTimeout(() => {
             jsonSample.reportValidity();
+            jsonpathEl.reportValidity();
         });
     };
     let json;
+    jsonSample.setCustomValidity('');
+    jsonpathEl.setCustomValidity('');
+    reportValidity();
     try {
         json = JSON.parse(jsonSample.value);
-        jsonSample.setCustomValidity('');
-        reportValidity();
     } catch (err) {
         jsonSample.setCustomValidity('Error parsing JSON: ' + err.toString());
         reportValidity();
         return;
     }
-    const result = new JSONPath.JSONPath({
-        path: $('#jsonpath').value,
-        json,
-        eval: $('#eval').value === 'false' ? false : $('#eval').value,
-        ignoreEvalErrors: $('#ignoreEvalErrors').value === 'true'
-    });
-
-    $('#results').value = JSON.stringify(result, null, 2);
+    try {
+        const result = new JSONPath.JSONPath({
+            path: jsonpathEl.value,
+            json,
+            eval: $('#eval').value === 'false' ? false : $('#eval').value,
+            ignoreEvalErrors: $('#ignoreEvalErrors').value === 'true'
+        });
+        $('#results').value = JSON.stringify(result, null, 2);
+    } catch (err) {
+        jsonpathEl.setCustomValidity(
+            'Error executing JSONPath: ' + err.toString()
+        );
+        reportValidity();
+        $('#results').value = '';
+    }
 };
 
 $('#jsonpath').addEventListener('input', () => {
@@ -58,4 +68,3 @@ $('#ignoreEvalErrors').addEventListener('change', () => {
 });
 
 window.addEventListener('load', updateResults);
-
