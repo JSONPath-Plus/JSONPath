@@ -10,8 +10,8 @@
     <h2>JSONPath Demo <i id="demoNode">(To demo on Node instead, see the <a href="https://npm.runkit.com/jsonpath-plus">library on Runkit</a>.)</i>
 </h2>
     <form onsubmit="return false">
-      <div>
-        <label><b>JSONPath:</b>
+      <div class="row">
+        <label class="grow"><b>JSONPath:</b>
           <input type="text" id="jsonpath" placeholder="$.books" value="$..book[?(@parent.bicycle && @parent.bicycle.color === &quot;red&quot;)].category" />
         </label>
         <label><b>eval:</b>
@@ -19,6 +19,12 @@
             <option value="safe">safe</option>
             <option value="native">native</option>
             <option value="false">false</option>
+          </select>
+        </label>
+        <label><b>ignoreEvalErrors:</b>
+          <select id="ignoreEvalErrors">
+            <option value="false">false (default)</option>
+            <option value="true">true</option>
           </select>
         </label>
       </div>
