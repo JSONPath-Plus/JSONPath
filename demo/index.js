@@ -34,7 +34,8 @@ const updateResults = () => {
     const result = new JSONPath.JSONPath({
         path: $('#jsonpath').value,
         json,
-        eval: $('#eval').value === 'false' ? false : $('#eval').value
+        eval: $('#eval').value === 'false' ? false : $('#eval').value,
+        ignoreEvalErrors: $('#ignoreEvalErrors').value === 'true'
     });
 
     $('#results').value = JSON.stringify(result, null, 2);
@@ -51,3 +52,10 @@ $('#jsonSample').addEventListener('input', () => {
 $('#eval').addEventListener('change', () => {
     updateResults();
 });
+
+$('#ignoreEvalErrors').addEventListener('change', () => {
+    updateResults();
+});
+
+window.addEventListener('load', updateResults);
+

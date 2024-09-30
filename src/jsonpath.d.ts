@@ -101,6 +101,17 @@ declare module 'jsonpath-plus' {
      */
     eval?: 'safe' | 'native' | boolean | ((code: string, context: object) => any) | typeof EvalClass
     /**
+     * Ignore errors while evaluating JSONPath expression.
+     *
+     * `true`: Don't break entire search if an error occurs while evaluating JSONPath expression on one key/value pair.
+     *
+     * `false`: Break entire search if an error occurs while evaluating JSONPath expression on one key/value pair.
+     *
+     * @default false
+     *
+     */
+    ignoreEvalErrors?: boolean
+    /**
      * In the event that a query could be made to return the root node,
      * this allows the parent of that root node to be returned within results.
      *

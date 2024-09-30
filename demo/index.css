@@ -1,6 +1,15 @@
-#jsonpath {
-  width: 90%;
+.row {
+  display: flex;
+  gap: 8px;
   margin-bottom: 10px;
+}
+
+.grow, #jsonpath {
+    flex-grow: 1;
+}
+
+.row label {
+    display: flex;
 }
 
 .container {
