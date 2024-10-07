@@ -31,6 +31,8 @@ const moveToAnotherArray = function (source, target, conditionCb) {
     for (let i = 0; i < il; i++) {
         const item = source[i];
         if (conditionCb(item)) {
+            // eslint-disable-next-line @stylistic/max-len -- Long
+            // eslint-disable-next-line sonarjs/updated-loop-counter -- Convenient
             target.push(source.splice(i--, 1)[0]);
         }
     }
@@ -113,6 +115,8 @@ const SafeEval = {
             ) {
                 // var x=2; is detected as
                 // [{Identifier var}, {AssignmentExpression x=2}]
+                // eslint-disable-next-line @stylistic/max-len -- Long
+                // eslint-disable-next-line sonarjs/updated-loop-counter -- Convenient
                 i += 1;
             }
             const expr = ast.body[i];

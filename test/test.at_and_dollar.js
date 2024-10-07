@@ -28,7 +28,7 @@ describe('JSONPath - At and Dollar sign', function () {
         assert.strictEqual(jsonpath({json: t1, path: 'a$a'})[0], t1.a$a);
         assert.strictEqual(jsonpath({json: t1, path: '`@'})[0], t1['@']);
         assert.strictEqual(jsonpath({json: t1, path: '$.`$.`@'})[0], t1.$['@']);
-        assert.strictEqual(jsonpath({json: t1, path: '\\@'})[1], undefined);
+        assert.strictEqual(jsonpath({json: t1, path: String.raw`\@`})[1], undefined);
     });
 
     it('@ as false', () => {

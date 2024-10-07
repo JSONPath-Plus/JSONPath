@@ -572,6 +572,8 @@ JSONPath.prototype._trace = function (
                     ret[t] = tmp[0];
                     const tl = tmp.length;
                     for (let tt = 1; tt < tl; tt++) {
+                        // eslint-disable-next-line @stylistic/max-len -- Long
+                        // eslint-disable-next-line sonarjs/updated-loop-counter -- Convenient
                         t++;
                         ret.splice(t, 0, tmp[tt]);
                     }

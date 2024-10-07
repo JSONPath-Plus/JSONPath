@@ -50,7 +50,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             }).to.throw(Error, 'Eval [?(expr)] prevented in JSONPath expression.');
         });
 
-        it('should throw with `eval: false` and [?()] filtering expression', () => {
+        it('should throw with `eval: false` and [?()] filtering expression (@.length)', () => {
             expect(() => {
                 const json = {
                     datafield: [

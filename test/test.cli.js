@@ -12,9 +12,12 @@ describe("JSONPath - cli", () => {
 
     it("invalid arguments", async () => {
         const binPath = path.resolve("bin/jsonpath-cli.js");
-        const out = await exec("bin/jsonpath-cli.js wrong-file.json").catch(
-            (e) => e
-        );
+        let out;
+        try {
+            out = await exec("bin/jsonpath-cli.js wrong-file.json");
+        } catch (err) {
+            out = err;
+        }
         expect(out).to.have.property("code", 1);
         expect(out).to.have.property("stderr");
         expect(out.stderr).to.include(`usage: ${binPath} <file> <path>\n\n`);

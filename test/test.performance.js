@@ -19,6 +19,7 @@ describe('JSONPath - Performance', function () {
 
     const items = [];
     for (i = 0; i < itemCount; i++) {
+        // eslint-disable-next-line unicorn/prefer-structured-clone -- Want JSON
         items[i] = JSON.parse(JSON.stringify({a: {b: 0, c: 0}, s: {b: {c: bigArray}}}));
     }
 

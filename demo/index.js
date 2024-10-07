@@ -1,5 +1,5 @@
 /* globals JSONPath */
-/* eslint-disable import/unambiguous */
+// /* eslint-disable import/unambiguous */
 
 // Todo: Extract testing example paths/contents and use for a
 //         pulldown that can populate examples

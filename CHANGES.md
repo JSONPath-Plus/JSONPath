@@ -1,5 +1,12 @@
 # CHANGES for jsonpath-plus
 
+## 10.0.0 (unreleased)
+
+BREAKING CHANGES:
+- Require Node 18+
+
+- chore: bump jsep, devDeps. and lint
+
 ## 9.0.0
 
 BREAKING CHANGES:

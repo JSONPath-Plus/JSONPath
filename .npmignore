@@ -17,7 +17,7 @@ mocha-multi-reporters.json
 .nojekyll
 ignore
 pnpm-lock.yaml
-.eslintrc.cjs
+eslint.config.js
 .editorconfig
 .eslintignore
 licenseInfo.json
