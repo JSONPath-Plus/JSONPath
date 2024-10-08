@@ -10,7 +10,7 @@ export default [
             'ignore'
         ]
     },
-    ...ashNazg(['sauron', 'node']),
+    ...ashNazg(['sauron', 'node', 'browser']),
     {
         settings: {
             polyfills: [

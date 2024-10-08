@@ -22,6 +22,7 @@ const pkg = JSON.parse(await readFile('./package.json'));
  */
 function getRollupObject ({
     input, minifying, environment,
+    // eslint-disable-next-line no-shadow -- Ok
     external,
     format = 'umd'
 }) {
@@ -71,6 +72,7 @@ function getRollupObject ({
 function getRollupObjectByEnv ({minifying, environment}) {
     const input = `src/jsonpath-${environment}.js`;
     if (environment === 'node') {
+        // eslint-disable-next-line no-shadow -- Ok
         const external = ['vm'];
         return [
             getRollupObject({

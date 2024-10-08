@@ -93,7 +93,7 @@
     "jsonpath"
   ],
   "browserslist": [
-    "cover 100%"
+    "defaults, not op_mini all"
   ],
   "c8": {
     "reporter": [
