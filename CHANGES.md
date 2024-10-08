@@ -1,10 +1,11 @@
 # CHANGES for jsonpath-plus
 
-## 10.0.0 (unreleased)
+## 10.0.0
 
 BREAKING CHANGES:
 - Require Node 18+
 
+- fix(security): use safe vm by default in Node
 - chore: bump jsep, devDeps. and lint
 
 ## 9.0.0

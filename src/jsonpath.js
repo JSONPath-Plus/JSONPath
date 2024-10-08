@@ -1,9 +1,10 @@
 /* eslint-disable camelcase, unicorn/prefer-string-replace-all,
   unicorn/prefer-at */
-const {hasOwnProperty: hasOwnProp} = Object.prototype;
+
+import {SafeScript} from './Safe-Script.js';
 
 /**
- * @typedef {null|boolean|number|string|PlainObject|GenericArray} JSONObject
+ * @typedef {null|boolean|number|string|object|GenericArray} JSONObject
  */
 
 /**
@@ -57,16 +58,16 @@ class NewError extends Error {
 }
 
 /**
-* @typedef {PlainObject} ReturnObject
+* @typedef {object} ReturnObject
 * @property {string} path
 * @property {JSONObject} value
-* @property {PlainObject|GenericArray} parent
+* @property {object|GenericArray} parent
 * @property {string} parentProperty
 */
 
 /**
 * @callback JSONPathCallback
-* @param {string|PlainObject} preferredOutput
+* @param {string|object} preferredOutput
 * @param {"value"|"property"} type
 * @param {ReturnObject} fullRetObj
 * @returns {void}
@@ -76,7 +77,7 @@ class NewError extends Error {
 * @callback OtherTypeCallback
 * @param {JSONObject} val
 * @param {string} path
-* @param {PlainObject|GenericArray} parent
+* @param {object|GenericArray} parent
 * @param {string} parentPropName
 * @returns {boolean}
 */
@@ -97,21 +98,21 @@ class NewError extends Error {
 */
 
 /**
- * @typedef {typeof import('./jsonpath-browser').SafeScript} EvalClass
+ * @typedef {typeof SafeScript} EvalClass
  */
 
 /**
- * @typedef {PlainObject} JSONPathOptions
+ * @typedef {object} JSONPathOptions
  * @property {JSON} json
  * @property {string|string[]} path
  * @property {"value"|"path"|"pointer"|"parent"|"parentProperty"|
  *   "all"} [resultType="value"]
  * @property {boolean} [flatten=false]
  * @property {boolean} [wrap=true]
- * @property {PlainObject} [sandbox={}]
+ * @property {object} [sandbox={}]
  * @property {EvalCallback|EvalClass|'safe'|'native'|
  *   boolean} [eval = 'safe']
- * @property {PlainObject|GenericArray|null} [parent=null]
+ * @property {object|GenericArray|null} [parent=null]
  * @property {string|null} [parentProperty=null]
  * @property {JSONPathCallback} [callback]
  * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
@@ -160,7 +161,7 @@ function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
     this.path = opts.path || expr;
     this.resultType = opts.resultType || 'value';
     this.flatten = opts.flatten || false;
-    this.wrap = hasOwnProp.call(opts, 'wrap') ? opts.wrap : true;
+    this.wrap = Object.hasOwn(opts, 'wrap') ? opts.wrap : true;
     this.sandbox = opts.sandbox || {};
     this.eval = opts.eval === undefined ? 'safe' : opts.eval;
     this.ignoreEvalErrors = (typeof opts.ignoreEvalErrors === 'undefined')
@@ -218,30 +219,30 @@ JSONPath.prototype.evaluate = function (
                 'argument to JSONPath.evaluate().'
             );
         }
-        if (!(hasOwnProp.call(expr, 'json'))) {
+        if (!(Object.hasOwn(expr, 'json'))) {
             throw new TypeError(
                 'You must supply a "json" property when providing an object ' +
                 'argument to JSONPath.evaluate().'
             );
         }
         ({json} = expr);
-        flatten = hasOwnProp.call(expr, 'flatten') ? expr.flatten : flatten;
-        this.currResultType = hasOwnProp.call(expr, 'resultType')
+        flatten = Object.hasOwn(expr, 'flatten') ? expr.flatten : flatten;
+        this.currResultType = Object.hasOwn(expr, 'resultType')
             ? expr.resultType
             : this.currResultType;
-        this.currSandbox = hasOwnProp.call(expr, 'sandbox')
+        this.currSandbox = Object.hasOwn(expr, 'sandbox')
             ? expr.sandbox
             : this.currSandbox;
-        wrap = hasOwnProp.call(expr, 'wrap') ? expr.wrap : wrap;
-        this.currEval = hasOwnProp.call(expr, 'eval')
+        wrap = Object.hasOwn(expr, 'wrap') ? expr.wrap : wrap;
+        this.currEval = Object.hasOwn(expr, 'eval')
             ? expr.eval
             : this.currEval;
-        callback = hasOwnProp.call(expr, 'callback') ? expr.callback : callback;
-        this.currOtherTypeCallback = hasOwnProp.call(expr, 'otherTypeCallback')
+        callback = Object.hasOwn(expr, 'callback') ? expr.callback : callback;
+        this.currOtherTypeCallback = Object.hasOwn(expr, 'otherTypeCallback')
             ? expr.otherTypeCallback
             : this.currOtherTypeCallback;
-        currParent = hasOwnProp.call(expr, 'parent') ? expr.parent : currParent;
-        currParentProperty = hasOwnProp.call(expr, 'parentProperty')
+        currParent = Object.hasOwn(expr, 'parent') ? expr.parent : currParent;
+        currParentProperty = Object.hasOwn(expr, 'parentProperty')
             ? expr.parentProperty
             : currParentProperty;
         expr = expr.path;
@@ -327,7 +328,7 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
  * @param {string} expr
  * @param {JSONObject} val
  * @param {string} path
- * @param {PlainObject|GenericArray} parent
+ * @param {object|GenericArray} parent
  * @param {string} parentPropName
  * @param {JSONPathCallback} callback
  * @param {boolean} hasArrExpr
@@ -376,7 +377,7 @@ JSONPath.prototype._trace = function (
         }
     }
     if ((typeof loc !== 'string' || literalPriority) && val &&
-        hasOwnProp.call(val, loc)
+        Object.hasOwn(val, loc)
     ) { // simple case--directly follow property
         addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback,
             hasArrExpr));
@@ -533,7 +534,7 @@ JSONPath.prototype._trace = function (
             return retObj;
         }
     // `-escaped property
-    } else if (loc[0] === '`' && val && hasOwnProp.call(val, loc.slice(1))) {
+    } else if (loc[0] === '`' && val && Object.hasOwn(val, loc.slice(1))) {
         const locProp = loc.slice(1);
         addRet(this._trace(
             x, val[locProp], push(path, locProp), val, locProp, callback,
@@ -549,7 +550,7 @@ JSONPath.prototype._trace = function (
         }
     // simple case--directly follow property
     } else if (
-        !literalPriority && val && hasOwnProp.call(val, loc)
+        !literalPriority && val && Object.hasOwn(val, loc)
     ) {
         addRet(
             this._trace(x, val[loc], push(path, loc), val, loc, callback,
@@ -664,7 +665,7 @@ JSONPath.prototype._eval = function (
         } else if (
             typeof this.currEval === 'function' &&
             this.currEval.prototype &&
-            hasOwnProp.call(this.currEval.prototype, 'runInNewContext')
+            Object.hasOwn(this.currEval.prototype, 'runInNewContext')
         ) {
             const CurrEval = this.currEval;
             JSONPath.cache[scriptCacheKey] = new CurrEval(script);
@@ -775,6 +776,10 @@ JSONPath.toPathArray = function (expr) {
     });
     cache[expr] = exprList;
     return cache[expr].concat();
+};
+
+JSONPath.prototype.safeVm = {
+    Script: SafeScript
 };
 
 export {JSONPath};
