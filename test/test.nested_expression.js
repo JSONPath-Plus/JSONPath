@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+/* eslint-disable camelcase -- Convenient */
 import {checkBuiltInVMAndNodeVM} from "../test-helpers/checkVM.js";
 
 checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {

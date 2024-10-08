@@ -1,5 +1,4 @@
-/* eslint-disable camelcase, unicorn/prefer-string-replace-all,
-  unicorn/prefer-at */
+/* eslint-disable camelcase -- Convenient for escaping */
 
 import {SafeScript} from './Safe-Script.js';
 
@@ -136,7 +135,7 @@ class NewError extends Error {
  * @class
  */
 function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
-    // eslint-disable-next-line no-restricted-syntax
+    // eslint-disable-next-line no-restricted-syntax -- Allow for pseudo-class
     if (!(this instanceof JSONPath)) {
         try {
             return new JSONPath(opts, expr, obj, callback, otherTypeCallback);
@@ -318,7 +317,7 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
         fullRetObj.path = typeof fullRetObj.path === 'string'
             ? fullRetObj.path
             : JSONPath.toPathString(fullRetObj.path);
-        // eslint-disable-next-line n/callback-return
+        // eslint-disable-next-line n/callback-return -- No need to return
         callback(preferredOutput, type, fullRetObj);
     }
 };
@@ -470,7 +469,7 @@ JSONPath.prototype._trace = function (
         //  parent of the property to which this expression will resolve
         addRet(this._trace(unshift(
             this._eval(
-                loc, val, path[path.length - 1],
+                loc, val, path.at(-1),
                 path.slice(0, -1), parent, parentPropName
             ),
             x
@@ -646,13 +645,13 @@ JSONPath.prototype._eval = function (
     const scriptCacheKey = this.currEval + 'Script:' + code;
     if (!JSONPath.cache[scriptCacheKey]) {
         let script = code
-            .replace(/@parentProperty/gu, '_$_parentProperty')
-            .replace(/@parent/gu, '_$_parent')
-            .replace(/@property/gu, '_$_property')
-            .replace(/@root/gu, '_$_root')
-            .replace(/@([.\s)[])/gu, '_$_v$1');
+            .replaceAll('@parentProperty', '_$_parentProperty')
+            .replaceAll('@parent', '_$_parent')
+            .replaceAll('@property', '_$_property')
+            .replaceAll('@root', '_$_root')
+            .replaceAll(/@([.\s)[])/gu, '_$_v$1');
         if (containsPath) {
-            script = script.replace(/@path/gu, '_$_path');
+            script = script.replaceAll('@path', '_$_path');
         }
         if (
             this.currEval === 'safe' ||
@@ -718,8 +717,8 @@ JSONPath.toPointer = function (pointer) {
     for (let i = 1; i < n; i++) {
         if (!(/^(~|\^|@.*?\(\))$/u).test(x[i])) {
             p += '/' + x[i].toString()
-                .replace(/~/gu, '~0')
-                .replace(/\//gu, '~1');
+                .replaceAll('~', '~0')
+                .replaceAll('/', '~1');
         }
     }
     return p;
@@ -737,38 +736,38 @@ JSONPath.toPathArray = function (expr) {
     const subx = [];
     const normalized = expr
         // Properties
-        .replace(
+        .replaceAll(
             /@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/gu,
             ';$&;'
         )
         // Parenthetical evaluations (filtering and otherwise), directly
         //   within brackets or single quotes
-        .replace(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {
+        .replaceAll(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {
             return '[#' + (subx.push($1) - 1) + ']';
         })
         // Escape periods and tildes within properties
-        .replace(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
+        .replaceAll(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
             return "['" + prop
-                .replace(/\./gu, '%@%')
-                .replace(/~/gu, '%%@@%%') +
+                .replaceAll('.', '%@%')
+                .replaceAll('~', '%%@@%%') +
                 "']";
         })
         // Properties operator
-        .replace(/~/gu, ';~;')
+        .replaceAll('~', ';~;')
         // Split by property boundaries
-        .replace(/['"]?\.['"]?(?![^[]*\])|\[['"]?/gu, ';')
+        .replaceAll(/['"]?\.['"]?(?![^[]*\])|\[['"]?/gu, ';')
         // Reinsert periods within properties
-        .replace(/%@%/gu, '.')
+        .replaceAll('%@%', '.')
         // Reinsert tildes within properties
-        .replace(/%%@@%%/gu, '~')
+        .replaceAll('%%@@%%', '~')
         // Parent
-        .replace(/(?:;)?(\^+)(?:;)?/gu, function ($0, ups) {
+        .replaceAll(/(?:;)?(\^+)(?:;)?/gu, function ($0, ups) {
             return ';' + ups.split('').join(';') + ';';
         })
         // Descendents
-        .replace(/;;;|;;/gu, ';..;')
+        .replaceAll(/;;;|;;/gu, ';..;')
         // Remove trailing
-        .replace(/;$|'?\]|'$/gu, '');
+        .replaceAll(/;$|'?\]|'$/gu, '');
 
     const exprList = normalized.split(';').map(function (exp) {
         const match = exp.match(/#(\d+)/u);

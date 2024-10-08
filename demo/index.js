@@ -1,4 +1,4 @@
-/* globals JSONPath */
+/* globals JSONPath -- Test UMD */
 // /* eslint-disable import/unambiguous */
 
 // Todo: Extract testing example paths/contents and use for a

@@ -1,4 +1,4 @@
-/* eslint-disable no-bitwise */
+/* eslint-disable no-bitwise -- Convenient */
 import jsep from 'jsep';
 import jsepRegex from '@jsep-plugin/regex';
 import jsepAssignment from '@jsep-plugin/assignment';
@@ -45,9 +45,9 @@ const SafeEval = {
             '|': (a, b) => a | b(),
             '^': (a, b) => a ^ b(),
             '&': (a, b) => a & b(),
-            // eslint-disable-next-line eqeqeq
+            // eslint-disable-next-line eqeqeq -- API
             '==': (a, b) => a == b(),
-            // eslint-disable-next-line eqeqeq
+            // eslint-disable-next-line eqeqeq -- API
             '!=': (a, b) => a != b(),
             '===': (a, b) => a === b(),
             '!==': (a, b) => a !== b(),
@@ -120,7 +120,7 @@ const SafeEval = {
             '-': (a) => -SafeEval.evalAst(a, subs),
             '!': (a) => !SafeEval.evalAst(a, subs),
             '~': (a) => ~SafeEval.evalAst(a, subs),
-            // eslint-disable-next-line no-implicit-coercion
+            // eslint-disable-next-line no-implicit-coercion -- API
             '+': (a) => +SafeEval.evalAst(a, subs)
         }[ast.operator](ast.argument);
         return result;

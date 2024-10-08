@@ -90,7 +90,7 @@ class Script {
                   expr.slice(lastStatementEnd + 1)
                 : ' return ' + expr;
 
-        // eslint-disable-next-line no-new-func
+        // eslint-disable-next-line no-new-func -- User's choice
         return new Function(...keys, code)(...values);
     }
 }

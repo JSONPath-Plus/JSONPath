@@ -1195,7 +1195,7 @@ const plugin = {
   }
 };
 
-/* eslint-disable no-bitwise */
+/* eslint-disable no-bitwise -- Convenient */
 
 // register plugins
 jsep.plugins.register(index, plugin);
@@ -1238,9 +1238,9 @@ const SafeEval = {
       '|': (a, b) => a | b(),
       '^': (a, b) => a ^ b(),
       '&': (a, b) => a & b(),
-      // eslint-disable-next-line eqeqeq
+      // eslint-disable-next-line eqeqeq -- API
       '==': (a, b) => a == b(),
-      // eslint-disable-next-line eqeqeq
+      // eslint-disable-next-line eqeqeq -- API
       '!=': (a, b) => a != b(),
       '===': (a, b) => a === b(),
       '!==': (a, b) => a !== b(),
@@ -1304,7 +1304,7 @@ const SafeEval = {
       '-': a => -SafeEval.evalAst(a, subs),
       '!': a => !SafeEval.evalAst(a, subs),
       '~': a => ~SafeEval.evalAst(a, subs),
-      // eslint-disable-next-line no-implicit-coercion
+      // eslint-disable-next-line no-implicit-coercion -- API
       '+': a => +SafeEval.evalAst(a, subs)
     }[ast.operator](ast.argument);
     return result;
@@ -1353,8 +1353,7 @@ class SafeScript {
   }
 }
 
-/* eslint-disable camelcase, unicorn/prefer-string-replace-all,
-  unicorn/prefer-at */
+/* eslint-disable camelcase -- Convenient for escaping */
 
 
 /**
@@ -1487,7 +1486,7 @@ class NewError extends Error {
  * @class
  */
 function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
-  // eslint-disable-next-line no-restricted-syntax
+  // eslint-disable-next-line no-restricted-syntax -- Allow for pseudo-class
   if (!(this instanceof JSONPath)) {
     try {
       return new JSONPath(opts, expr, obj, callback, otherTypeCallback);
@@ -1635,7 +1634,7 @@ JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
   if (callback) {
     const preferredOutput = this._getPreferredOutput(fullRetObj);
     fullRetObj.path = typeof fullRetObj.path === 'string' ? fullRetObj.path : JSONPath.toPathString(fullRetObj.path);
-    // eslint-disable-next-line n/callback-return
+    // eslint-disable-next-line n/callback-return -- No need to return
     callback(preferredOutput, type, fullRetObj);
   }
 };
@@ -1772,7 +1771,7 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     // As this will resolve to a property name (but we don't know it
     //  yet), property and parent information is relative to the
     //  parent of the property to which this expression will resolve
-    addRet(this._trace(unshift(this._eval(loc, val, path[path.length - 1], path.slice(0, -1), parent, parentPropName), x), val, path, parent, parentPropName, callback, hasArrExpr));
+    addRet(this._trace(unshift(this._eval(loc, val, path.at(-1), path.slice(0, -1), parent, parentPropName), x), val, path, parent, parentPropName, callback, hasArrExpr));
   } else if (loc[0] === '@') {
     // value type: @boolean(), etc.
     let addType = false;
@@ -1927,9 +1926,9 @@ JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropN
   }
   const scriptCacheKey = this.currEval + 'Script:' + code;
   if (!JSONPath.cache[scriptCacheKey]) {
-    let script = code.replace(/@parentProperty/gu, '_$_parentProperty').replace(/@parent/gu, '_$_parent').replace(/@property/gu, '_$_property').replace(/@root/gu, '_$_root').replace(/@([.\s)[])/gu, '_$_v$1');
+    let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root').replaceAll(/@([.\s)[])/gu, '_$_v$1');
     if (containsPath) {
-      script = script.replace(/@path/gu, '_$_path');
+      script = script.replaceAll('@path', '_$_path');
     }
     if (this.currEval === 'safe' || this.currEval === true || this.currEval === undefined) {
       JSONPath.cache[scriptCacheKey] = new this.safeVm.Script(script);
@@ -1987,7 +1986,7 @@ JSONPath.toPointer = function (pointer) {
   let p = '';
   for (let i = 1; i < n; i++) {
     if (!/^(~|\^|@.*?\(\))$/u.test(x[i])) {
-      p += '/' + x[i].toString().replace(/~/gu, '~0').replace(/\//gu, '~1');
+      p += '/' + x[i].toString().replaceAll('~', '~0').replaceAll('/', '~1');
     }
   }
   return p;
@@ -2007,32 +2006,32 @@ JSONPath.toPathArray = function (expr) {
   const subx = [];
   const normalized = expr
   // Properties
-  .replace(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/gu, ';$&;')
+  .replaceAll(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/gu, ';$&;')
   // Parenthetical evaluations (filtering and otherwise), directly
   //   within brackets or single quotes
-  .replace(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {
+  .replaceAll(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {
     return '[#' + (subx.push($1) - 1) + ']';
   })
   // Escape periods and tildes within properties
-  .replace(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
-    return "['" + prop.replace(/\./gu, '%@%').replace(/~/gu, '%%@@%%') + "']";
+  .replaceAll(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
+    return "['" + prop.replaceAll('.', '%@%').replaceAll('~', '%%@@%%') + "']";
   })
   // Properties operator
-  .replace(/~/gu, ';~;')
+  .replaceAll('~', ';~;')
   // Split by property boundaries
-  .replace(/['"]?\.['"]?(?![^[]*\])|\[['"]?/gu, ';')
+  .replaceAll(/['"]?\.['"]?(?![^[]*\])|\[['"]?/gu, ';')
   // Reinsert periods within properties
-  .replace(/%@%/gu, '.')
+  .replaceAll('%@%', '.')
   // Reinsert tildes within properties
-  .replace(/%%@@%%/gu, '~')
+  .replaceAll('%%@@%%', '~')
   // Parent
-  .replace(/(?:;)?(\^+)(?:;)?/gu, function ($0, ups) {
+  .replaceAll(/(?:;)?(\^+)(?:;)?/gu, function ($0, ups) {
     return ';' + ups.split('').join(';') + ';';
   })
   // Descendents
-  .replace(/;;;|;;/gu, ';..;')
+  .replaceAll(/;;;|;;/gu, ';..;')
   // Remove trailing
-  .replace(/;$|'?\]|'$/gu, '');
+  .replaceAll(/;$|'?\]|'$/gu, '');
   const exprList = normalized.split(';').map(function (exp) {
     const match = exp.match(/#(\d+)/u);
     return !match || !match[1] ? exp : subx[match[1]];

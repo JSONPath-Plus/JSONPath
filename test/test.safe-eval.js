@@ -96,8 +96,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const result = jsonpath({
                 json,
                 sandbox: {
-                    // eslint-disable-next-line object-shorthand
-                    category: function () {
+                    category () {
                         return 'reference';
                     }
                 },

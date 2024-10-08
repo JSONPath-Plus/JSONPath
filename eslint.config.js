@@ -85,15 +85,10 @@ export default [
             // Disable for now
             'new-cap': 0,
             '@stylistic/dot-location': 0,
-            '@eslint-community/eslint-comments/require-description': 0,
             // Reenable as have time and confirming no longer needing:
             // https://github.com/babel/babel/issues/8951#issuecomment-508045524 is no
             'prefer-named-capture-group': 0,
-            'unicorn/prefer-spread': 0,
-
-            // Reenable when no longer having problems
-            'unicorn/no-unsafe-regex': 0,
-            'unicorn/consistent-destructuring': 0
+            'unicorn/prefer-spread': 0
         }
     }
 ];

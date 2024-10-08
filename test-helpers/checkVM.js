@@ -16,7 +16,7 @@
  */
 function checkBuiltInVMAndNodeVM (cb) {
     if (typeof process === 'undefined') {
-        // eslint-disable-next-line n/no-callback-literal
+        // eslint-disable-next-line n/no-callback-literal -- Convenient
         cb('JSONPath vm', () => {
             //
         });
