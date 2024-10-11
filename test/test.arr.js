@@ -54,4 +54,23 @@ describe('JSONPath - Array', function () {
         const result = jsonpath({json: input, path: '$.books[*].authors', wrap: false});
         assert.deepEqual(result, expected);
     });
+
+    it('query with length', () => {
+        const result = jsonpath({json, path: `store.books.length`, flatten: true, wrap: false});
+        assert.deepEqual(result, 1);
+    });
+
+    it('query filter with length', () => {
+        const author = 'Dickens';
+        const input = {
+            books: [{author}, {author}]
+        };
+        const result = jsonpath({
+            json: input,
+            path: `$.books[?(@.author=='Dickens')].length`,
+            flatten: true,
+            wrap: false
+        });
+        assert.deepEqual(result, 2);
+    });
 });

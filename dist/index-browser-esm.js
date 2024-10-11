@@ -1586,10 +1586,25 @@ JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback)
   if (exprList[0] === '$' && exprList.length > 1) {
     exprList.shift();
   }
+  let wantsLength = false;
+  if (exprList.at(-1) === 'length') {
+    exprList.pop();
+    wantsLength = true;
+  }
   this._hasParentSelector = null;
-  const result = this._trace(exprList, json, ['$'], currParent, currParentProperty, callback).filter(function (ea) {
+  let result = this._trace(exprList, json, ['$'], currParent, currParentProperty, callback).filter(function (ea) {
     return ea && !ea.isParentSelector;
   });
+  if (wantsLength) {
+    const res0 = result[0];
+    result = [{
+      path: push(res0.path, 'length'),
+      value: result.length,
+      parent: res0.parent,
+      parentProperty: res0.parentProperty,
+      hasArrExpr: false
+    }];
+  }
   if (!result.length) {
     return wrap ? [] : undefined;
   }
