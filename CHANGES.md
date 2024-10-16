@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 10.0.1
+
+- fix(security): prohibit `Function` in "safe" vm
+
 ## 10.0.0
 
 BREAKING CHANGES:

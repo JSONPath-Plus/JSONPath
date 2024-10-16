@@ -1296,6 +1296,9 @@ const SafeEval = {
     const obj = SafeEval.evalAst(ast.object, subs);
     const result = obj[prop];
     if (typeof result === 'function') {
+      if (result === Function) {
+        throw new Error('Function constructor is disabled');
+      }
       return result.bind(obj); // arrow functions aren't affected by bind.
     }
     return result;

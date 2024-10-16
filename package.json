@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "type": "module",
   "bin": {
     "jsonpath": "./bin/jsonpath-cli.js",
