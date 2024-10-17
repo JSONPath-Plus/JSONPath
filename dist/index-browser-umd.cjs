@@ -1302,6 +1302,9 @@
 	    const obj = SafeEval.evalAst(ast.object, subs);
 	    const result = obj[prop];
 	    if (typeof result === 'function') {
+	      if (obj === Function && prop === 'bind') {
+	        throw new Error('Function.prototype.bind is disabled');
+	      }
 	      if (result === Function) {
 	        return result; // Don't bind so can identify and throw later
 	      }
