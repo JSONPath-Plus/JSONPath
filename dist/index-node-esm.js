@@ -1324,6 +1324,9 @@ const SafeEval = {
     if (func === Function) {
       throw new Error('Function constructor is disabled');
     }
+    if (func.toString() === 'function () { [native code] }') {
+      throw new Error('Native functions are disabled');
+    }
     return func(...args);
   },
   evalAssignmentExpression(ast, subs) {

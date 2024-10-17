@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 10.0.4
+
+- fix(security): further prevent binding of Function calls which may evade detection
+
 ## 10.0.3
 
 - fix(security): prevent binding of Function calls which may evade detection
