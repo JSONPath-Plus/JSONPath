@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 10.0.2
+
+- fix(security): prevent Function calls outside of member expressions
+
 ## 10.0.1
 
 - fix(security): prohibit `Function` in "safe" vm
