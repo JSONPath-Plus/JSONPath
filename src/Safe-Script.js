@@ -114,6 +114,12 @@ const SafeEval = {
             if (obj === Function && prop === 'bind') {
                 throw new Error('Function.prototype.bind is disabled');
             }
+            if (obj === Function && (prop === 'call' || prop === 'apply')) {
+                throw new Error(
+                    'Function.prototype.call and ' +
+                    'Function.prototype.apply are disabled'
+                );
+            }
             if (result === Function) {
                 return result; // Don't bind so can identify and throw later
             }

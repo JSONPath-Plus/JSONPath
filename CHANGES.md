@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 10.0.6
+
+- fix(security): prevent `call`/`apply` invocation of `Function`
+
 ## 10.0.5
 
 - fix: remove overly aggressive disabling of native functions but
