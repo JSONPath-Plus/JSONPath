@@ -1201,6 +1201,7 @@ const plugin = {
 
 // register plugins
 jsep.plugins.register(index, plugin);
+jsep.addUnaryOp('typeof');
 const SafeEval = {
   /**
    * @param {jsep.Expression} ast
@@ -1319,7 +1320,8 @@ const SafeEval = {
       '!': a => !SafeEval.evalAst(a, subs),
       '~': a => ~SafeEval.evalAst(a, subs),
       // eslint-disable-next-line no-implicit-coercion -- API
-      '+': a => +SafeEval.evalAst(a, subs)
+      '+': a => +SafeEval.evalAst(a, subs),
+      typeof: a => typeof SafeEval.evalAst(a, subs)
     }[ast.operator](ast.argument);
     return result;
   },
