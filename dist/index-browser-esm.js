@@ -1325,9 +1325,6 @@ const SafeEval = {
     if (func === Function) {
       throw new Error('Function constructor is disabled');
     }
-    if (func.toString() === 'function () { [native code] }') {
-      throw new Error('Native functions are disabled');
-    }
     return func(...args);
   },
   evalAssignmentExpression(ast, subs) {
@@ -1335,6 +1332,9 @@ const SafeEval = {
       throw SyntaxError('Invalid left-hand side in assignment');
     }
     const id = ast.left.name;
+    if (id === '__proto__') {
+      throw new Error('Assignment to __proto__ is disabled');
+    }
     const value = SafeEval.evalAst(ast.right, subs);
     subs[id] = value;
     return subs[id];

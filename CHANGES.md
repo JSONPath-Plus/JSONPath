@@ -1,5 +1,10 @@
 # CHANGES for jsonpath-plus
 
+## 10.0.5
+
+- fix: remove overly aggressive disabling of native functions but
+    disallow `__proto__`
+
 ## 10.0.4
 
 - fix(security): further prevent binding of Function calls which may evade detection
