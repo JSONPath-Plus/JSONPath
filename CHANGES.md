@@ -1,5 +1,10 @@
 # CHANGES for jsonpath-plus
 
+## 10.0.7
+
+- fix(security): prevent `constructor` access
+- docs: add security policy file
+
 ## 10.0.6
 
 - fix(security): prevent `call`/`apply` invocation of `Function`

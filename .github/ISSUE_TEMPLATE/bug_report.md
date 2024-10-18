@@ -6,6 +6,8 @@ labels: Bug - unconfirmed
 ---
 <!--
 **PLEASE NOTE: This project is not currently being very actively developed.**
+
+**ALSO: If wishing to report a security bug, please read SECURITY.md**
 -->
 
 ## Describe the bug

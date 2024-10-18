@@ -1290,6 +1290,9 @@ const SafeEval = {
     return ast.value;
   },
   evalMemberExpression(ast, subs) {
+    if (ast.property.type === 'Identifier' && ast.property.name === 'constructor' || ast.object.type === 'Identifier' && ast.object.name === 'constructor') {
+      throw new Error("'constructor' property is disabled");
+    }
     const prop = ast.computed ? SafeEval.evalAst(ast.property) // `object[property]`
     : ast.property.name; // `object.property` property is Identifier
     const obj = SafeEval.evalAst(ast.object, subs);
