@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 10.1.0
+
+- feat: add typeof operator to safe script
+
 ## 10.0.7
 
 - fix(security): prevent `constructor` access
