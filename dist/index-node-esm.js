@@ -1200,6 +1200,8 @@ const plugin = {
 // register plugins
 jsep.plugins.register(index, plugin);
 jsep.addUnaryOp('typeof');
+jsep.addLiteral('null', null);
+jsep.addLiteral('undefined', undefined);
 const SafeEval = {
   /**
    * @param {jsep.Expression} ast
