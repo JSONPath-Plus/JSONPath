@@ -6,6 +6,8 @@ import jsepAssignment from '@jsep-plugin/assignment';
 // register plugins
 jsep.plugins.register(jsepRegex, jsepAssignment);
 jsep.addUnaryOp('typeof');
+jsep.addLiteral('null', null);
+jsep.addLiteral('undefined', undefined);
 
 const SafeEval = {
     /**
