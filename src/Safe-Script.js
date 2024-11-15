@@ -9,6 +9,13 @@ jsep.addUnaryOp('typeof');
 jsep.addLiteral('null', null);
 jsep.addLiteral('undefined', undefined);
 
+const BLOCKED_PROTO_PROPERTIES = new Set([
+    'constructor',
+    '__proto__',
+    '__defineGetter__',
+    '__defineSetter__'
+]);
+
 const SafeEval = {
     /**
      * @param {jsep.Expression} ast
@@ -66,10 +73,7 @@ const SafeEval = {
             '*': (a, b) => a * b(),
             '/': (a, b) => a / b(),
             '%': (a, b) => a % b()
-        }[ast.operator](
-            SafeEval.evalAst(ast.left, subs),
-            () => SafeEval.evalAst(ast.right, subs)
-        );
+        }[ast.operator](SafeEval.evalAst(ast.left, subs), () => SafeEval.evalAst(ast.right, subs));
         return result;
     },
     evalCompound (ast, subs) {
@@ -99,7 +103,7 @@ const SafeEval = {
         return SafeEval.evalAst(ast.alternate, subs);
     },
     evalIdentifier (ast, subs) {
-        if (ast.name in subs) {
+        if (Object.hasOwn(subs, ast.name)) {
             return subs[ast.name];
         }
         throw ReferenceError(`${ast.name} is not defined`);
@@ -108,33 +112,22 @@ const SafeEval = {
         return ast.value;
     },
     evalMemberExpression (ast, subs) {
-        if (
-            (ast.property.type === 'Identifier' &&
-                ast.property.name === 'constructor') ||
-            (ast.object.type === 'Identifier' &&
-                ast.object.name === 'constructor')
-        ) {
-            throw new Error("'constructor' property is disabled");
-        }
-
         const prop = ast.computed
             ? SafeEval.evalAst(ast.property) // `object[property]`
             : ast.property.name; // `object.property` property is Identifier
         const obj = SafeEval.evalAst(ast.object, subs);
+        if (obj === undefined || obj === null) {
+            throw TypeError(
+                `Cannot read properties of ${obj} (reading '${prop}')`
+            );
+        }
+        if (!Object.hasOwn(obj, prop) && BLOCKED_PROTO_PROPERTIES.has(prop)) {
+            throw TypeError(
+                `Cannot read properties of ${obj} (reading '${prop}')`
+            );
+        }
         const result = obj[prop];
         if (typeof result === 'function') {
-            if (obj === Function && prop === 'bind') {
-                throw new Error('Function.prototype.bind is disabled');
-            }
-            if (obj === Function && (prop === 'call' || prop === 'apply')) {
-                throw new Error(
-                    'Function.prototype.call and ' +
-                    'Function.prototype.apply are disabled'
-                );
-            }
-            if (result === Function) {
-                return result; // Don't bind so can identify and throw later
-            }
             return result.bind(obj); // arrow functions aren't affected by bind.
         }
         return result;
@@ -156,9 +149,9 @@ const SafeEval = {
     evalCallExpression (ast, subs) {
         const args = ast.arguments.map((arg) => SafeEval.evalAst(arg, subs));
         const func = SafeEval.evalAst(ast.callee, subs);
-        if (func === Function) {
-            throw new Error('Function constructor is disabled');
-        }
+        // if (func === Function) {
+        //     throw new Error('Function constructor is disabled');
+        // }
         return func(...args);
     },
     evalAssignmentExpression (ast, subs) {
@@ -166,9 +159,6 @@ const SafeEval = {
             throw SyntaxError('Invalid left-hand side in assignment');
         }
         const id = ast.left.name;
-        if (id === '__proto__') {
-            throw new Error('Assignment to __proto__ is disabled');
-        }
         const value = SafeEval.evalAst(ast.right, subs);
         subs[id] = value;
         return subs[id];
@@ -193,7 +183,8 @@ class SafeScript {
      * @returns {EvaluatedResult} Result of evaluated code
      */
     runInNewContext (context) {
-        const keyMap = {...context};
+        // `Object.create(null)` creates a prototypeless object
+        const keyMap = Object.assign(Object.create(null), context);
         return SafeEval.evalAst(this.ast, keyMap);
     }
 }
