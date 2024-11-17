@@ -245,5 +245,51 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 });
             }
         });
+
+        describe('security tests', () => {
+            it('issue #226 1', () => {
+                assert.throws(() => {
+                    jsonpath({
+                        path: String.raw`$[?(var _$_root=[].constructor.constructor("console.log(this.process.mainModule.require(\"child_process\").execSync(\"id\").toString())");@root())]`,
+                        json: {a: 'x'}
+                    });
+                }, "Cannot read properties of  (reading 'constructor')");
+            });
+
+            it('issue #226 2', () => {
+                assert.throws(() => {
+                    const pathDoS =
+                        "$[?(con = constructor; dp = con.defineProperty; gopd = con.getOwnPropertyDescriptor; f = gopd(con, 'entries').value; alt = gopd(con.getPrototypeOf(f), 'apply'); dp(con.getPrototypeOf(_$_root.body), 'toString', alt);)]";
+
+                    const result = jsonpath({
+                        json: {
+                            referrer: {
+                                value: 'https://authorized.com',
+                                writable: true
+                            },
+                            method: {
+                                value: 'POST',
+                                writable: true
+                            },
+                            body: {
+                                value: 'Hello, World!',
+                                writable: true
+                            }
+                        },
+                        path: pathDoS
+                    });
+
+                    result.toString(); // DoS
+                }, 'constructor is not defined');
+            });
+
+            it('issue #226 3', () => {
+                assert.throws(() => {
+                    const path =
+                        "$[?(__proto__ = 0; __proto__ = constructor; __proto__ = constructor; __proto__(\"process.mainModule.require('child_process').execSync('open /Users/andrea');\")())]";
+                    jsonpath({json: {x: 1}, path});
+                }, 'constructor is not defined');
+            });
+        });
     });
 });
