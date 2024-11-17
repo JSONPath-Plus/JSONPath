@@ -1,5 +1,10 @@
 # CHANGES for jsonpath-plus
 
+## 10.2.0
+
+- fix(eval): improve security of safe-eval (#233)
+- chore: update deps. and devDeps.
+
 ## 10.1.0
 
 - feat: add typeof operator to safe script
