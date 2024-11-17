@@ -99,7 +99,7 @@
 	  }
 	}
 
-	//     JavaScript Expression Parser (JSEP) 1.3.9
+	//     JavaScript Expression Parser (JSEP) 1.4.0
 
 	class Jsep {
 	  /**
@@ -107,7 +107,7 @@
 	   */
 	  static get version() {
 	    // To be filled in by the template
-	    return '1.3.9';
+	    return '1.4.0';
 	  }
 
 	  /**
@@ -983,6 +983,7 @@
 	  // see [Order of operations](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)
 	  binary_ops: {
 	    '||': 1,
+	    '??': 1,
 	    '&&': 2,
 	    '|': 3,
 	    '^': 4,
@@ -1002,10 +1003,11 @@
 	    '-': 9,
 	    '*': 10,
 	    '/': 10,
-	    '%': 10
+	    '%': 10,
+	    '**': 11
 	  },
 	  // sets specific binary_ops as right-associative
-	  right_associative: new Set(),
+	  right_associative: new Set(['**']),
 	  // Additional valid identifier chars, apart from a-z, A-Z and 0-9 (except on the starting char)
 	  additional_identifier_chars: new Set(['$', '_']),
 	  // Literals
@@ -1140,7 +1142,7 @@
 
 	const plugin = {
 	  name: 'assignment',
-	  assignmentOperators: new Set(['=', '*=', '**=', '/=', '%=', '+=', '-=', '<<=', '>>=', '>>>=', '&=', '^=', '|=']),
+	  assignmentOperators: new Set(['=', '*=', '**=', '/=', '%=', '+=', '-=', '<<=', '>>=', '>>>=', '&=', '^=', '|=', '||=', '&&=', '??=']),
 	  updateOperators: [PLUS_CODE, MINUS_CODE],
 	  assignmentPrecedence: 0.9,
 	  init(jsep) {
@@ -2144,7 +2146,7 @@
 
 	    // Insert `return`
 	    const lastStatementEnd = expr.lastIndexOf(';');
-	    const code = lastStatementEnd > -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr;
+	    const code = lastStatementEnd !== -1 ? expr.slice(0, lastStatementEnd + 1) + ' return ' + expr.slice(lastStatementEnd + 1) : ' return ' + expr;
 
 	    // eslint-disable-next-line no-new-func -- User's choice
 	    return new Function(...keys, code)(...values);

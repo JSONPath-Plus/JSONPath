@@ -73,7 +73,10 @@ const SafeEval = {
             '*': (a, b) => a * b(),
             '/': (a, b) => a / b(),
             '%': (a, b) => a % b()
-        }[ast.operator](SafeEval.evalAst(ast.left, subs), () => SafeEval.evalAst(ast.right, subs));
+        }[ast.operator](
+            SafeEval.evalAst(ast.left, subs),
+            () => SafeEval.evalAst(ast.right, subs)
+        );
         return result;
     },
     evalCompound (ast, subs) {

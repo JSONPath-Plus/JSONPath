@@ -32,7 +32,7 @@ describe('JSONPath - Performance', function () {
     }
 
     it('performance', () => {
-        const expectedDuration = typeof window !== 'undefined' ? 4500 : 2500;
+        const expectedDuration = typeof globalThis !== 'undefined' ? 4500 : 2500;
         const start = Date.now();
         jsonpath({json, path: '$.results[*].groups[*].items[42]'});
         assert.strictEqual((Date.now() - start) < expectedDuration, true);

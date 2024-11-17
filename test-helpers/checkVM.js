@@ -31,10 +31,10 @@ function checkBuiltInVMAndNodeVM (cb) {
             vmType,
             checkingBrowserVM
                 ? () => {
-                    global.jsonpath = global.jsonpathBrowser;
+                    globalThis.jsonpath = globalThis.jsonpathBrowser;
                 }
                 : () => {
-                    global.jsonpath = global.jsonpathNodeVM;
+                    globalThis.jsonpath = globalThis.jsonpathNodeVM;
                 }
         );
     });

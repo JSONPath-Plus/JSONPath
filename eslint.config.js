@@ -3,6 +3,7 @@ import ashNazg from 'eslint-config-ash-nazg';
 export default [
     {
         ignores: [
+            '.github',
             '.idea',
             'dist',
             'docs/ts',
@@ -31,11 +32,11 @@ export default [
     {
         files: ['*.md/*.js', '*.md/*.html'],
         rules: {
-            // 'import/unambiguous': 0,
-            // 'import/no-commonjs': 0,
-            // 'import/no-unresolved': ['error', {
-            //     ignore: ['jsonpath-plus']
-            // }],
+            'import/unambiguous': 0,
+            'import/no-commonjs': 0,
+            'import/no-unresolved': ['error', {
+                ignore: ['jsonpath-plus']
+            }],
             'sonarjs/no-internal-api-use': 0,
             'no-multiple-empty-lines': ['error', {
                 max: 1, maxEOF: 2, maxBOF: 2

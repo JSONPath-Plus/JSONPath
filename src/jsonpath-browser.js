@@ -84,7 +84,7 @@ class Script {
         // Insert `return`
         const lastStatementEnd = expr.lastIndexOf(';');
         const code =
-            lastStatementEnd > -1
+            lastStatementEnd !== -1
                 ? expr.slice(0, lastStatementEnd + 1) +
                   ' return ' +
                   expr.slice(lastStatementEnd + 1)
