@@ -1303,8 +1303,13 @@
 	    return ast.value;
 	  },
 	  evalMemberExpression(ast, subs) {
-	    const prop = ast.computed ? SafeEval.evalAst(ast.property) // `object[property]`
-	    : ast.property.name; // `object.property` property is Identifier
+	    const prop = String(
+	    // NOTE: `String(value)` throws error when
+	    // value has overwritten the toString method to return non-string
+	    // i.e. `value = {toString: () => []}`
+	    ast.computed ? SafeEval.evalAst(ast.property) // `object[property]`
+	    : ast.property.name // `object.property` property is Identifier
+	    );
 	    const obj = SafeEval.evalAst(ast.object, subs);
 	    if (obj === undefined || obj === null) {
 	      throw TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);

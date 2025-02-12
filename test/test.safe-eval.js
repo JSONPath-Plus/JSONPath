@@ -290,6 +290,15 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     jsonpath({json: {x: 1}, path});
                 }, 'constructor is not defined');
             });
+            it("10.2.0 RCE", () => {
+                assert.throws(() => {
+                    const exampleObj = {example: true};
+                    const userControlledPath =
+                        "$..[?(p=\"console.log(this.process.mainModule.require('child_process').execSync('id').toString())\";a=''[['constructor']][['constructor']](p);a())]";
+
+                    jsonpath({json: exampleObj, path: userControlledPath});
+                }, "Cannot read properties of  (reading 'constructor')");
+            });
         });
     });
 });
