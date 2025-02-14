@@ -1,4 +1,5 @@
-/* globals JSONPath -- Test UMD */
+/// <reference path="./types.d.ts" />
+/* globals JSONPath, LZString -- Test UMD */
 /* eslint-disable import/unambiguous -- Demo */
 
 // Todo: Extract testing example paths/contents and use for a
@@ -14,8 +15,38 @@
 const $ = (s) => document.querySelector(s);
 
 const jsonpathEl = $('#jsonpath');
+const jsonSample = $('#jsonSample');
+
+const updateUrl = () => {
+    const path = jsonpathEl.value;
+    const jsonText = LZString.compressToEncodedURIComponent(jsonSample.value);
+    const url = new URL(location.href);
+    url.searchParams.set('path', path);
+    url.searchParams.set('json', jsonText);
+    url.searchParams.set('eval', $('#eval').value);
+    url.searchParams.set('ignoreEvalErrors', $('#ignoreEvalErrors').value);
+    history.replaceState(null, '', url.toString());
+};
+
+const loadUrl = () => {
+    const url = new URL(location.href);
+    if (url.searchParams.has('path')) {
+        jsonpathEl.value = url.searchParams.get('path');
+    }
+    if (url.searchParams.has('json')) {
+        jsonSample.value = LZString.decompressFromEncodedURIComponent(
+            url.searchParams.get('json')
+        );
+    }
+    if (url.searchParams.has('eval')) {
+        $('#eval').value = url.searchParams.get('eval');
+    }
+    if (url.searchParams.has('ignoreEvalErrors')) {
+        $('#ignoreEvalErrors').value = url.searchParams.get('ignoreEvalErrors');
+    }
+};
+
 const updateResults = () => {
-    const jsonSample = $('#jsonSample');
     const reportValidity = () => {
         // Doesn't work without a timeout
         setTimeout(() => {
@@ -52,19 +83,26 @@ const updateResults = () => {
 };
 
 $('#jsonpath').addEventListener('input', () => {
+    updateUrl();
     updateResults();
 });
 
 $('#jsonSample').addEventListener('input', () => {
+    updateUrl();
     updateResults();
 });
 
 $('#eval').addEventListener('change', () => {
+    updateUrl();
     updateResults();
 });
 
 $('#ignoreEvalErrors').addEventListener('change', () => {
+    updateUrl();
     updateResults();
 });
 
-window.addEventListener('load', updateResults);
+window.addEventListener('load', () => {
+    loadUrl();
+    updateResults();
+});
