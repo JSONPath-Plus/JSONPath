@@ -1,5 +1,11 @@
 # CHANGES for jsonpath-plus
 
+## 10.3.0
+
+- fix(eval): rce using non-string prop names (#237)
+- feat(demo): make demo link shareable (#238)
+- chore: update deps. and devDeps.
+
 ## 10.2.0
 
 - fix(eval): improve security of safe-eval (#233)
