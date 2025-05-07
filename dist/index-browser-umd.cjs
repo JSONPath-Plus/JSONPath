@@ -1460,6 +1460,12 @@
 	*/
 
 	/**
+	* @callback UndefinedCallback
+	* @param {string} path
+	* @returns {JSONObject}
+	*/
+
+	/**
 	 * @typedef {any} ContextItem
 	 */
 
@@ -1494,6 +1500,7 @@
 	 * @property {JSONPathCallback} [callback]
 	 * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
 	 *   function which throws on encountering `@other`
+	 * @property {UndefinedCallback} [undefinedCallback]
 	 * @property {boolean} [autostart=true]
 	 */
 
@@ -1509,14 +1516,17 @@
 	 *   path, its parent, and its parent's property name, and it should return
 	 *   a boolean indicating whether the supplied value belongs to the "other"
 	 *   type or not (or it may handle transformations and return `false`).
+	 * @param {UndefinedCallback} [undefinedCallback] if defined this will be
+	 *   invoked with the path of the item and it should return
+	 *   the value to be used in the result set.
 	 * @returns {JSONPath}
 	 * @class
 	 */
-	function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
+	function JSONPath(opts, expr, obj, callback, otherTypeCallback, undefinedCallback) {
 	  // eslint-disable-next-line no-restricted-syntax -- Allow for pseudo-class
 	  if (!(this instanceof JSONPath)) {
 	    try {
-	      return new JSONPath(opts, expr, obj, callback, otherTypeCallback);
+	      return new JSONPath(opts, expr, obj, callback, otherTypeCallback, undefinedCallback);
 	    } catch (e) {
 	      if (!e.avoidNew) {
 	        throw e;
@@ -1547,6 +1557,7 @@
 	  this.otherTypeCallback = opts.otherTypeCallback || otherTypeCallback || function () {
 	    throw new TypeError('You must supply an otherTypeCallback callback option ' + 'with the @other() operator.');
 	  };
+	  this.undefinedCallback = opts.undefinedCallback || undefinedCallback || null;
 	  if (opts.autostart !== false) {
 	    const args = {
 	      path: optObj ? opts.path : expr
@@ -1565,7 +1576,7 @@
 	}
 
 	// PUBLIC METHODS
-	JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback) {
+	JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback, undefinedCallback) {
 	  let currParent = this.parent,
 	    currParentProperty = this.parentProperty;
 	  let {
@@ -1577,6 +1588,7 @@
 	  this.currSandbox = this.sandbox;
 	  callback = callback || this.callback;
 	  this.currOtherTypeCallback = otherTypeCallback || this.otherTypeCallback;
+	  undefinedCallback = undefinedCallback || this.undefinedCallback;
 	  json = json || this.json;
 	  expr = expr || this.path;
 	  if (expr && typeof expr === 'object' && !Array.isArray(expr)) {
@@ -1596,6 +1608,7 @@
 	    this.currEval = Object.hasOwn(expr, 'eval') ? expr.eval : this.currEval;
 	    callback = Object.hasOwn(expr, 'callback') ? expr.callback : callback;
 	    this.currOtherTypeCallback = Object.hasOwn(expr, 'otherTypeCallback') ? expr.otherTypeCallback : this.currOtherTypeCallback;
+	    undefinedCallback = Object.hasOwn(expr, 'undefinedCallback') ? expr.undefinedCallback : undefinedCallback;
 	    currParent = Object.hasOwn(expr, 'parent') ? expr.parent : currParent;
 	    currParentProperty = Object.hasOwn(expr, 'parentProperty') ? expr.parentProperty : currParentProperty;
 	    expr = expr.path;
@@ -1613,7 +1626,7 @@
 	    exprList.shift();
 	  }
 	  this._hasParentSelector = null;
-	  const result = this._trace(exprList, json, ['$'], currParent, currParentProperty, callback).filter(function (ea) {
+	  const result = this._trace(exprList, json, ['$'], currParent, currParentProperty, callback, undefinedCallback).filter(function (ea) {
 	    return ea && !ea.isParentSelector;
 	  });
 	  if (!result.length) {
@@ -1674,11 +1687,12 @@
 	 * @param {object|GenericArray} parent
 	 * @param {string} parentPropName
 	 * @param {JSONPathCallback} callback
+	 * @param {UndefinedCallback} undefinedCallback
 	 * @param {boolean} hasArrExpr
 	 * @param {boolean} literalPriority
 	 * @returns {ReturnObject|ReturnObject[]}
 	 */
-	JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, hasArrExpr, literalPriority) {
+	JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, undefinedCallback, hasArrExpr, literalPriority) {
 	  // No expr to follow? return path and value as the result of
 	  //  this trace branch
 	  let retObj;
@@ -1718,24 +1732,24 @@
 	  }
 	  if ((typeof loc !== 'string' || literalPriority) && val && Object.hasOwn(val, loc)) {
 	    // simple case--directly follow property
-	    addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr));
+	    addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, undefinedCallback, hasArrExpr));
 	    // eslint-disable-next-line unicorn/prefer-switch -- Part of larger `if`
 	  } else if (loc === '*') {
 	    // all child properties
 	    this._walk(val, m => {
-	      addRet(this._trace(x, val[m], push(path, m), val, m, callback, true, true));
+	      addRet(this._trace(x, val[m], push(path, m), val, m, callback, undefinedCallback, true, true));
 	    });
 	  } else if (loc === '..') {
 	    // all descendent parent properties
 	    // Check remaining expression with val's immediate children
-	    addRet(this._trace(x, val, path, parent, parentPropName, callback, hasArrExpr));
+	    addRet(this._trace(x, val, path, parent, parentPropName, callback, undefinedCallback, hasArrExpr));
 	    this._walk(val, m => {
 	      // We don't join m and x here because we only want parents,
 	      //   not scalar values
 	      if (typeof val[m] === 'object') {
 	        // Keep going with recursive descent on val's
 	        //   object children
-	        addRet(this._trace(expr.slice(), val[m], push(path, m), val, m, callback, true));
+	        addRet(this._trace(expr.slice(), val[m], push(path, m), val, m, callback, undefinedCallback, true));
 	      }
 	    });
 	    // The parent sel computation is handled in the frame above using the
@@ -1760,10 +1774,10 @@
 	    return retObj;
 	  } else if (loc === '$') {
 	    // root only
-	    addRet(this._trace(x, val, path, null, null, callback, hasArrExpr));
+	    addRet(this._trace(x, val, path, null, null, callback, undefinedCallback, hasArrExpr));
 	  } else if (/^(-?\d*):(-?\d*):?(\d*)$/u.test(loc)) {
 	    // [start:end:step]  Python slice syntax
-	    addRet(this._slice(loc, x, val, path, parent, parentPropName, callback));
+	    addRet(this._slice(loc, x, val, path, parent, parentPropName, callback, undefinedCallback));
 	  } else if (loc.indexOf('?(') === 0) {
 	    // [?(expr)] (filtering)
 	    if (this.currEval === false) {
@@ -1778,15 +1792,15 @@
 	      this._walk(val, m => {
 	        const npath = [nested[2]];
 	        const nvalue = nested[1] ? val[m][nested[1]] : val[m];
-	        const filterResults = this._trace(npath, nvalue, path, parent, parentPropName, callback, true);
+	        const filterResults = this._trace(npath, nvalue, path, parent, parentPropName, callback, undefinedCallback, true);
 	        if (filterResults.length > 0) {
-	          addRet(this._trace(x, val[m], push(path, m), val, m, callback, true));
+	          addRet(this._trace(x, val[m], push(path, m), val, m, callback, undefinedCallback, true));
 	        }
 	      });
 	    } else {
 	      this._walk(val, m => {
 	        if (this._eval(safeLoc, val[m], m, path, parent, parentPropName)) {
-	          addRet(this._trace(x, val[m], push(path, m), val, m, callback, true));
+	          addRet(this._trace(x, val[m], push(path, m), val, m, callback, undefinedCallback, true));
 	        }
 	      });
 	    }
@@ -1865,18 +1879,20 @@
 	      return retObj;
 	    }
 	    // `-escaped property
-	  } else if (loc[0] === '`' && val && Object.hasOwn(val, loc.slice(1))) {
+	  } else if (loc[0] === '`' && val && (Object.hasOwn(val, loc.slice(1)) || undefinedCallback)) {
 	    const locProp = loc.slice(1);
-	    addRet(this._trace(x, val[locProp], push(path, locProp), val, locProp, callback, hasArrExpr, true));
+	    const propertyVal = Object.hasOwn(val, locProp) ? val[locProp] : undefinedCallback(path);
+	    addRet(this._trace(x, propertyVal, push(path, locProp), val, locProp, callback, undefinedCallback, hasArrExpr, true));
 	  } else if (loc.includes(',')) {
 	    // [name1,name2,...]
 	    const parts = loc.split(',');
 	    for (const part of parts) {
-	      addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback, true));
+	      addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback, undefinedCallback, true));
 	    }
 	    // simple case--directly follow property
-	  } else if (!literalPriority && val && Object.hasOwn(val, loc)) {
-	    addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr, true));
+	  } else if (!literalPriority && val && (Object.hasOwn(val, loc) || undefinedCallback)) {
+	    const propertyVal = Object.hasOwn(val, loc) ? val[loc] : undefinedCallback(path);
+	    addRet(this._trace(x, propertyVal, push(path, loc), val, loc, callback, undefinedCallback, hasArrExpr, true));
 	  }
 
 	  // We check the resulting values for parent selections. For parent
@@ -1886,7 +1902,7 @@
 	    for (let t = 0; t < ret.length; t++) {
 	      const rett = ret[t];
 	      if (rett && rett.isParentSelector) {
-	        const tmp = this._trace(rett.expr, val, rett.path, parent, parentPropName, callback, hasArrExpr);
+	        const tmp = this._trace(rett.expr, val, rett.path, parent, parentPropName, callback, undefinedCallback, hasArrExpr);
 	        if (Array.isArray(tmp)) {
 	          ret[t] = tmp[0];
 	          const tl = tmp.length;
@@ -1916,7 +1932,7 @@
 	    });
 	  }
 	};
-	JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropName, callback) {
+	JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropName, callback, undefinedCallback) {
 	  if (!Array.isArray(val)) {
 	    return undefined;
 	  }
@@ -1929,7 +1945,7 @@
 	  end = end < 0 ? Math.max(0, end + len) : Math.min(len, end);
 	  const ret = [];
 	  for (let i = start; i < end; i += step) {
-	    const tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback, true);
+	    const tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback, undefinedCallback, true);
 	    // Should only be possible to be an array here since first part of
 	    //   ``unshift(i, expr)` passed in above would not be empty, nor `~`,
 	    //     nor begin with `@` (as could return objects)

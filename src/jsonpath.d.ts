@@ -8,6 +8,8 @@ declare module 'jsonpath-plus' {
 
   type JSONPathOtherTypeCallback = (...args: any[]) => void
 
+  type JSONPathUndefinedCallback = (path: string) => any
+
   class EvalClass {
     constructor(code: string);
     runInNewContext(context: object): any;
@@ -153,6 +155,15 @@ declare module 'jsonpath-plus' {
      *   <A function that throws an error when `@other()` is encountered>
      */
     otherTypeCallback?: undefined | JSONPathOtherTypeCallback
+    /**
+     * If supplied, a callback will be called immediately upon retrieval of
+     * an undefined value
+     * 
+     * The argument supplied will be the path of the undefined value, and
+     * the callback should return a value to be used in place of the undefined
+     * value.
+     */
+    undefinedCallback?: undefined | JSONPathUndefinedCallback
   }
 
   interface JSONPathOptionsAutoStart extends JSONPathOptions {
