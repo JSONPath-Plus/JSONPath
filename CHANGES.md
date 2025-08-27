@@ -1,5 +1,10 @@
 # CHANGES for jsonpath-plus
 
+## ?
+
+- chore: update devDeps.
+- docs: fix Markdown formatting of examples in README.md (#230) (@aspiers)
+
 ## 10.3.0
 
 - fix(eval): rce using non-string prop names (#237)

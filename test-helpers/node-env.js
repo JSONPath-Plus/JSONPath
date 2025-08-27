@@ -1,15 +1,12 @@
 import {assert, expect} from 'chai';
+import {JSONPath} from '../src/jsonpath-node.js';
+import {
+    JSONPath as JSONPathBrowser
+} from '../src/jsonpath-browser.js';
 
 globalThis.assert = assert;
 globalThis.expect = expect;
 
-setTimeout(async () => {
-    const {JSONPath} = await import('../src/jsonpath-node.js');
-    globalThis.jsonpathNodeVM = JSONPath;
-    globalThis.jsonpath = JSONPath;
-
-    const {
-        JSONPath: JSONPathBrowser
-    } = await import('../src/jsonpath-browser.js');
-    globalThis.jsonpathBrowser = JSONPathBrowser;
-});
+globalThis.jsonpathNodeVM = JSONPath;
+globalThis.jsonpath = JSONPath;
+globalThis.jsonpathBrowser = JSONPathBrowser;
