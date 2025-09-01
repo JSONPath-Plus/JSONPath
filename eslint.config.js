@@ -81,13 +81,13 @@ export default [
         rules: {
             '@stylistic/indent': ['error', 4, {outerIIFEBody: 0}],
             'promise/prefer-await-to-callbacks': 0,
-            'require-jsdoc': 0,
 
             // Disable for now
             'new-cap': 0,
+            'jsdoc/reject-any-type': 0,
             '@stylistic/dot-location': 0,
             // Reenable as have time and confirming no longer needing:
-            // https://github.com/babel/babel/issues/8951#issuecomment-508045524 is no
+            // https://github.com/babel/babel/issues/8951#issuecomment-508045524
             'prefer-named-capture-group': 0,
             'unicorn/prefer-spread': 0
         }
