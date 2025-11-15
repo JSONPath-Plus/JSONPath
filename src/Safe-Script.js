@@ -6,6 +6,7 @@ import jsepAssignment from '@jsep-plugin/assignment';
 // register plugins
 jsep.plugins.register(jsepRegex, jsepAssignment);
 jsep.addUnaryOp('typeof');
+jsep.addUnaryOp('void');
 jsep.addLiteral('null', null);
 jsep.addLiteral('undefined', undefined);
 
@@ -147,7 +148,9 @@ const SafeEval = {
             '~': (a) => ~SafeEval.evalAst(a, subs),
             // eslint-disable-next-line no-implicit-coercion -- API
             '+': (a) => +SafeEval.evalAst(a, subs),
-            typeof: (a) => typeof SafeEval.evalAst(a, subs)
+            typeof: (a) => typeof SafeEval.evalAst(a, subs),
+            // eslint-disable-next-line no-void, sonarjs/void-use -- feature
+            void: (a) => void SafeEval.evalAst(a, subs)
         }[ast.operator](ast.argument);
         return result;
     },
