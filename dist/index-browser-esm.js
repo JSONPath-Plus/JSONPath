@@ -75,7 +75,10 @@ class Plugins {
    * @param {PluginSetup} plugins.init The init function
    * @public
    */
-  register(...plugins) {
+  register() {
+    for (var _len = arguments.length, plugins = new Array(_len), _key = 0; _key < _len; _key++) {
+      plugins[_key] = arguments[_key];
+    }
     plugins.forEach(plugin => {
       if (typeof plugin !== 'object' || !plugin.name || !plugin.init) {
         throw new Error('Invalid JSEP plugin format');
@@ -1200,6 +1203,7 @@ const plugin = {
 // register plugins
 jsep.plugins.register(index, plugin);
 jsep.addUnaryOp('typeof');
+jsep.addUnaryOp('void');
 jsep.addLiteral('null', null);
 jsep.addLiteral('undefined', undefined);
 const BLOCKED_PROTO_PROPERTIES = new Set(['constructor', '__proto__', '__defineGetter__', '__defineSetter__']);
@@ -1321,7 +1325,9 @@ const SafeEval = {
       '~': a => ~SafeEval.evalAst(a, subs),
       // eslint-disable-next-line no-implicit-coercion -- API
       '+': a => +SafeEval.evalAst(a, subs),
-      typeof: a => typeof SafeEval.evalAst(a, subs)
+      typeof: a => typeof SafeEval.evalAst(a, subs),
+      // eslint-disable-next-line no-void, sonarjs/void-use -- feature
+      void: a => void SafeEval.evalAst(a, subs)
     }[ast.operator](ast.argument);
     return result;
   },

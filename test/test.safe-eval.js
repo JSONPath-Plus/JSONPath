@@ -231,7 +231,8 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 ['!', '$..[?(@ && @.emptyArray && !@.emptyArray.length)]', [json.store.books[1]]],
                 ['~', '$..[?(@ && ~@.shelf === -2)]', [json.store.book]],
                 ['+ (unary)', '$..[?(@ && +@.meta === 12)]', [json.store.book]],
-                ['typeof', '$..[?(@ && typeof @.meta === "number")]', [json.store.books[0]]]
+                ['typeof', '$..[?(@ && typeof @.meta === "number")]', [json.store.books[0]]],
+                ['void', '$..books[?(@.meta === void 0)]', [json.store.books[1]]]
             ];
             for (const [operator, path, expected] of opPathExpecteds) {
                 it(`${operator} operator`, () => {
