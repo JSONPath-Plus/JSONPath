@@ -1,10 +1,28 @@
 # Security Policy
 
+## Security Considerations
+
+### Query Injection
+
+JSONPath-Plus evaluates JSONPath expressions provided by the caller. While the default `"eval": "safe"` option prevents arbitrary code execution, it **cannot prevent data exposure if the JSONPath query itself is compromised**.
+
+If untrusted input is incorporated into a JSONPath expression, an attacker may be able to alter the query structure by adding additional patterns. This can change how the remaining query is interpreted and may result in **unexpected or broader data being returned** than intended.
+
+**Important notes:**
+- This does **not** enable random code execution when using `"eval": "safe"` (the default).
+- The primary risk is **data leakage**, not execution of attacker-controlled code.
+
+**Mitigations:**
+1. **Do not interpolate unsanitized user input into JSONPath queries.**
+2. If user-controlled input must be included in a query, ensure the target JSON object contains **only non-confidential data**.
+
+As a general rule, treat JSONPath expressions as code and avoid constructing them dynamically from untrusted sources.
+
 ## Reporting a Vulnerability
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-If you believe you’ve found a security vulnerability, please send it to us by emailing [brettz9@yahoo.com](mailto:brettz9@yahoo.com). Please include the following details with your report:
+If you believe you’ve found a security vulnerability, please send it to us by emailing [iamavinashthakur.at@gmail.com](mailto:iamavinashthakur.at@gmail.com) or [brettz9@yahoo.com](mailto:brettz9@yahoo.com). Please include the following details with your report:
 
 1. Description of the location and potential impact of the vulnerability
 
