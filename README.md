@@ -402,6 +402,11 @@ npm run browser-test
 
 - Visit [http://localhost:8082/test/](http://localhost:8082/test/).
 
+
+## Security
+
+Please see [SECURITY.md](./SECURITY.md) for important security considerations and instructions on how to report vulnerabilities.
+
 ## License
 
 [MIT License](https://opensource.org/license/mit/).
