@@ -75,7 +75,10 @@ class Plugins {
    * @param {PluginSetup} plugins.init The init function
    * @public
    */
-  register(...plugins) {
+  register() {
+    for (var _len = arguments.length, plugins = new Array(_len), _key = 0; _key < _len; _key++) {
+      plugins[_key] = arguments[_key];
+    }
     plugins.forEach(plugin => {
       if (typeof plugin !== 'object' || !plugin.name || !plugin.init) {
         throw new Error('Invalid JSEP plugin format');
@@ -1203,7 +1206,7 @@ jsep.addUnaryOp('typeof');
 jsep.addUnaryOp('void');
 jsep.addLiteral('null', null);
 jsep.addLiteral('undefined', undefined);
-const BLOCKED_PROTO_PROPERTIES = new Set(['constructor', '__proto__', '__defineGetter__', '__defineSetter__']);
+const BLOCKED_PROTO_PROPERTIES = new Set(['constructor', '__proto__', '__defineGetter__', '__defineSetter__', '__lookupGetter__', '__lookupSetter__']);
 const SafeEval = {
   /**
    * @param {jsep.Expression} ast
@@ -1334,9 +1337,9 @@ const SafeEval = {
   evalCallExpression(ast, subs) {
     const args = ast.arguments.map(arg => SafeEval.evalAst(arg, subs));
     const func = SafeEval.evalAst(ast.callee, subs);
-    // if (func === Function) {
-    //     throw new Error('Function constructor is disabled');
-    // }
+    if (func === Function) {
+      throw new Error('Function constructor is disabled');
+    }
     return func(...args);
   },
   evalAssignmentExpression(ast, subs) {

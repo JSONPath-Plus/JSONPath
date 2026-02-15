@@ -1205,7 +1205,7 @@ jsep.addUnaryOp('typeof');
 jsep.addUnaryOp('void');
 jsep.addLiteral('null', null);
 jsep.addLiteral('undefined', undefined);
-const BLOCKED_PROTO_PROPERTIES = new Set(['constructor', '__proto__', '__defineGetter__', '__defineSetter__']);
+const BLOCKED_PROTO_PROPERTIES = new Set(['constructor', '__proto__', '__defineGetter__', '__defineSetter__', '__lookupGetter__', '__lookupSetter__']);
 const SafeEval = {
   /**
    * @param {jsep.Expression} ast
@@ -1336,9 +1336,9 @@ const SafeEval = {
   evalCallExpression(ast, subs) {
     const args = ast.arguments.map(arg => SafeEval.evalAst(arg, subs));
     const func = SafeEval.evalAst(ast.callee, subs);
-    // if (func === Function) {
-    //     throw new Error('Function constructor is disabled');
-    // }
+    if (func === Function) {
+      throw new Error('Function constructor is disabled');
+    }
     return func(...args);
   },
   evalAssignmentExpression(ast, subs) {
