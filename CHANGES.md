@@ -1,9 +1,14 @@
 # CHANGES for jsonpath-plus
 
-## ?
+## 10.4.0
 
 - chore: update devDeps.
 - docs: fix Markdown formatting of examples in README.md (#230) (@aspiers)
+- feat: add void operator (#244) (@80avin)
+- build(deps): bump qs from 6.14.0 to 6.14.1 (#248) (@dependabot[bot])
+- chore: update security policy (#250) (@80avin)
+- build(deps): bump lodash from 4.17.21 to 4.17.23 (#249) (@dependabot[bot])
+- fix(eval): rce using lookupGetter or lookupSetter ([1bab1cc](https://github.com/JSONPath-Plus/JSONPath/commit/1bab1cc835502530faaabdac8d8706505ab82a55)) (@80avin)
 
 ## 10.3.0
 
