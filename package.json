@@ -84,7 +84,7 @@
     "mocha-badge-generator": "^0.11.0",
     "mocha-multi-reporters": "^1.5.1",
     "open-cli": "^8.0.0",
-    "rollup": "4.53.2",
+    "rollup": "4.59.0",
     "typedoc": "^0.28.14",
     "typescript": "^5.9.3"
   },
