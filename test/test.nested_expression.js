@@ -194,5 +194,227 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 }
             ]);
         });
+
+        it('Nested filter with string comparison in nested path', () => {
+            const json = [{
+                items: [
+                    {type: "urgent", priority: 1},
+                    {type: "normal", priority: 2}
+                ]
+            }, {
+                items: [
+                    {type: "normal", priority: 3}
+                ]
+            }, {
+                items: [
+                    {type: "urgent", priority: 1},
+                    {type: "urgent", priority: 2}
+                ]
+            }];
+            // This tests the string literal handling in nested filter extraction
+            const result = jsonpath({
+                json,
+                path: "$[?(@.items[?(@.type=='urgent')])]",
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 2);
+            assert.strictEqual(result[0].items[0].type, 'urgent');
+            assert.strictEqual(result[1].items[0].type, 'urgent');
+        });
+
+        it('Nested filter with regex pattern', () => {
+            const json = [{
+                emails: [
+                    {address: "john@example.com"},
+                    {address: "jane@test.org"}
+                ]
+            }, {
+                emails: [
+                    {address: "bob@example.com"}
+                ]
+            }, {
+                emails: [
+                    {address: "alice@other.net"}
+                ]
+            }];
+            // This tests regex literal handling in nested filter extraction
+            const result = jsonpath({
+                json,
+                path: '$[?(@.emails[?(@.address.match(/example/))])]',
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 2);
+            assert.strictEqual(result[0].emails[0].address, 'john@example.com');
+            assert.strictEqual(result[1].emails[0].address, 'bob@example.com');
+        });
+
+        it('Nested filter error handling - invalid nested path', () => {
+            const json = {
+                items: [
+                    {name: "test", value: 10},
+                    {name: "other", value: 20}
+                ]
+            };
+            // Nested path with invalid property - should gracefully handle
+            const result = jsonpath({
+                json,
+                path: '$[?(@.nonexistent[?(@.invalid)])]',
+                resultType: 'value'
+            });
+            // Should return empty array, not throw
+            assert.deepEqual(result, []);
+        });
+
+        it('Nested filter with double-quoted strings in expression', () => {
+            const json = [{
+                items: [
+                    {status: "active", count: 5},
+                    {status: "inactive", count: 2}
+                ]
+            }, {
+                items: [
+                    {status: "active", count: 3}
+                ]
+            }];
+            // Test double-quoted string handling in nested filter
+            const result = jsonpath({
+                json,
+                path: '$[?(@.items[?(@.status=="active")])]',
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 2);
+        });
+
+        it('Nested filter with regex containing forward slashes', () => {
+            const json = [{
+                files: [
+                    {path: "/usr/local/bin/app"},
+                    {path: "/home/user/docs"}
+                ]
+            }, {
+                files: [
+                    {path: "/usr/bin/tool"}
+                ]
+            }];
+            // Test regex literal with / inside nested filter
+            const result = jsonpath({
+                json,
+                path: '$[?(@.files[?(@.path.match(/\\/usr\\//))])]',
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 2);
+        });
+
+        it('Nested filter with string literal containing @ in outer filter', () => {
+            const json = [{
+                items: [{id: 1, status: "active"}],
+                marker: "@special"
+            }, {
+                items: [{id: 2, status: "inactive"}],
+                marker: "normal"
+            }, {
+                items: [{id: 3, status: "active"}],
+                marker: "@special"
+            }];
+            // Filter with nested path AND string literal containing @
+            // This tests that @ inside quotes is skipped
+            const result = jsonpath({
+                json,
+                path: '$[?(@.items[?(@.status==\'active\')] && @.marker=="@special")]',
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 2);
+            assert.strictEqual(result[0].marker, '@special');
+        });
+
+        it('Nested filter with regex literal in outer filter expression', () => {
+            const json = [{
+                tags: [{name: "important"}],
+                email: "user@example.com"
+            }, {
+                tags: [{name: "normal"}],
+                email: "test@test.org"
+            }, {
+                tags: [{name: "important"}],
+                email: "admin@example.com"
+            }];
+            // Filter with nested path AND regex in outer expression
+            // This tests that @ inside regex is skipped
+            const result = jsonpath({
+                json,
+                path: '$[?(@.tags[?(@.name==\'important\')] && @.email.match(/@example/))]',
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 2);
+            assert.strictEqual(result[0].email, 'user@example.com');
+        });
+
+        it('Nested filter with escaped quotes in string literal', () => {
+            const json = [{
+                items: [{value: "test"}],
+                note: "it's @here"
+            }, {
+                items: [{value: "test"}],
+                note: "normal"
+            }];
+            // Test escaped quote handling in string literals
+            const result = jsonpath({
+                json,
+                path: "$[?(@.items[?(@.value)] && @.note.match(/it's/))]",
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 1);
+        });
+
+        it('Nested filter with regex flags', () => {
+            const json = [{
+                data: [{code: "ABC"}],
+                label: "Important"
+            }, {
+                data: [{code: "xyz"}],
+                label: "important"
+            }];
+            // Test regex with flags (case insensitive)
+            const result = jsonpath({
+                json,
+                path: '$[?(@.data[?(@.code)] && @.label.match(/important/i))]',
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 2);
+        });
+
+        it('Nested filter with backslash-escaped quotes in string', () => {
+            const json = [{
+                items: [{name: "test"}],
+                desc: 'He said "hello"'
+            }, {
+                items: [{name: "test"}],
+                desc: "normal"
+            }];
+            // Test escaped quote in string literal - filter has: @.desc == "said \\"hello\\""
+            const result = jsonpath({
+                json,
+                path: String.raw`$[?(@.items[?(@.name)] && @.desc == "said \"hello\"")]`,
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 0); // Won't match because desc has single quotes
+        });
+
+        it('Nested filter with backslash-escaped forward slash in regex', () => {
+            const json = [{
+                routes: [{path: "/api/v1"}],
+                url: "/api/v1/users"
+            }, {
+                routes: [{path: "/web"}],
+                url: "/web/home"
+            }];
+            // Test escaped forward slash in regex: /\\/api\\/v1/
+            const result = jsonpath({
+                json,
+                path: String.raw`$[?(@.routes[?(@.path)] && @.url.match(/\/api\/v1/))]`,
+                resultType: 'value'
+            });
+            assert.strictEqual(result.length, 1);
+        });
     });
 });

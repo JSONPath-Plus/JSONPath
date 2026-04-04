@@ -8,6 +8,20 @@ declare module 'jsonpath-plus' {
 
   type JSONPathOtherTypeCallback = (...args: any[]) => void
 
+  type PathToken =
+    | { type: 'root' }
+    | { type: 'wildcard' }
+    | { type: 'descent' }
+    | { type: 'parent' }
+    | { type: 'propertyName' }
+    | { type: 'property'; value: string; escaped: boolean }
+    | { type: 'index'; value: number }
+    | { type: 'slice'; start: number | null; end: number | null; step: number | null; raw: string }
+    | { type: 'filter'; expression: string }
+    | { type: 'dynamic'; expression: string }
+    | { type: 'typeOperator'; valueType: string }
+    | { type: 'multiProperty'; properties: string[] }
+
   class EvalClass {
     constructor(code: string);
     runInNewContext(context: object): any;
@@ -180,10 +194,10 @@ declare module 'jsonpath-plus' {
 
     /**
      * Accepts a normalized or unnormalized path as string and
-     * converts to an array: for example,
-     * `['$', 'aProperty', 'anotherProperty']`.
+     * converts to an array of structured tokens with metadata.
+     * For example: `[{type: 'root'}, {type: 'property', value: 'aProperty', escaped: false}]`.
      */
-    toPathArray(path: string): string[]
+    toPathParts(path: string): PathToken[]
 
     /**
      * Accepts a path array and converts to a normalized path string.
@@ -192,7 +206,7 @@ declare module 'jsonpath-plus' {
      * The JSONPath terminal constructions `~` and `^` and type operators
      *   like `@string()` are silently stripped.
      */
-    toPathString(path: string[]): string
+    toPathString(path: (string | PathToken)[]): string
 
     /**
      * Accepts a path array and converts to a JSON Pointer.

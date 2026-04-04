@@ -90,5 +90,66 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 });
             }).to.throw(Error, 'jsonPath: Invalid left-hand side in assignment: 2 = 8');
         });
+
+        // Parser syntax error tests
+        it('should throw with unbalanced brackets', () => {
+            expect(() => {
+                jsonpath.toPathParts('$.store[?(');
+            }).to.throw(SyntaxError, 'Unbalanced');
+        });
+
+        it('should throw with unexpected end after dot', () => {
+            expect(() => {
+                jsonpath.toPathParts('$.store.');
+            }).to.throw(SyntaxError, 'Unexpected end after dot');
+        });
+
+        it('should throw with unclosed filter', () => {
+            expect(() => {
+                jsonpath.toPathParts('$.store[?(@.price < 10');
+            }).to.throw(SyntaxError);
+        });
+
+        it('should throw with unclosed wildcard bracket', () => {
+            expect(() => {
+                jsonpath.toPathParts('$.store[*');
+            }).to.throw(SyntaxError, 'Expected ] after *');
+        });
+
+        it('should throw with unexpected character after backtick', () => {
+            expect(() => {
+                jsonpath.toPathParts('$.`');
+            }).to.throw(SyntaxError, 'Unexpected end after backtick');
+        });
+
+        it('should throw with unexpected end after opening bracket', () => {
+            expect(() => {
+                jsonpath.toPathParts('$[');
+            }).to.throw(SyntaxError, 'Unexpected end after [');
+        });
+
+        it('should throw with missing ( after ? in filter', () => {
+            expect(() => {
+                jsonpath.toPathParts('$[?');
+            }).to.throw(SyntaxError, 'Expected ( after ?');
+        });
+
+        it('should throw with missing ] after filter expression', () => {
+            expect(() => {
+                jsonpath.toPathParts('$[?(@.price < 10)');
+            }).to.throw(SyntaxError, 'Expected ] after filter');
+        });
+
+        it('should throw with missing ] after dynamic expression', () => {
+            expect(() => {
+                jsonpath.toPathParts('$[(@ + 1)');
+            }).to.throw(SyntaxError, 'Expected ] after dynamic expression');
+        });
+
+        it('should throw with malformed multi-property', () => {
+            expect(() => {
+                jsonpath.toPathParts("$['a','");
+            }).to.throw(SyntaxError);
+        });
     });
 });
