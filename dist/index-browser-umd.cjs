@@ -81,10 +81,7 @@
 	   * @param {PluginSetup} plugins.init The init function
 	   * @public
 	   */
-	  register() {
-	    for (var _len = arguments.length, plugins = new Array(_len), _key = 0; _key < _len; _key++) {
-	      plugins[_key] = arguments[_key];
-	    }
+	  register(...plugins) {
 	    plugins.forEach(plugin => {
 	      if (typeof plugin !== 'object' || !plugin.name || !plugin.init) {
 	        throw new Error('Invalid JSEP plugin format');

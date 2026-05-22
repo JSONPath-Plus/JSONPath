@@ -1,2 +1,5 @@
+allowBuilds:
+  es5-ext: false
+  unrs-resolver: false
 ignoredBuiltDependencies:
   - unrs-resolver
