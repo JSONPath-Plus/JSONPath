@@ -42,4 +42,25 @@ describe('JSONPath - slice', function () {
         });
         assert.deepEqual(result, expected);
     });
+
+    it('should return empty array for a slice with an explicit zero end', function () {
+        const jsonWithChildren = {
+            "name": "root",
+            "children": [
+                {a: 1}, {a: 2}, {a: 3}, {a: 4}, {a: 5}, {a: 6}
+            ]
+        };
+        assert.deepEqual(jsonpath({
+            json: jsonWithChildren,
+            path: '$.children[:0]'
+        }), []);
+        assert.deepEqual(jsonpath({
+            json: jsonWithChildren,
+            path: '$.children[2:0]'
+        }), []);
+        assert.deepEqual(jsonpath({
+            json: jsonWithChildren,
+            path: '$.children[0:0]'
+        }), []);
+    });
 });
