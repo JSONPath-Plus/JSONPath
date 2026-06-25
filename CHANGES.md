@@ -1,5 +1,18 @@
 # CHANGES for jsonpath-plus
 
+## 10.4.1
+
+* fix(slice): explicit zero end no longer returns the whole array (#265) (@spokodev)
+* chore: pnpm update (@brettz9)
+* build(deps-dev): bump rollup from 4.53.2 to 4.59.0 (@dependabot[bot])
+* build(deps): bump minimatch from 9.0.5 to 9.0.9 (@dependabot[bot])
+* build(deps): bump serialize-javascript (via audit fix) (@dependabot[bot])
+* build(deps): bump ajv from 6.12.6 to 6.14.0 (#253) (@dependabot[bot])
+* build(deps): bump qs from 6.14.0 to 6.14.2 (#252) (@dependabot[bot])
+* build(deps): bump markdown-it from 14.1.0 to 14.1.1 (#251) (@dependabot[bot])
+* build(deps): bump minimatch from 3.1.2 to 3.1.4 (#255) (@dependabot[bot])
+
+
 ## 10.4.0
 
 - chore: update devDeps.
