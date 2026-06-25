@@ -1927,7 +1927,7 @@
 	    parts = loc.split(':'),
 	    step = parts[2] && Number.parseInt(parts[2]) || 1;
 	  let start = parts[0] && Number.parseInt(parts[0]) || 0,
-	    end = parts[1] && Number.parseInt(parts[1]) || len;
+	    end = parts[1] ? Number.parseInt(parts[1]) : len;
 	  start = start < 0 ? Math.max(0, start + len) : Math.min(len, start);
 	  end = end < 0 ? Math.max(0, end + len) : Math.min(len, end);
 	  const ret = [];
