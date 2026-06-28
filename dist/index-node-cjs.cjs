@@ -1314,7 +1314,7 @@ const SafeEval = {
       throw TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
     }
     const result = obj[prop];
-    if (typeof result === 'function') {
+    if (typeof result === 'function' && result !== Function) {
       return result.bind(obj); // arrow functions aren't affected by bind.
     }
     return result;
@@ -1338,12 +1338,9 @@ const SafeEval = {
   evalCallExpression(ast, subs) {
     const args = ast.arguments.map(arg => SafeEval.evalAst(arg, subs));
     const func = SafeEval.evalAst(ast.callee, subs);
-    /* c8 ignore start  */
     if (func === Function) {
-      // unreachable since BLOCKED_PROTO_PROPERTIES includes 'constructor'
       throw new Error('Function constructor is disabled');
     }
-    /* c8 ignore end  */
     return func(...args);
   },
   evalAssignmentExpression(ast, subs) {
