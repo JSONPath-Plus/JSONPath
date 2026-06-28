@@ -300,6 +300,15 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     jsonpath({json: exampleObj, path: userControlledPath});
                 }, "Cannot read properties of  (reading 'constructor')");
             });
+            it("10.4.1 RCE", () => {
+                assert.throws(() => {
+                    globalThis.TEST_10_4_1_RCE = 'not exploited';
+
+                    const path = "$..[?(@.constructor[( @.getPrototypeOf(@).constructor('globalThis.TEST_10_4_1_RCE=\"RCE\";0')() )])]";
+
+                    jsonpath({path, json: {a: {}}});
+                }, "Function constructor is disabled");
+            });
         });
     });
 });
