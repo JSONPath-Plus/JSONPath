@@ -22,6 +22,7 @@
   "module": "dist/index-node-esm.js",
   "browser": "dist/index-browser-esm.js",
   "types": "./src/jsonpath.d.ts",
+  "sideEffects": false,
   "description": "A JS implementation of JSONPath with some additional operators",
   "contributors": [
     {
