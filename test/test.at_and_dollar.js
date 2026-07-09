@@ -52,4 +52,12 @@ describe('JSONPath - At and Dollar sign', function () {
         const result = jsonpath({json, path: "$.a[?(@property === 'b' && @ < 1)]", wrap: false});
         assert.deepEqual(result, expected);
     });
+
+    it('bare @ adjacent to an operator (no whitespace)', () => {
+        const json = [0, 1, 2, 3];
+        assert.deepEqual(jsonpath({json, path: '$[?(@>1)]'}), [2, 3]);
+        assert.deepEqual(jsonpath({json, path: '$[?(@<2)]'}), [0, 1]);
+        assert.deepEqual(jsonpath({json, path: '$[?(@===2)]'}), [2]);
+        assert.deepEqual(jsonpath({json, path: '$[?(@!==2)]'}), [0, 1, 3]);
+    });
 });
