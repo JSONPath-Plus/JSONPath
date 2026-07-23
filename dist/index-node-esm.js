@@ -1868,7 +1868,11 @@ JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, c
     // [name1,name2,...]
     const parts = loc.split(',');
     for (const part of parts) {
-      addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback, true));
+      // Strip the quotes that survive tokenization of a quoted union
+      // member (e.g. $['x','y'] leaves parts ["x'", "'y"]); bare and
+      // numeric members have no quotes and are unaffected.
+      const prop = part.trim().replace(/^['"]|['"]$/gu, '');
+      addRet(this._trace(unshift(prop, x), val, path, parent, parentPropName, callback, true));
     }
     // simple case--directly follow property
   } else if (!literalPriority && val && Object.hasOwn(val, loc)) {

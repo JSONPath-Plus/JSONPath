@@ -25,6 +25,13 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
         });
 
+        it('Union of quoted property names', () => {
+            const data = {x: 1, y: 2, z: 3};
+            assert.deepEqual(jsonpath({json: data, path: "$['x','y']"}), [1, 2]);
+            assert.deepEqual(jsonpath({json: data, path: '$["x","y"]'}), [1, 2]);
+            assert.deepEqual(jsonpath({json: data, path: "$['x', 'y']"}), [1, 2]);
+        });
+
         it('At signs within properties', () => {
             let result = jsonpath({json, path: "$.datafield[?(@.tag=='035')]", wrap: false});
             assert.deepEqual(result, [json.datafield[0]]);
