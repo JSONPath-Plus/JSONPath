@@ -542,8 +542,12 @@ JSONPath.prototype._trace = function (
     } else if (loc.includes(',')) { // [name1,name2,...]
         const parts = loc.split(',');
         for (const part of parts) {
+            // Strip the quotes that survive tokenization of a quoted union
+            // member (e.g. $['x','y'] leaves parts ["x'", "'y"]); bare and
+            // numeric members have no quotes and are unaffected.
+            const prop = part.trim().replace(/^['"]|['"]$/gu, '');
             addRet(this._trace(
-                unshift(part, x), val, path, parent, parentPropName, callback,
+                unshift(prop, x), val, path, parent, parentPropName, callback,
                 true
             ));
         }
