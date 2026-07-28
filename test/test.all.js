@@ -33,7 +33,14 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         });
 
         it('select sibling via parent, return both path and value', () => {
-            const expected = [{path: "$['children'][2]['children'][1]", value: {name: 'child3_2'}, parent: json.children[2].children, parentProperty: 1, pointer: '/children/2/children/1', hasArrExpr: true}];
+            const expected = [{
+                path: "$['children'][2]['children'][1]",
+                value: {name: 'child3_2'},
+                parent: json.children[2].children,
+                parentProperty: 1,
+                pointer: '/children/2/children/1',
+                hasArrExpr: true
+            }];
             const result = jsonpath({json, path: '$..[?(@.name && @.name.match(/3_1$/))]^[?(@.name.match(/_2$/))]', resultType: 'all'});
             assert.deepEqual(result, expected);
         });

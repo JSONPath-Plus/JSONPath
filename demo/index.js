@@ -1,6 +1,6 @@
-/// <reference path="./types.d.ts" />
+/* eslint-disable import-x/unambiguous -- Demo */
 /* globals JSONPath, LZString -- Test UMD */
-/* eslint-disable import/unambiguous -- Demo */
+/// <reference path="./types.d.ts" />
 
 // Todo: Extract testing example paths/contents and use for a
 //         pulldown that can populate examples
@@ -12,10 +12,20 @@
 // Todo: Could add JSON/JS syntax highlighting in sample and result,
 //   ideally with a jsonpath-plus parser highlighter as well
 
-const $ = (s) => document.querySelector(s);
+/**
+ * @param {string} s
+ * @returns {HTMLElement}
+ */
+const $ = (s) => /** @type {HTMLElement} */ (document.querySelector(s));
 
-const jsonpathEl = $('#jsonpath');
-const jsonSample = $('#jsonSample');
+/**
+ * @param {string} s
+ * @returns {HTMLInputElement}
+ */
+const $i = (s) => /** @type {HTMLInputElement} */ (document.querySelector(s));
+
+const jsonpathEl = $i('#jsonpath');
+const jsonSample = $i('#jsonSample');
 
 const updateUrl = () => {
     const path = jsonpathEl.value;
@@ -23,26 +33,30 @@ const updateUrl = () => {
     const url = new URL(location.href);
     url.searchParams.set('path', path);
     url.searchParams.set('json', jsonText);
-    url.searchParams.set('eval', $('#eval').value);
-    url.searchParams.set('ignoreEvalErrors', $('#ignoreEvalErrors').value);
-    history.replaceState(null, '', url.toString());
+    url.searchParams.set('eval', $i('#eval').value);
+    url.searchParams.set('ignoreEvalErrors', $i('#ignoreEvalErrors').value);
+    history.replaceState(null, '', url.href);
 };
 
 const loadUrl = () => {
     const url = new URL(location.href);
     if (url.searchParams.has('path')) {
-        jsonpathEl.value = url.searchParams.get('path');
+        jsonpathEl.value = /** @type {string} */ (url.searchParams.get('path'));
     }
     if (url.searchParams.has('json')) {
         jsonSample.value = LZString.decompressFromEncodedURIComponent(
-            url.searchParams.get('json')
+            /** @type {string} */ (url.searchParams.get('json'))
         );
     }
     if (url.searchParams.has('eval')) {
-        $('#eval').value = url.searchParams.get('eval');
+        $i('#eval').value = /** @type {string} */ (
+            url.searchParams.get('eval')
+        );
     }
     if (url.searchParams.has('ignoreEvalErrors')) {
-        $('#ignoreEvalErrors').value = url.searchParams.get('ignoreEvalErrors');
+        $i('#ignoreEvalErrors').value = /** @type {string} */ (
+            url.searchParams.get('ignoreEvalErrors')
+        );
     }
 };
 
@@ -52,7 +66,7 @@ const updateResults = () => {
         setTimeout(() => {
             jsonSample.reportValidity();
             jsonpathEl.reportValidity();
-        });
+        }, 0);
     };
     let json;
     jsonSample.setCustomValidity('');
@@ -61,7 +75,10 @@ const updateResults = () => {
     try {
         json = JSON.parse(jsonSample.value);
     } catch (err) {
-        jsonSample.setCustomValidity('Error parsing JSON: ' + err.toString());
+        jsonSample.setCustomValidity(
+            'Error parsing JSON: ' +
+            /** @type {Error} */ (err).toString()
+        );
         reportValidity();
         return;
     }
@@ -69,16 +86,18 @@ const updateResults = () => {
         const result = new JSONPath.JSONPath({
             path: jsonpathEl.value,
             json,
-            eval: $('#eval').value === 'false' ? false : $('#eval').value,
-            ignoreEvalErrors: $('#ignoreEvalErrors').value === 'true'
+            eval: $i('#eval').value === 'false' ? false : $i('#eval').value,
+            ignoreEvalErrors: $i('#ignoreEvalErrors').value === 'true'
         });
-        $('#results').value = JSON.stringify(result, null, 2);
+        $i('#results').value = JSON.stringify(result, null, 2);
     } catch (err) {
         jsonpathEl.setCustomValidity(
-            'Error executing JSONPath: ' + err.toString()
+            'Error executing JSONPath: ' +
+            /** @type {Error} */
+            (err).toString()
         );
         reportValidity();
-        $('#results').value = '';
+        $i('#results').value = '';
     }
 };
 

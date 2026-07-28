@@ -1,6 +1,6 @@
 import ashNazg from 'eslint-config-ash-nazg';
 
-export default [
+export default /** @type {import('eslint').Linter.Config} */ ([
     {
         ignores: [
             '.github',
@@ -32,9 +32,9 @@ export default [
     {
         files: ['*.md/*.js', '*.md/*.html'],
         rules: {
-            'import/unambiguous': 0,
-            'import/no-commonjs': 0,
-            'import/no-unresolved': ['error', {
+            'import-x/unambiguous': 0,
+            'import-x/no-commonjs': 0,
+            'import-x/no-unresolved': ['error', {
                 ignore: ['jsonpath-plus']
             }],
             'sonarjs/no-internal-api-use': 0,
@@ -45,7 +45,7 @@ export default [
             'no-unused-vars': ['error', {
                 varsIgnorePattern: 'json|result'
             }],
-            'import/no-extraneous-dependencies': 0,
+            'import-x/no-extraneous-dependencies': 0,
             'n/no-extraneous-import': ['error', {
                 allowModules: ['jsonpath-plus']
             }],
@@ -66,20 +66,25 @@ export default [
             globals: {
                 assert: 'readonly',
                 expect: 'readonly',
-                jsonpath: 'readonly'
+                jsonpath: 'readonly',
+                JSONPathClass: 'readonly'
             }
         },
         rules: {
             '@stylistic/quotes': 0,
             '@stylistic/quote-props': 0,
-            'import/unambiguous': 0,
+            'import-x/unambiguous': 0,
+            // Not DOM here
+            'unicorn/better-dom-traversing': 0,
             // Todo: Reenable
             '@stylistic/max-len': 0
         }
     },
     {
         rules: {
-            '@stylistic/indent': ['error', 4, {outerIIFEBody: 0}],
+            '@stylistic/indent': ['error', 4, {
+                SwitchCase: 0, outerIIFEBody: 0
+            }],
             'promise/prefer-await-to-callbacks': 0,
 
             // Disable for now
@@ -92,4 +97,4 @@ export default [
             'unicorn/prefer-spread': 0
         }
     }
-];
+]);

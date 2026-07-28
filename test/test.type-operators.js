@@ -1,6 +1,8 @@
-
+/**
+ * @import {OtherTypeCallback} from '../src/jsonpath.js';
+ */
 describe('JSONPath - Type Operators', function () {
-    // tests based on examples at http://goessner.net/articles/jsonpath/
+    // tests based on examples at https://goessner.net/articles/jsonpath/
 
     const json = {"store": {
         "book": [
@@ -69,15 +71,11 @@ describe('JSONPath - Type Operators', function () {
         const expected = [12.99, 8.99, 22.99];
 
         /**
-         * @typedef {any} Value
-         */
-        /**
          *
-         * @param {Value} val
-         * @returns {boolean}
+         * @type {OtherTypeCallback}
          */
-        function endsIn99 (val /* , path, parent, parentPropName */) {
-            return Boolean((/\.99/u).test(val.toString()));
+        function endsIn99 (/** @type {number} */ val /* , path, parent, parentPropName */) {
+            return (/\.99/u).test(val.toString());
         }
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
         assert.deepEqual(result, expected);
@@ -136,9 +134,9 @@ describe('JSONPath - Type Operators', function () {
             nested: {
                 a: true,
                 b: null,
-                c: [
+                c: /** @type {[number, unknown[]]} */ ([
                     7, [false, 9]
-                ]
+                ])
             }
         };
         const expected = [jsonMixed.nested.a, jsonMixed.nested.c[1][0]];
@@ -153,9 +151,9 @@ describe('JSONPath - Type Operators', function () {
             nested: {
                 a: 50.7,
                 b: null,
-                c: [
+                c: /** @type {[number, unknown[]]} */ ([
                     42, [false, 73]
-                ]
+                ])
             }
         };
         const expected = [jsonMixed.nested.c[0], jsonMixed.nested.c[1][1]];
@@ -169,10 +167,10 @@ describe('JSONPath - Type Operators', function () {
         const jsonMixed = {
             nested: {
                 a: 50.7,
-                b: Number.NEGATIVE_INFINITY,
-                c: [
-                    42, [Number.POSITIVE_INFINITY, 73, Number.NaN]
-                ]
+                b: -Infinity,
+                c: /** @type {[number, unknown[]]} */ ([
+                    42, [Infinity, 73, NaN]
+                ])
             }
         };
         const expected = [

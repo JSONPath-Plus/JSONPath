@@ -25,6 +25,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
 
         it('should throw with a bad result type', () => {
             expect(() => {
+                // @ts-expect-error Bad argument
                 jsonpath({
                     json: {children: [5]},
                     path: '$..children',

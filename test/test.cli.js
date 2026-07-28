@@ -20,6 +20,9 @@ describe("JSONPath - cli", () => {
         }
         expect(out).to.have.property("code", 1);
         expect(out).to.have.property("stderr");
-        expect(out.stderr).to.include(`usage: ${binPath} <file> <path>\n\n`);
+        expect(
+            /** @type {{stderr: string}} */
+            (out).stderr
+        ).to.include(`usage: ${binPath} <file> <path>\n\n`);
     });
 });

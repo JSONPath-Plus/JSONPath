@@ -6,27 +6,31 @@ describe('JSONPath - Performance', function () {
         itemCount = 150,
         groupCount = 245;
 
+    /**
+     * @typedef {{a: {b: 0, c: 0}, s: {b: {c: number[]}}}[]} Items
+     */
+
     const json = {
-        results: []
+        results:
+        /** @type {{groups: {items: Items, a: string}[], v?: {v: number[]}}[]} */ (
+            []
+        )
     };
 
-    let i, j;
-
-    const bigArray = [];
-    for (i = 0; i < arraySize; i++) {
+    const bigArray = /** @type {number[]} */ ([]);
+    for (let i = 0; i < arraySize; i++) {
         bigArray[i] = 1;
     }
 
-    const items = [];
-    for (i = 0; i < itemCount; i++) {
-        // eslint-disable-next-line unicorn/prefer-structured-clone -- Want JSON
-        items[i] = JSON.parse(JSON.stringify({a: {b: 0, c: 0}, s: {b: {c: bigArray}}}));
+    const items = /** @type {Items} */ ([]);
+    for (let i = 0; i < itemCount; i++) {
+        items[i] = {a: {b: 0, c: 0}, s: {b: {c: bigArray}}};
     }
 
-    for (i = 0; i < resultCount; i++) {
+    for (let i = 0; i < resultCount; i++) {
         json.results[i] = {groups: [], v: {v: [1, 2, 3, 4, 5, 6, 7, 8]}};
         json.results[i].groups = [];
-        for (j = 0; j < groupCount; j++) {
+        for (let j = 0; j < groupCount; j++) {
             json.results[i].groups[j] = {items, a: "121212"};
         }
     }

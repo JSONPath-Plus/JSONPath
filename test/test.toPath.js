@@ -31,7 +31,7 @@ describe('JSONPath - toPath*', function () {
         const json = {foo: {bar: 'baz'}};
         const pathArr = jsonpath.toPathArray(originalPath);
 
-        assert.strictEqual(pathArr.length, 3);
+        assert.lengthOf(pathArr, 3);
 
         // Shouldn't manipulate pathArr values
         jsonpath({
@@ -41,7 +41,7 @@ describe('JSONPath - toPath*', function () {
             resultType: 'value'
         });
 
-        assert.strictEqual(pathArr.length, 3);
+        assert.lengthOf(pathArr, 3);
         const path = jsonpath.toPathString(pathArr);
 
         assert.strictEqual(path, originalPath);

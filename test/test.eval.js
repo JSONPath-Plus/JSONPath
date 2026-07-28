@@ -1,5 +1,9 @@
 import {checkBuiltInVMAndNodeVM} from '../test-helpers/checkVM.js';
 
+/**
+ * @import {SandboxCallback, EvalValue} from '../src/jsonpath.js';
+ */
+
 checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
     describe(`JSONPath - Eval (${vmType} - native)`, function () {
         before(setBuiltInState);
@@ -28,6 +32,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
 
         it('fail if eval is unsupported', () => {
             expect(() => {
+                // @ts-expect-error Bad argument
                 jsonpath({json, path: "$..[?(@.category === category)]", eval: 'wrong-eval'});
             }).to.throw(
                 TypeError,
@@ -124,11 +129,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const expected = [json.store.book];
             const result = jsonpath({
                 json,
-                sandbox: {
+                sandbox: /** @type {{filter: SandboxCallback}} */ ({
                     filter (arg) {
                         return arg.category === 'reference';
                     }
-                },
+                }),
                 path: "$..[?(filter(@))]", wrap: false,
                 eval: 'native'
             });
@@ -138,6 +143,10 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         describe('cyclic object', () => {
             // This is not an eval test, but we put it here for parity with item below
             it('cyclic object without a sandbox', () => {
+                /**
+                 * @typedef {{a: {b: {c: number}, x?: CircularObj}}} CircularObj
+                 */
+                /** @type {CircularObj} */
                 const circular = {a: {b: {c: 5}}};
                 circular.a.x = circular;
                 const expected = circular.a.b;
@@ -150,6 +159,12 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 assert.deepEqual(result, expected);
             });
             it('cyclic object in a sandbox', () => {
+                /**
+                 * @typedef {{
+                 *   category: string, recurse?: CircularObjWithRecurse
+                 * }} CircularObjWithRecurse
+                 */
+                /** @type {CircularObjWithRecurse} */
                 const circular = {category: 'fiction'};
                 circular.recurse = circular;
                 const expected = json.store.books;
@@ -191,8 +206,9 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             }
         };
         it('eval as callback function', () => {
+            /** @type {EvalValue} */
             const evalCb = (code, ctxt) => {
-                const script = new jsonpath.prototype.safeVm.Script(code);
+                const script = new JSONPathClass.prototype.safeVm.Script(code);
                 return script.runInNewContext(ctxt);
             };
             const expected = [json.store.book];
@@ -208,7 +224,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const result = jsonpath({
                 json,
                 path: '$..[?(@.category === "reference")]',
-                eval: jsonpath.prototype.safeVm.Script
+                eval: JSONPathClass.prototype.safeVm.Script
             });
             assert.deepEqual(result, expected);
         });
@@ -218,7 +234,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const result = jsonpath({
                 json,
                 path: '$..[?(@.category.toLowerCase() === "reference")]',
-                eval: jsonpath.prototype.safeVm.Script,
+                eval: JSONPathClass.prototype.safeVm.Script,
                 ignoreEvalErrors: true
             });
             assert.deepEqual(result, expected);

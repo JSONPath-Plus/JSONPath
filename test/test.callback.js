@@ -37,12 +37,16 @@ describe('JSONPath - Callback', function () {
 
     it('Callback', () => {
         const expected = ['value', json.store.bicycle, {path: "$['store']['bicycle']", value: json.store.bicycle, parent: json.store, parentProperty: 'bicycle', hasArrExpr: undefined}];
+
+        /**
+         * @type {undefined|(string|object)[]}
+         */
         let result;
         /**
          *
-         * @param {PlainObject} data
+         * @param {object} data
          * @param {string} type
-         * @param {PlainObject} fullData
+         * @param {object} fullData
          * @returns {void}
          */
         function callback (data, type, fullData) {
@@ -75,12 +79,16 @@ describe('JSONPath - Callback', function () {
                 hasArrExpr: undefined
             }
         ];
+
+        /**
+         * @type {undefined|(string|object)[]}
+         */
         let result;
         /**
          *
-         * @param {PlainObject} data
+         * @param {object} data
          * @param {string} type
-         * @param {PlainObject} fullData
+         * @param {object} fullData
          * @returns {void}
          */
         function callback (data, type, fullData) {
@@ -90,7 +98,7 @@ describe('JSONPath - Callback', function () {
             result.push(type, data, fullData);
         }
         jsonpath({json, path: '$.store.bicycle', resultType: 'all', wrap: false, callback});
-        assert.deepEqual(result[0], expected[0]);
+        assert.deepEqual(result?.[0], expected[0]);
         assert.deepEqual(result, expected);
     });
 
