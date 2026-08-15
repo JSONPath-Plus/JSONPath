@@ -1787,13 +1787,13 @@ class JSONPathClass {
     this.json = opts.json || obj;
     this.path = opts.path || expr;
     this.resultType = opts.resultType || 'value';
-    this.flatten = opts.flatten || false;
+    this.flatten = Object.hasOwn(opts, 'flatten') ? opts.flatten : false;
     this.wrap = Object.hasOwn(opts, 'wrap') ? opts.wrap : true;
     this.sandbox = opts.sandbox || {};
     this.eval = opts.eval === undefined ? 'safe' : opts.eval;
     this.ignoreEvalErrors = typeof opts.ignoreEvalErrors === 'undefined' ? false : opts.ignoreEvalErrors;
-    this.parent = opts.parent || null;
-    this.parentProperty = opts.parentProperty || null;
+    this.parent = Object.hasOwn(opts, 'parent') ? opts.parent : null;
+    this.parentProperty = Object.hasOwn(opts, 'parentProperty') ? opts.parentProperty : null;
     this.callback = opts.callback || (/** @type {JSONPathCallback} */
     callback) || null;
     this.otherTypeCallback = opts.otherTypeCallback || otherTypeCallback || function () {
@@ -1867,15 +1867,15 @@ class JSONPathClass {
       ({
         json
       } = exprObj);
-      flatten = Object.hasOwn(exprObj, 'flatten') ? exprObj.flatten ?? flatten : flatten;
+      flatten = Object.hasOwn(exprObj, 'flatten') ? exprObj.flatten : flatten;
       this.currResultType = Object.hasOwn(exprObj, 'resultType') ? exprObj.resultType : this.currResultType;
       this.currSandbox = Object.hasOwn(exprObj, 'sandbox') ? exprObj.sandbox : this.currSandbox;
       wrap = Object.hasOwn(exprObj, 'wrap') ? exprObj.wrap : wrap;
       this.currEval = Object.hasOwn(exprObj, 'eval') ? exprObj.eval : this.currEval;
       callback = Object.hasOwn(exprObj, 'callback') ? exprObj.callback : callback;
       this.currOtherTypeCallback = Object.hasOwn(exprObj, 'otherTypeCallback') ? exprObj.otherTypeCallback : this.currOtherTypeCallback;
-      currParent = Object.hasOwn(exprObj, 'parent') ? exprObj.parent ?? currParent : currParent;
-      currParentProperty = Object.hasOwn(exprObj, 'parentProperty') ? exprObj.parentProperty ?? currParentProperty : currParentProperty;
+      currParent = Object.hasOwn(exprObj, 'parent') ? exprObj.parent : currParent;
+      currParentProperty = Object.hasOwn(exprObj, 'parentProperty') ? exprObj.parentProperty : currParentProperty;
       expr = exprObj.path;
     } else {
       json ||= this.json;

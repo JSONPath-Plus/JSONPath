@@ -182,6 +182,27 @@ describe('JSONPath - API', function () {
         assert.deepEqual(result, expected);
     });
 
+    it('should preserve explicit null overrides in evaluate options', () => {
+        const jp = jsonpath({
+            autostart: false,
+            parent: {sentinel: true},
+            parentProperty: 'sentinel'
+        });
+        const result = /** @type {{parent: unknown, parentProperty: unknown, value: unknown}} */ (
+            jp.evaluate({
+                json,
+                path: '$',
+                parent: null,
+                parentProperty: null,
+                wrap: false,
+                resultType: 'all'
+            })
+        );
+        assert.deepEqual(result.parent, null);
+        assert.deepEqual(result.parentProperty, null);
+        assert.deepEqual(result.value, json);
+    });
+
     it('should handle nested filter with single result', () => {
         const testJson = {
             items: [
