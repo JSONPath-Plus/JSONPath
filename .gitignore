@@ -9,3 +9,4 @@ reports
 target
 *.log
 coverage
+xunit.xml
