@@ -1361,7 +1361,7 @@ const SafeEval = {
     // NOTE: `String(value)` throws error when
     // value has overwritten the toString method to return non-string
     // i.e. `value = {toString: () => []}`
-    ast.computed ? SafeEval.evalAst(ast.property, {}) // `object[property]`
+    ast.computed ? SafeEval.evalAst(ast.property, subs) // `object[property]`
     : ast.property.name // `object.property` property is Identifier
     );
     const obj = SafeEval.evalAst(ast.object, subs);
@@ -1666,13 +1666,21 @@ class NewError extends Error {
  *   "other" type or not (or it may handle transformations and return
  *   `false`).
  * @param {undefined} [otherTypeCallback]
- * @returns {unknown|JSONPathClass}
+ * @returns {unknown} The string form always has `autostart` implicitly
+ *   `true`, so the result is the evaluated value, not a `JSONPathClass`
+ */
+/**
+ * @overload
+ * @param {JSONPathOptions & {autostart: false}} opts An options object
+ *   with `autostart` explicitly set to `false` defers evaluation and
+ *   returns the `JSONPathClass` instance instead
+ * @returns {JSONPathClass}
  */
 /**
  * @overload
  * @param {JSONPathOptions} opts If a string, will be treated as
  *   `expr`
- * @returns {unknown|JSONPathClass}
+ * @returns {unknown}
  */
 /**
  * @param {JSONPathOptions|string} opts If a string, will be treated as `expr`

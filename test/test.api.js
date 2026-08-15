@@ -60,18 +60,18 @@ describe('JSONPath - API', function () {
     it('should test defaults on manual `evaluate` with `autostart: false`', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
-        let jp = /** @type {JSONPathClass} */ (jsonpath({
+        let jp = jsonpath({
             path: '$.store.book[*].author',
             json,
             autostart: false
-        }));
+        });
         let result = jp.evaluate();
         assert.deepEqual(result, expected);
-        jp = /** @type {JSONPathClass} */ (jsonpath({
+        jp = jsonpath({
             json,
             path: 'store.book[*].author',
             autostart: false
-        }));
+        });
         result = jp.evaluate();
         assert.deepEqual(result, expected);
     });
@@ -79,9 +79,9 @@ describe('JSONPath - API', function () {
     it('should test defaults with `evaluate` object and `autostart: false`', () => {
         const books = json.store.book;
         const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
-        const jp = /** @type {JSONPathClass} */ (jsonpath({
+        const jp = jsonpath({
             autostart: false
-        }));
+        });
         const result = jp.evaluate({
             json,
             path: '$.store.book[*].author',
@@ -101,9 +101,9 @@ describe('JSONPath - API', function () {
     });
 
     it('should handle _handleCallback with undefined callback', () => {
-        const jp = /** @type {JSONPathClass} */ (jsonpath({
+        const jp = jsonpath({
             autostart: false
-        }));
+        });
         // Test the defensive check in _handleCallback when callback is undefined
         const retObj = {
             path: "$['store']['book'][0]",
@@ -118,9 +118,9 @@ describe('JSONPath - API', function () {
     });
 
     it('should handle _getPreferredOutput with string path and all resultType', () => {
-        const jp = /** @type {JSONPathClass} */ (jsonpath({
+        const jp = jsonpath({
             autostart: false
-        }));
+        });
         jp.currResultType = 'all';
         const retObj = {
             path: "$['store']['book'][0]",
@@ -137,9 +137,9 @@ describe('JSONPath - API', function () {
     });
 
     it('should return string path directly in _getPreferredOutput for path resultType', () => {
-        const jp = /** @type {JSONPathClass} */ (jsonpath({
+        const jp = jsonpath({
             autostart: false
-        }));
+        });
         jp.currResultType = 'path';
         const retObj = {
             path: "$['store']['book'][0]",
@@ -153,9 +153,9 @@ describe('JSONPath - API', function () {
     });
 
     it('should convert string path to array for pointer resultType', () => {
-        const jp = /** @type {JSONPathClass} */ (jsonpath({
+        const jp = jsonpath({
             autostart: false
-        }));
+        });
         jp.currResultType = 'pointer';
         const retObj = {
             path: "$['store']['book'][0]",
@@ -169,9 +169,9 @@ describe('JSONPath - API', function () {
     });
 
     it('should handle flatten: null in evaluate options', () => {
-        const jp = /** @type {JSONPathClass} */ (jsonpath({
+        const jp = jsonpath({
             autostart: false
-        }));
+        });
         const result = jp.evaluate({
             json,
             path: '$.store.book[*].author',
@@ -240,7 +240,7 @@ describe('JSONPath - API', function () {
                 return false;
             }
         });
-        assert.deepEqual(result, []);
+        assert.deepEqual(/** @type {unknown} */ (result), []);
     });
 
     it('should handle nested filter with property access', () => {
