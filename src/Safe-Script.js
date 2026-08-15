@@ -216,7 +216,7 @@ const SafeEval = {
             // value has overwritten the toString method to return non-string
             // i.e. `value = {toString: () => []}`
             ast.computed
-                ? SafeEval.evalAst(ast.property, {}) // `object[property]`
+                ? SafeEval.evalAst(ast.property, subs) // `object[property]`
                 : ast.property.name // `object.property` property is Identifier
         );
         const obj = SafeEval.evalAst(ast.object, subs);
