@@ -3,5 +3,6 @@
   "compilerOptions": {
     "lib": ["es2024", "dom"]
   },
-  "include": ["."]
+  "include": ["."],
+  "exclude": ["node-import-test.js"]
 }

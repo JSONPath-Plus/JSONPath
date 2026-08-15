@@ -1,4 +1,3 @@
-import '../src/jsonpath.d.ts'
 import type { JSONPathType } from 'jsonpath-plus';
 
 declare global {
