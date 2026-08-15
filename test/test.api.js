@@ -299,6 +299,21 @@ describe('JSONPath - API', function () {
         assert.deepEqual(result, []);
     });
 
+    // Behavior change: an `undefined` eval result no longer falls through to
+    //   the literal `"undefined"` property (which previously also threw for
+    //   some inputs); it now matches nothing.
+    it('should not match the literal "undefined" key for an undefined parenthesis expression', () => {
+        const testJson = {undefined: 'X', a: 'A'};
+        assert.deepEqual(jsonpath({
+            json: testJson,
+            path: '$[(undefined)]'
+        }), []);
+        assert.deepEqual(jsonpath({
+            json: testJson,
+            path: "$['undefined']"
+        }), ['X']);
+    });
+
     it('should handle @path expression without predefined sandbox', () => {
         const testJson = {a: 1, b: 2};
         // Don't provide sandbox, let it be created on demand

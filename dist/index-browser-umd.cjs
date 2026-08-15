@@ -1584,7 +1584,13 @@
 	 */
 
 	/**
-	 * @typedef {typeof SafeScript} EvalClass
+	 * @typedef {new (expr: string) => {
+	 *   runInNewContext: (context: object) => EvaluatedResult
+	 * }} ScriptConstructor
+	 */
+
+	/**
+	 * @typedef {ScriptConstructor} EvalClass
 	 */
 
 	/**
@@ -1598,12 +1604,6 @@
 
 	/**
 	 * @typedef {string|string[]} PathType
-	 */
-
-	/**
-	 * @typedef {new (expr: string) => {
-	 *   runInNewContext: (context: object) => EvaluatedResult
-	 * }} ScriptConstructor
 	 */
 
 	/**

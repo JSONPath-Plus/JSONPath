@@ -151,4 +151,59 @@ describe('JSONPath - Callback', function () {
         const result = givenPerson;
         assert.deepEqual(result, expected);
     });
+
+    // The callback stringifies `retObj.path` in place, so the returned
+    //   results are built from an already-stringified path.
+    it('returns unmangled paths with `resultType: "path"` and a callback', () => {
+        /** @type {unknown[]} */
+        const seen = [];
+        const result = jsonpath({
+            json,
+            path: '$.store.book[*].author',
+            resultType: 'path',
+            callback (preferredOutput) {
+                seen.push(preferredOutput);
+            }
+        });
+        const expected = [
+            "$['store']['book'][0]['author']",
+            "$['store']['book'][1]['author']",
+            "$['store']['book'][2]['author']",
+            "$['store']['book'][3]['author']"
+        ];
+        assert.deepEqual(result, expected);
+        assert.deepEqual(seen, expected);
+    });
+
+    it('returns unmangled pointers with `resultType: "pointer"` and a callback', () => {
+        /** @type {unknown[]} */
+        const seen = [];
+        const result = jsonpath({
+            json,
+            path: '$.store.book[*].author',
+            resultType: 'pointer',
+            callback (preferredOutput) {
+                seen.push(preferredOutput);
+            }
+        });
+        const expected = [
+            '/store/book/0/author',
+            '/store/book/1/author',
+            '/store/book/2/author',
+            '/store/book/3/author'
+        ];
+        assert.deepEqual(result, expected);
+        assert.deepEqual(seen, expected);
+    });
+
+    it('returns an unmangled path with `resultType: "path"`, `wrap: false`, and a callback', () => {
+        const result = jsonpath({
+            json,
+            path: '$.store.bicycle.color',
+            resultType: 'path',
+            wrap: false,
+            callback () { /* */ }
+        });
+        assert.deepEqual(result, "$['store']['bicycle']['color']");
+    });
 });

@@ -198,4 +198,35 @@ describe('JSONPath - Type Operators', function () {
         });
         assert.deepEqual(result, expected);
     });
+
+    it('unwraps a lone type-operator result with `wrap: false`', () => {
+        const result = jsonpath({
+            json: {a: 1}, path: '$..*[@number()]', wrap: false
+        });
+        assert.deepEqual(result, 1);
+    });
+
+    it('still wraps multiple type-operator results with `wrap: false`', () => {
+        const result = jsonpath({
+            json: {a: 1, b: 2}, path: '$..*[@number()]', wrap: false
+        });
+        assert.deepEqual(result, [1, 2]);
+    });
+
+    it('adds no `hasArrExpr` key to `resultType: "all"` results', () => {
+        const jsonSimple = {a: 1};
+        const result = /** @type {object[]} */ (jsonpath({
+            json: jsonSimple, path: '$..*[@number()]', resultType: 'all'
+        }));
+        assert.deepEqual(Object.keys(result[0]), [
+            'path', 'value', 'parent', 'parentProperty', 'pointer'
+        ]);
+        assert.deepEqual(result, [{
+            path: "$['a']",
+            value: 1,
+            parent: jsonSimple,
+            parentProperty: 'a',
+            pointer: '/a'
+        }]);
+    });
 });
