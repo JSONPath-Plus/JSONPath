@@ -1565,7 +1565,7 @@
 	 * @param {ExpressionArray} path
 	 * @param {ParentValue} parent
 	 * @param {string|null} parentPropName
-	 * @returns {boolean}
+	 * @returns {boolean|null}
 	 */
 
 	/**
@@ -1725,7 +1725,6 @@
 	   *   "other" type or not (or it may handle transformations and return
 	   *   `false`).
 	   * @param {undefined} [otherTypeCallback]
-	   * @returns {JSONPath|JSONPathClass}
 	   */
 	  /**
 	   * @overload
@@ -1768,16 +1767,6 @@
 
 	    /** @type {OtherTypeCallback|undefined} */
 	    this.currOtherTypeCallback = undefined;
-
-	    /** @type {SafeScriptType} */
-	    // eslint-disable-next-line @stylistic/max-len -- Long
-	    // eslint-disable-next-line unicorn/no-undeclared-class-members, no-unused-expressions -- On prototype
-	    this.safeVm;
-
-	    /** @type {ScriptType} */
-	    // eslint-disable-next-line @stylistic/max-len -- Long
-	    // eslint-disable-next-line unicorn/no-undeclared-class-members, no-unused-expressions -- On prototype
-	    this.vm;
 
 	    /** @type {SandboxType|undefined} */
 	    this.currSandbox = undefined;
@@ -2336,18 +2325,34 @@
 	        const {
 	          cache
 	        } = JSONPath;
-	        cache[scriptCacheKey] = new 
 	        // eslint-disable-next-line @stylistic/max-len -- Long
-	        // eslint-disable-next-line unicorn/no-undeclared-class-members -- Prototype
-	        this.safeVm.Script(script);
+	        /* eslint-disable unicorn/no-undeclared-class-members -- Prototype members */
+	        cache[scriptCacheKey] = new (
+	        /**
+	         * @type {JSONPathClass & {
+	         *   safeVm: SafeScriptType,
+	         *   vm: ScriptType
+	         * }}
+	         */ /** @type {unknown} */
+	        this).safeVm.Script(script);
+	        // eslint-disable-next-line @stylistic/max-len -- Long
+	        /* eslint-enable unicorn/no-undeclared-class-members -- End prototype member scope */
 	      } else if (this.currEval === 'native') {
 	        const {
 	          cache
 	        } = JSONPath;
-	        cache[scriptCacheKey] = new 
 	        // eslint-disable-next-line @stylistic/max-len -- Long
-	        // eslint-disable-next-line unicorn/no-undeclared-class-members -- Prototype
-	        this.vm.Script(script);
+	        /* eslint-disable unicorn/no-undeclared-class-members -- Prototype members */
+	        cache[scriptCacheKey] = new (
+	        /**
+	         * @type {JSONPathClass & {
+	         *   safeVm: SafeScriptType,
+	         *   vm: ScriptType
+	         * }}
+	         */ /** @type {unknown} */
+	        this).vm.Script(script);
+	        // eslint-disable-next-line @stylistic/max-len -- Long
+	        /* eslint-enable unicorn/no-undeclared-class-members -- End prototype member scope */
 	      } else if (typeof this.currEval === 'function' && this.currEval.prototype && Object.hasOwn(this.currEval.prototype, 'runInNewContext')) {
 	        const CurrEval = this.currEval;
 	        const {
@@ -2395,7 +2400,9 @@
 	    }
 	  }
 	}
-	JSONPathClass.prototype.safeVm = {
+
+	/** @type {{safeVm: SafeScriptType}} */
+	(/** @type {unknown} */JSONPathClass.prototype).safeVm = {
 	  Script: SafeScript
 	};
 	JSONPath.prototype = JSONPathClass.prototype;
@@ -2640,7 +2647,9 @@
 	    return new Function(...keys, code)(...values);
 	  }
 	}
-	JSONPathClass.prototype.vm = {
+
+	/** @type {{vm: ScriptType}} */
+	(/** @type {unknown} */JSONPathClass.prototype).vm = {
 	  Script
 	};
 

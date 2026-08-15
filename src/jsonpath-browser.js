@@ -157,7 +157,8 @@ class Script {
     }
 }
 
-JSONPathClass.prototype.vm = {
+/** @type {{vm: ScriptType}} */
+(/** @type {unknown} */ (JSONPathClass.prototype)).vm = {
     Script
 };
 

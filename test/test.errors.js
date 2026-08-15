@@ -25,10 +25,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
 
         it('should throw with a bad result type', () => {
             expect(() => {
-                // @ts-expect-error Bad argument
+                // @ts-ignore -- Deliberately invalid result type.
                 jsonpath({
                     json: {children: [5]},
                     path: '$..children',
+                    // @ts-ignore -- Deliberately invalid result type.
                     resultType: 'badType'
                 });
             }).to.throw(TypeError, 'Unknown result type');

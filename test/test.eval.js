@@ -185,7 +185,9 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         before(setBuiltInState);
         it('preserves the prototype compatibility surface', () => {
             assert.strictEqual(JSONPath.prototype.evaluate, JSONPathClass.prototype.evaluate);
+            // @ts-ignore -- Prototype compatibility surface.
             assert.strictEqual(JSONPath.prototype.safeVm, JSONPathClass.prototype.safeVm);
+            // @ts-ignore -- Prototype compatibility surface.
             assert.strictEqual(JSONPath.prototype.vm, JSONPathClass.prototype.vm);
         });
         const json = {
@@ -213,6 +215,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         it('eval as callback function', () => {
             /** @type {EvalValue} */
             const evalCb = (code, ctxt) => {
+                // @ts-ignore -- Prototype compatibility surface.
                 const script = new JSONPathClass.prototype.safeVm.Script(code);
                 return script.runInNewContext(ctxt);
             };
@@ -229,6 +232,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const result = jsonpath({
                 json,
                 path: '$..[?(@.category === "reference")]',
+                // @ts-ignore -- Prototype compatibility surface.
                 eval: JSONPathClass.prototype.safeVm.Script
             });
             assert.deepEqual(result, expected);
@@ -239,6 +243,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const result = jsonpath({
                 json,
                 path: '$..[?(@.category.toLowerCase() === "reference")]',
+                // @ts-ignore -- Prototype compatibility surface.
                 eval: JSONPathClass.prototype.safeVm.Script,
                 ignoreEvalErrors: true
             });

@@ -18,7 +18,7 @@ export type ReturnObject = {
     pointer?: string | undefined;
 };
 export type JSONPathCallback = (preferredOutput: any, type: "value" | "property", fullRetObj: ReturnObject) => void;
-export type OtherTypeCallback = (val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: string | null) => boolean;
+export type OtherTypeCallback = (val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: string | null) => boolean | null;
 export type ContextItem = any;
 export type EvaluatedResult = any;
 export type EvalCallback = (code: string, context: ContextItem) => EvaluatedResult;
@@ -134,7 +134,6 @@ export class JSONPathClass {
      *   "other" type or not (or it may handle transformations and return
      *   `false`).
      * @param {undefined} [otherTypeCallback]
-     * @returns {JSONPath|JSONPathClass}
      */
     constructor(opts: string, expr?: AnyInput, obj?: JSONPathCallback | undefined, callback?: OtherTypeCallback | undefined, otherTypeCallback?: undefined);
     /**
@@ -149,10 +148,6 @@ export class JSONPathClass {
     currEval: EvalValue | undefined;
     /** @type {OtherTypeCallback|undefined} */
     currOtherTypeCallback: OtherTypeCallback | undefined;
-    /** @type {SafeScriptType} */
-    safeVm: SafeScriptType;
-    /** @type {ScriptType} */
-    vm: ScriptType;
     /** @type {SandboxType|undefined} */
     currSandbox: SandboxType | undefined;
     _hasParentSelector: boolean;

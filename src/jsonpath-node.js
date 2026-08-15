@@ -74,9 +74,11 @@ import {JSONPath, JSONPathClass} from './jsonpath.js';
 // Node's vm module shape is wider than ScriptType, but is compatible for
 // the properties actually used (Script) -- kept Node-specific here so
 // `node:vm` types don't leak into the shared/browser declarations.
-JSONPathClass.prototype.vm = /** @type {ScriptType} */ (
-    /** @type {unknown} */ (vm)
-);
+/** @type {{vm: ScriptType}} */
+(/** @type {unknown} */ (JSONPathClass.prototype)).vm =
+    /** @type {ScriptType} */ (
+        /** @type {unknown} */ (vm)
+    );
 
 export {
     JSONPath, JSONPathClass

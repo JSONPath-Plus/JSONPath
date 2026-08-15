@@ -249,7 +249,6 @@ describe('JSONPath - API', function () {
             values: [1, 'text', true, null, {obj: 'value'}]
         };
 
-        // @ts-expect-error Testing
         const result = jsonpath({
             json: testJson,
             path: '$.values[*]@other()',
