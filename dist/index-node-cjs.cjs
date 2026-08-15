@@ -1603,7 +1603,7 @@ function unshift(item, arr) {
  */
 
 /**
- * @typedef {import('node:vm')|{Script: typeof Script}} ScriptType
+ * @typedef {{Script: typeof Script}} ScriptType
  */
 
 /**
@@ -2553,7 +2553,11 @@ JSONPath.toPathArray = function (expr) {
  * @typedef {import('./jsonpath.js').JSONPathOptions} JSONPathOptions
  */
 
-JSONPathClass.prototype.vm = vm;
+// Node's vm module shape is wider than ScriptType, but is compatible for
+// the properties actually used (Script) -- kept Node-specific here so
+// `node:vm` types don't leak into the shared/browser declarations.
+JSONPathClass.prototype.vm = /** @type {ScriptType} */
+/** @type {unknown} */vm;
 
 exports.JSONPath = JSONPath;
 exports.JSONPathClass = JSONPathClass;

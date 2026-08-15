@@ -1599,7 +1599,7 @@ function unshift(item, arr) {
  */
 
 /**
- * @typedef {import('node:vm')|{Script: typeof Script}} ScriptType
+ * @typedef {{Script: typeof Script}} ScriptType
  */
 
 /**

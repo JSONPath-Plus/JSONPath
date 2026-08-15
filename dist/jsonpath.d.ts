@@ -29,7 +29,7 @@ export type PathType = string | string[];
 export type SafeScriptType = {
     Script: typeof SafeScript;
 };
-export type ScriptType = typeof import("node:vm") | {
+export type ScriptType = {
     Script: typeof Script;
 };
 export type SandboxType = {
