@@ -10,6 +10,7 @@ globalThis.expect = expect;
 
 globalThis.jsonpathNodeVM = JSONPath;
 globalThis.jsonpath = JSONPath;
+globalThis.JSONPath = JSONPath;
 globalThis.jsonpathBrowser = JSONPathBrowser;
 globalThis.JSONPathClass = JSONPathClass;
 /* eslint-enable unicorn/no-global-object-property-assignment -- Test env */

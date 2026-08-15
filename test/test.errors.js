@@ -91,5 +91,14 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 });
             }).to.throw(Error, 'jsonPath: Invalid left-hand side in assignment: 2 = 8');
         });
+
+        it('should throw when `new JSONPath` would unwrap a scalar result', () => {
+            expect(() => {
+                new globalThis.JSONPath({json: {a: 1}, path: '$.a'});
+            }).to.throw(
+                Error,
+                'JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)'
+            );
+        });
     });
 });

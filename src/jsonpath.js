@@ -70,26 +70,6 @@ function unshift (item, arr) {
 }
 
 /**
- * Caught when JSONPath is used without `new` but rethrown if with `new`
- * @extends Error
- */
-class NewError extends Error {
-    /**
-     * @param {UnknownResult} value The evaluated scalar value
-     * @param {ErrorOptions} [options]
-     */
-    constructor (value, options) {
-        super(
-            'JSONPath should not be called with "new" (it prevents return ' +
-            'of (unwrapped) scalar values)',
-            options
-        );
-        this.value = value;
-        this.name = 'NewError';
-    }
-}
-
-/**
  * @typedef {object} ReturnObject
  * @property {ExpressionArray|string} path
  * @property {unknown} value
@@ -249,11 +229,13 @@ function JSONPath (opts, expr, obj, callback, otherTypeCallback) {
             /** @type {undefined} */ (otherTypeCallback)
         );
     } catch (e) {
-        // eslint-disable-next-line no-restricted-syntax -- Within the file
-        if (!(e instanceof NewError)) {
+        if (new.target) {
             throw e;
         }
-        return e.value;
+        if (e && typeof e === 'object' && 'value' in e) {
+            return /** @type {{value: UnknownResult}} */ (e).value;
+        }
+        throw e;
     }
 }
 
@@ -374,7 +356,12 @@ class JSONPathClass {
             }
             const ret = this.evaluate(args);
             if (!ret || typeof ret !== 'object') {
-                throw new NewError(ret);
+                const err = new Error(
+                    'JSONPath should not be called with "new" (it prevents ' +
+                    'return of (unwrapped) scalar values)'
+                );
+                err.value = ret;
+                throw err;
             }
 
             // eslint-disable-next-line @stylistic/max-len -- Long
