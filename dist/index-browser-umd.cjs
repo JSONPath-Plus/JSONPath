@@ -1493,9 +1493,9 @@
 	 */
 
 	/**
-	 * @typedef {"scalar"|"boolean"|"string"|"undefined"|
-	 *   "function"|"integer"|"number"|"nonFinite"|"object"|
-	 *   "array"|"other"|"null"} ValueType
+	 * @typedef {"scalar"|"boolean"|"string"|"undefined"
+	 *   |"function"|"integer"|"number"|"nonFinite"|"object"
+	 *   |"array"|"other"|"null"} ValueType
 	 */
 
 	/**
@@ -1511,8 +1511,8 @@
 	 */
 
 	/**
-	 * @typedef {ReturnObject|string|number|boolean|null|unknown[]|
-	 *   Record<string, unknown>} PreferredOutput
+	 * @typedef {ReturnObject|string|number|boolean|null|unknown[]
+	 *   |Record<string, unknown>} PreferredOutput
 	 */
 
 	/**
@@ -1594,8 +1594,8 @@
 	 */
 
 	/**
-	 * @typedef {"value"|"path"|"pointer"|"parent"|"parentProperty"|
-	 *   "all"} ResultType
+	 * @typedef {"value"|"path"|"pointer"|"parent"|"parentProperty"
+	 *   |"all"} ResultType
 	 */
 
 	/**
