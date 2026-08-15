@@ -43,7 +43,8 @@ import {SafeScript} from './Safe-Script.js';
  */
 
 /**
- * @typedef {unknown|ParentValue|string|ReturnObject} PreferredOutput
+ * @typedef {ReturnObject|string|number|boolean|null|unknown[]|
+ *   Record<string, unknown>} PreferredOutput
  */
 
 /**
@@ -115,7 +116,13 @@ function unshift (item, arr) {
  */
 
 /**
- * @typedef {typeof SafeScript} EvalClass
+ * @typedef {new (expr: string) => {
+ *   runInNewContext: (context: object) => EvaluatedResult
+ * }} ScriptConstructor
+ */
+
+/**
+ * @typedef {ScriptConstructor} EvalClass
  */
 
 /**
@@ -132,11 +139,11 @@ function unshift (item, arr) {
  */
 
 /**
- * @typedef {{Script: typeof SafeScript}} SafeScriptType
+ * @typedef {{Script: ScriptConstructor}} SafeScriptType
  */
 
 /**
- * @typedef {{Script: typeof Script}} ScriptType
+ * @typedef {{Script: ScriptConstructor}} ScriptType
  */
 
 /**
@@ -161,7 +168,7 @@ function unshift (item, arr) {
  * @property {SandboxType} [sandbox={}]
  * @property {EvalValue} [eval='safe']
  * @property {any|null} [parent=null]
- * @property {string|null} [parentProperty=null]
+ * @property {ParentProperty} [parentProperty=null]
  * @property {JSONPathCallback} [callback]
  * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
  *   function which throws on encountering `@other`
@@ -536,7 +543,7 @@ class JSONPathClass {
                 : JSONPath.toPathString(/** @type {string[]} */ (ea.path));
             return ea;
         } case 'value': case 'parent': case 'parentProperty':
-            return ea[resultType];
+            return /** @type {PreferredOutput} */ (ea[resultType]);
         case 'path':
             if (typeof ea.path === 'string') {
                 return ea.path;

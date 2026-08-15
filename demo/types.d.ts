@@ -1,4 +1,4 @@
-import type { JSONPathType } from 'jsonpath-plus';
+import type {JSONPathClass} from 'jsonpath-plus';
 
 declare global {
     var LZString: {
@@ -6,6 +6,6 @@ declare global {
         compressToEncodedURIComponent: (value: string) => string;
     };
     var JSONPath: {
-        JSONPath: JSONPathType
+        JSONPath: typeof JSONPathClass
     }
 }

@@ -1209,8 +1209,7 @@
 	 */
 
 	/**
-	 * @typedef {import('@jsep-plugin/assignment').
-	 *   AssignmentExpression} AssignmentExpression
+	 * @typedef {any} AssignmentExpression
 	 */
 
 	/**
@@ -1453,7 +1452,7 @@
 	   */
 	  constructor(expr) {
 	    this.code = expr;
-	    this.ast = jsep(this.code);
+	    this.ast = /** @type {unknown} */jsep(this.code);
 	  }
 
 	  /**
@@ -1464,7 +1463,7 @@
 	  runInNewContext(context) {
 	    // `Object.create(null)` creates a prototypeless object
 	    const keyMap = Object.assign(Object.create(null), context);
-	    return SafeEval.evalAst(this.ast, keyMap);
+	    return SafeEval.evalAst(/** @type {jsep.Expression} */this.ast, keyMap);
 	  }
 	}
 
@@ -1512,7 +1511,8 @@
 	 */
 
 	/**
-	 * @typedef {unknown|ParentValue|string|ReturnObject} PreferredOutput
+	 * @typedef {ReturnObject|string|number|boolean|null|unknown[]|
+	 *   Record<string, unknown>} PreferredOutput
 	 */
 
 	/**
@@ -1601,11 +1601,17 @@
 	 */
 
 	/**
-	 * @typedef {{Script: typeof SafeScript}} SafeScriptType
+	 * @typedef {new (expr: string) => {
+	 *   runInNewContext: (context: object) => EvaluatedResult
+	 * }} ScriptConstructor
 	 */
 
 	/**
-	 * @typedef {{Script: typeof Script}} ScriptType
+	 * @typedef {{Script: ScriptConstructor}} SafeScriptType
+	 */
+
+	/**
+	 * @typedef {{Script: ScriptConstructor}} ScriptType
 	 */
 
 	/**
@@ -1630,7 +1636,7 @@
 	 * @property {SandboxType} [sandbox={}]
 	 * @property {EvalValue} [eval='safe']
 	 * @property {any|null} [parent=null]
-	 * @property {string|null} [parentProperty=null]
+	 * @property {ParentProperty} [parentProperty=null]
 	 * @property {JSONPathCallback} [callback]
 	 * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
 	 *   function which throws on encountering `@other`
@@ -1938,7 +1944,7 @@
 	      case 'value':
 	      case 'parent':
 	      case 'parentProperty':
-	        return ea[resultType];
+	        return /** @type {PreferredOutput} */ea[resultType];
 	      case 'path':
 	        if (typeof ea.path === 'string') {
 	          return ea.path;

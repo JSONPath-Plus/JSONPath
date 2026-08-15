@@ -6,7 +6,7 @@ export type ValueType = "scalar" | "boolean" | "string" | "undefined" | "functio
 export type ParentValue = unknown;
 export type UnknownResult = unknown;
 export type ParentProperty = string | number | null;
-export type PreferredOutput = unknown | ParentValue | string | ReturnObject;
+export type PreferredOutput = ReturnObject | string | number | boolean | null | unknown[] | Record<string, unknown>;
 export type ReturnObject = {
     path: ExpressionArray | string;
     value: unknown;
@@ -22,15 +22,18 @@ export type OtherTypeCallback = (val: unknown, path: ExpressionArray, parent: Pa
 export type ContextItem = any;
 export type EvaluatedResult = any;
 export type EvalCallback = (code: string, context: ContextItem) => EvaluatedResult;
-export type EvalClass = typeof SafeScript;
+export type ScriptConstructor = new (expr: string) => {
+    runInNewContext: (context: object) => EvaluatedResult;
+};
+export type EvalClass = ScriptConstructor;
 export type ResultType = "value" | "path" | "pointer" | "parent" | "parentProperty" | "all";
 export type EvalValue = EvalCallback | EvalClass | "safe" | "native" | boolean;
 export type PathType = string | string[];
 export type SafeScriptType = {
-    Script: typeof SafeScript;
+    Script: ScriptConstructor;
 };
 export type ScriptType = {
-    Script: typeof Script;
+    Script: ScriptConstructor;
 };
 export type SandboxType = {
     _$_path?: string;
@@ -50,7 +53,7 @@ export type JSONPathOptions = {
     sandbox?: SandboxType | undefined;
     eval?: EvalValue | undefined;
     parent?: any | null;
-    parentProperty?: string | null | undefined;
+    parentProperty?: ParentProperty | undefined;
     callback?: JSONPathCallback | undefined;
     /**
      * Defaults to
@@ -162,7 +165,7 @@ export class JSONPathClass {
     eval: EvalValue;
     ignoreEvalErrors: boolean;
     parent: any;
-    parentProperty: string | null | undefined;
+    parentProperty: ParentProperty | undefined;
     callback: JSONPathCallback;
     otherTypeCallback: OtherTypeCallback;
     /**
@@ -233,5 +236,3 @@ export class JSONPathClass {
      */
     _eval(code: string, _v: unknown, _vname: string | number, path: ExpressionArray, parent: ParentValue, parentPropName: ParentProperty): UnknownResult;
 }
-import { SafeScript } from './Safe-Script.js';
-import type { Script } from './jsonpath-browser.js';

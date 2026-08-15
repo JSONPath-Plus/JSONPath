@@ -85,7 +85,9 @@ const updateResults = () => {
         const result = new JSONPath.JSONPath({
             path: jsonpathEl.value,
             json,
-            eval: $i('#eval').value === 'false' ? false : $i('#eval').value,
+            eval: /** @type {'safe'|'native'|boolean} */ (
+                $i('#eval').value === 'false' ? false : $i('#eval').value
+            ),
             ignoreEvalErrors: $i('#ignoreEvalErrors').value === 'true'
         });
         $i('#results').value = JSON.stringify(result, null, 2);

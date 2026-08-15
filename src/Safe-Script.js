@@ -9,8 +9,7 @@ import jsepAssignment from '@jsep-plugin/assignment';
  */
 
 /**
- * @typedef {import('@jsep-plugin/assignment').
- *   AssignmentExpression} AssignmentExpression
+ * @typedef {any} AssignmentExpression
  */
 
 /**
@@ -323,7 +322,7 @@ class SafeScript {
      */
     constructor (expr) {
         this.code = expr;
-        this.ast = jsep(this.code);
+        this.ast = /** @type {unknown} */ (jsep(this.code));
     }
 
     /**
@@ -334,7 +333,10 @@ class SafeScript {
     runInNewContext (context) {
         // `Object.create(null)` creates a prototypeless object
         const keyMap = Object.assign(Object.create(null), context);
-        return SafeEval.evalAst(this.ast, keyMap);
+        return SafeEval.evalAst(
+            /** @type {jsep.Expression} */ (this.ast),
+            keyMap
+        );
     }
 }
 

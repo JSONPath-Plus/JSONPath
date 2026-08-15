@@ -1,4 +1,4 @@
-export type AssignmentExpression = import("@jsep-plugin/assignment").AssignmentExpression;
+export type AssignmentExpression = any;
 export type Substitution = any;
 export type AnyParameter = any;
 export type Substitutions = Record<string, Substitution>;
@@ -11,7 +11,7 @@ export class SafeScript {
      */
     constructor(expr: string);
     code: string;
-    ast: jsep.Expression;
+    ast: unknown;
     /**
      * @param {object} context Object whose items will be added
      *   to evaluation
@@ -19,5 +19,4 @@ export class SafeScript {
      */
     runInNewContext(context: object): EvaluatedResult;
 }
-import jsep from 'jsep';
 import type { EvaluatedResult } from './jsonpath.js';
