@@ -1,25 +1,24 @@
 export type AnyInput = any;
 export type SandboxCallback = ((...args: any[]) => any);
 export type SandboxPropertyValue = any | SandboxCallback;
-export type UnknownArray = unknown[];
+export type ExpressionArray = (string | number)[];
 export type ValueType = "scalar" | "boolean" | "string" | "undefined" | "function" | "integer" | "number" | "nonFinite" | "object" | "array" | "other" | "null";
 export type ParentValue = unknown;
-export type UnknownItem = unknown;
 export type UnknownResult = unknown;
 export type ParentProperty = string | number | null;
 export type PreferredOutput = unknown | ParentValue | string | ReturnObject;
 export type ReturnObject = {
-    path: UnknownArray | string;
+    path: ExpressionArray | string;
     value: unknown;
     parent: ParentValue;
     parentProperty: ParentProperty;
     isParentSelector?: boolean | undefined;
     hasArrExpr?: boolean | undefined;
-    expr?: UnknownArray | undefined;
+    expr?: ExpressionArray | undefined;
     pointer?: string | undefined;
 };
 export type JSONPathCallback = (preferredOutput: any, type: "value" | "property", fullRetObj: ReturnObject) => void;
-export type OtherTypeCallback = (val: unknown, path: UnknownArray, parent: ParentValue, parentPropName: string | null) => boolean;
+export type OtherTypeCallback = (val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: string | null) => boolean;
 export type ContextItem = any;
 export type EvaluatedResult = any;
 export type EvalCallback = (code: string, context: ContextItem) => EvaluatedResult;
@@ -36,7 +35,7 @@ export type ScriptType = typeof import("node:vm") | {
 export type SandboxType = {
     _$_path?: string;
     _$_parentProperty?: ParentProperty;
-    _$_parent?: unknown;
+    _$_parent?: ParentValue;
     _$_property?: string | number;
     _$_root?: AnyInput;
     _$_v?: unknown;
@@ -86,7 +85,7 @@ export function JSONPath(opts: string, expr?: AnyInput, obj?: JSONPathCallback |
  */
 export function JSONPath(opts: JSONPathOptions): unknown | JSONPathClass;
 export namespace JSONPath {
-    let cache: {};
+    let cache: Record<string, unknown>;
     /**
      * @param {string[]} pathArr Array to convert
      * @returns {string} The path string
@@ -184,9 +183,9 @@ export class JSONPathClass {
     _handleCallback(fullRetObj: ReturnObject, callback: JSONPathCallback | undefined, type: "value" | "property"): void;
     /**
      *
-     * @param {UnknownArray} expr
+     * @param {ExpressionArray} expr
      * @param {unknown} val
-     * @param {UnknownArray} path
+     * @param {ExpressionArray} path
      * @param {ParentValue} parent
      * @param {ParentProperty} parentPropName
      * @param {JSONPathCallback|undefined} callback
@@ -194,7 +193,7 @@ export class JSONPathClass {
      * @param {boolean} [literalPriority]
      * @returns {ReturnObject|ReturnObject[]}
      */
-    _trace(expr: UnknownArray, val: unknown, path: UnknownArray, parent: ParentValue, parentPropName: ParentProperty, callback: JSONPathCallback | undefined, hasArrExpr: boolean | undefined, literalPriority?: boolean): ReturnObject | ReturnObject[];
+    _trace(expr: ExpressionArray, val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: ParentProperty, callback: JSONPathCallback | undefined, hasArrExpr: boolean | undefined, literalPriority?: boolean): ReturnObject | ReturnObject[];
     /**
      * @param {unknown} val
      * @param {(prop: string|number) => void} f
@@ -203,25 +202,25 @@ export class JSONPathClass {
     _walk(val: unknown, f: (prop: string | number) => void): void;
     /**
      * @param {string} loc
-     * @param {UnknownArray} expr
+     * @param {ExpressionArray} expr
      * @param {unknown} val
-     * @param {UnknownArray} path
+     * @param {ExpressionArray} path
      * @param {ParentValue} parent
      * @param {ParentProperty} parentPropName
      * @param {JSONPathCallback|undefined} callback
      * @returns {ReturnObject[]|undefined}
      */
-    _slice(loc: string, expr: UnknownArray, val: unknown, path: UnknownArray, parent: ParentValue, parentPropName: ParentProperty, callback: JSONPathCallback | undefined): ReturnObject[] | undefined;
+    _slice(loc: string, expr: ExpressionArray, val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: ParentProperty, callback: JSONPathCallback | undefined): ReturnObject[] | undefined;
     /**
      * @param {string} code
      * @param {unknown} _v
      * @param {string|number} _vname
-     * @param {UnknownArray} path
+     * @param {ExpressionArray} path
      * @param {ParentValue} parent
      * @param {ParentProperty} parentPropName
      * @returns {UnknownResult}
      */
-    _eval(code: string, _v: unknown, _vname: string | number, path: UnknownArray, parent: ParentValue, parentPropName: ParentProperty): UnknownResult;
+    _eval(code: string, _v: unknown, _vname: string | number, path: ExpressionArray, parent: ParentValue, parentPropName: ParentProperty): UnknownResult;
 }
 import { SafeScript } from './Safe-Script.js';
 import type { Script } from './jsonpath-browser.js';

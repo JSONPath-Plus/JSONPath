@@ -1,10 +1,9 @@
 export type AnyInput = import("./jsonpath.js").AnyInput;
 export type SandboxCallback = import("./jsonpath.js").SandboxCallback;
 export type SandboxPropertyValue = import("./jsonpath.js").SandboxPropertyValue;
-export type UnknownArray = import("./jsonpath.js").UnknownArray;
+export type ExpressionArray = import("./jsonpath.js").ExpressionArray;
 export type ValueType = import("./jsonpath.js").ValueType;
 export type ParentValue = import("./jsonpath.js").ParentValue;
-export type UnknownItem = import("./jsonpath.js").UnknownItem;
 export type UnknownResult = import("./jsonpath.js").UnknownResult;
 export type ParentProperty = import("./jsonpath.js").ParentProperty;
 export type PreferredOutput = import("./jsonpath.js").PreferredOutput;
