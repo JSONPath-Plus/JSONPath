@@ -183,6 +183,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
     });
     describe(`JSONPath - Eval (${vmType} - custom)`, function () {
         before(setBuiltInState);
+        it('preserves the prototype compatibility surface', () => {
+            assert.strictEqual(JSONPath.prototype.evaluate, JSONPathClass.prototype.evaluate);
+            assert.strictEqual(JSONPath.prototype.safeVm, JSONPathClass.prototype.safeVm);
+            assert.strictEqual(JSONPath.prototype.vm, JSONPathClass.prototype.vm);
+        });
         const json = {
             "store": {
                 "book": {

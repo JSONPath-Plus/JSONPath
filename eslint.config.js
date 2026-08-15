@@ -67,6 +67,7 @@ export default /** @type {import('eslint').Linter.Config} */ ([
                 assert: 'readonly',
                 expect: 'readonly',
                 jsonpath: 'readonly',
+                JSONPath: 'readonly',
                 JSONPathClass: 'readonly'
             }
         },

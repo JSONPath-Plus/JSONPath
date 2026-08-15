@@ -356,9 +356,11 @@ class JSONPathClass {
             }
             const ret = this.evaluate(args);
             if (!ret || typeof ret !== 'object') {
-                const err = new Error(
-                    'JSONPath should not be called with "new" (it prevents ' +
-                    'return of (unwrapped) scalar values)'
+                const err = /** @type {Error & {value: UnknownResult}} */ (
+                    new Error(
+                        'JSONPath should not be called with "new" (it ' +
+                        'prevents return of (unwrapped) scalar values)'
+                    )
                 );
                 err.value = ret;
                 throw err;
@@ -1082,6 +1084,8 @@ class JSONPathClass {
 JSONPathClass.prototype.safeVm = {
     Script: SafeScript
 };
+
+JSONPath.prototype = JSONPathClass.prototype;
 
 // PUBLIC CLASS PROPERTIES AND METHODS
 

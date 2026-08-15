@@ -94,7 +94,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
 
         it('should throw when `new JSONPath` would unwrap a scalar result', () => {
             expect(() => {
-                new globalThis.JSONPath({json: {a: 1}, path: '$.a'});
+                // @ts-expect-error - Confirm constructor misuse is rejected
+                // eslint-disable-next-line no-new -- Testing
+                new /** @type {new (opts: object) => object} */ (
+                    JSONPath
+                )({json: {a: 1}, path: '$.a', wrap: false});
             }).to.throw(
                 Error,
                 'JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)'

@@ -74,16 +74,27 @@ export type JSONPathOptions = {
  *   "other" type or not (or it may handle transformations and return
  *   `false`).
  * @param {undefined} [otherTypeCallback]
- * @returns {unknown|JSONPathClass}
+ * @returns {unknown} The string form always has `autostart` implicitly
+ *   `true`, so the result is the evaluated value, not a `JSONPathClass`
  */
-export function JSONPath(opts: string, expr?: AnyInput, obj?: JSONPathCallback | undefined, callback?: OtherTypeCallback | undefined, otherTypeCallback?: undefined): unknown | JSONPathClass;
+export function JSONPath(opts: string, expr?: AnyInput, obj?: JSONPathCallback | undefined, callback?: OtherTypeCallback | undefined, otherTypeCallback?: undefined): unknown;
+/**
+ * @overload
+ * @param {JSONPathOptions & {autostart: false}} opts An options object
+ *   with `autostart` explicitly set to `false` defers evaluation and
+ *   returns the `JSONPathClass` instance instead
+ * @returns {JSONPathClass}
+ */
+export function JSONPath(opts: JSONPathOptions & {
+    autostart: false;
+}): JSONPathClass;
 /**
  * @overload
  * @param {JSONPathOptions} opts If a string, will be treated as
  *   `expr`
- * @returns {unknown|JSONPathClass}
+ * @returns {unknown}
  */
-export function JSONPath(opts: JSONPathOptions): unknown | JSONPathClass;
+export function JSONPath(opts: JSONPathOptions): unknown;
 export namespace JSONPath {
     let cache: Record<string, unknown>;
     /**
@@ -145,13 +156,13 @@ export class JSONPathClass {
     json: any;
     path: any;
     resultType: ResultType;
-    flatten: boolean;
+    flatten: boolean | undefined;
     wrap: boolean | undefined;
     sandbox: SandboxType;
     eval: EvalValue;
     ignoreEvalErrors: boolean;
     parent: any;
-    parentProperty: string | null;
+    parentProperty: string | null | undefined;
     callback: JSONPathCallback;
     otherTypeCallback: OtherTypeCallback;
     /**
