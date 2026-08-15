@@ -833,8 +833,7 @@ class JSONPathClass {
             }
             if (addType) {
                 retObj = {
-                    path, value: val, parent, parentProperty: parentPropName,
-                    hasArrExpr
+                    path, value: val, parent, parentProperty: parentPropName
                 };
                 this._handleCallback(retObj, callback, 'value');
                 return retObj;

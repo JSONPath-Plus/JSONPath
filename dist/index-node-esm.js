@@ -1551,34 +1551,34 @@ class NewError extends Error {
 }
 
 /**
-* @typedef {object} ReturnObject
-* @property {ExpressionArray|string} path
-* @property {unknown} value
-* @property {ParentValue} parent
-* @property {ParentProperty} parentProperty
-* @property {boolean} [isParentSelector]
-* @property {boolean} [hasArrExpr]
-* @property {ExpressionArray} [expr]
-* @property {string} [pointer]
-*/
+ * @typedef {object} ReturnObject
+ * @property {ExpressionArray|string} path
+ * @property {unknown} value
+ * @property {ParentValue} parent
+ * @property {ParentProperty} parentProperty
+ * @property {boolean} [isParentSelector]
+ * @property {boolean} [hasArrExpr]
+ * @property {ExpressionArray} [expr]
+ * @property {string} [pointer]
+ */
 
 /**
-* @callback JSONPathCallback
-* @param {any} preferredOutput Using `any` type instead of `PreferredOutput` so
-*    that user can supply flexible type
-* @param {"value"|"property"} type
-* @param {ReturnObject} fullRetObj
-* @returns {void}
-*/
+ * @callback JSONPathCallback
+ * @param {any} preferredOutput Using `any` type instead of `PreferredOutput` so
+ *    that user can supply flexible type
+ * @param {"value"|"property"} type
+ * @param {ReturnObject} fullRetObj
+ * @returns {void}
+ */
 
 /**
-* @callback OtherTypeCallback
-* @param {unknown} val
-* @param {ExpressionArray} path
-* @param {ParentValue} parent
-* @param {string|null} parentPropName
-* @returns {boolean}
-*/
+ * @callback OtherTypeCallback
+ * @param {unknown} val
+ * @param {ExpressionArray} path
+ * @param {ParentValue} parent
+ * @param {string|null} parentPropName
+ * @returns {boolean}
+ */
 
 /**
  * @typedef {any} ContextItem
@@ -1589,11 +1589,11 @@ class NewError extends Error {
  */
 
 /**
-* @callback EvalCallback
-* @param {string} code
-* @param {ContextItem} context
-* @returns {EvaluatedResult}
-*/
+ * @callback EvalCallback
+ * @param {string} code
+ * @param {ContextItem} context
+ * @returns {EvaluatedResult}
+ */
 
 /**
  * @typedef {typeof SafeScript} EvalClass
@@ -2083,7 +2083,6 @@ class JSONPathClass {
     } else if (loc === '$') {
       // root only
       addRet(this._trace(x, val, path, null, null, callback, hasArrExpr));
-      // eslint-disable-next-line sonarjs/super-linear-regex -- Convenient
     } else if (/^(-?\d*):(-?\d*):?(\d*)$/u.test(loc)) {
       // [start:end:step]  Python slice syntax
       const sliceResult = this._slice(loc, x, val, path, parent, parentPropName, callback);
@@ -2097,7 +2096,7 @@ class JSONPathClass {
       }
       const safeLoc = loc.replace(/^\?\((.*?)\)$/u, '$1');
       // check for a nested filter expression
-      // eslint-disable-next-line sonarjs/super-linear-regex -- Convenient
+
       const nested = /@.?([^?]*)[['](\??\(.*?\))(?!.\)\])[\]']/gu.exec(safeLoc);
       if (nested) {
         // find if there are matches in the nested expression
@@ -2194,8 +2193,7 @@ class JSONPathClass {
           path,
           value: val,
           parent,
-          parentProperty: parentPropName,
-          hasArrExpr
+          parentProperty: parentPropName
         };
         this._handleCallback(retObj, callback, 'value');
         return retObj;
@@ -2472,7 +2470,6 @@ JSONPath.toPathArray = function (expr) {
   // Properties operator
   .replaceAll('~', ';~;')
   // Split by property boundaries
-  // eslint-disable-next-line sonarjs/super-linear-regex -- Convenient
   .replaceAll(/['"]?\.['"]?(?![^[]*\])|\[['"]?/gu, ';')
   // Reinsert periods within properties
   .replaceAll('%@%', '.')
