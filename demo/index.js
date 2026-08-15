@@ -1,4 +1,3 @@
-/* eslint-disable import-x/unambiguous -- Demo */
 /* globals JSONPath, LZString -- Test UMD */
 /// <reference path="./types.d.ts" />
 

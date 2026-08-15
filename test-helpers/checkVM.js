@@ -1,18 +1,18 @@
 /**
-* @callback BeforeChecker
-* @returns {void}
-*/
+ * @callback BeforeChecker
+ * @returns {void}
+ */
 
 /**
  * @typedef {"Node vm"|"JSONPath vm"} VmType
  */
 
 /**
-* @callback VMTestIterator
-* @param {VmType} vmType
-* @param {BeforeChecker} beforeChecker
-* @returns {void}
-*/
+ * @callback VMTestIterator
+ * @param {VmType} vmType
+ * @param {BeforeChecker} beforeChecker
+ * @returns {void}
+ */
 
 /**
  * @param {VMTestIterator} cb

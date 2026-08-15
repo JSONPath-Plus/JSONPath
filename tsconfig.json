@@ -12,9 +12,9 @@
         "skipLibCheck": true
     },
     "include": [
-      "src", "bin", "test-helpers", "test"
-      // TS bug exporting eslint-config-ash-nazg typedef type with asterisks
-      // "eslint.config.js", "rollup.config.js"
+      "src", "bin", "test-helpers", "test",
+      "eslint.config.js"
+      // "rollup.config.js"
     ],
     "exclude": ["node_modules"]
 }

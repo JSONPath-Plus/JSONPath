@@ -34,9 +34,9 @@ export default /** @type {import('eslint').Linter.Config} */ ([
         rules: {
             'import-x/unambiguous': 0,
             'import-x/no-commonjs': 0,
-            'import-x/no-unresolved': ['error', {
-                ignore: ['jsonpath-plus']
-            }],
+            // 'import-x/no-unresolved': ['error', {
+            //     ignore: ['jsonpath-plus']
+            // }],
             'sonarjs/no-internal-api-use': 0,
             'no-multiple-empty-lines': ['error', {
                 max: 1, maxEOF: 2, maxBOF: 2
