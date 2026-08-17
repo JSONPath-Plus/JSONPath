@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import {readFile} from 'fs/promises';
-import {JSONPath as jsonpath} from '../dist/index-node-esm.js';
+import {JSONPath as jsonpath} from '../src/jsonpath-node.js';
 
 const file = process.argv[2];
 const path = process.argv[3];
@@ -17,11 +17,16 @@ try {
 }
 
 /**
- * @typedef {any} JSON
+ * @typedef {JSONValue[]} JSONArray
  */
 
 /**
- * @param {JSON} json
+ * @typedef {null|boolean|number|string|
+ *   {[key: string]: JSONValue}|JSONArray} JSONValue
+ */
+
+/**
+ * @param {JSONValue} json
  * @param {string} pth
  * @returns {void}
  */

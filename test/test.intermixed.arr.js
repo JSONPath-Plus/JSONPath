@@ -1,6 +1,6 @@
 
 describe('JSONPath - Intermixed Array', function () {
-    // tests based on examples at http://goessner.net/articles/jsonpath/
+    // tests based on examples at https://goessner.net/articles/jsonpath/
     const json = {
         "store": {
             "book": [
@@ -41,7 +41,7 @@ describe('JSONPath - Intermixed Array', function () {
     it('all sub properties, entire tree', () => {
         const books = json.store.book;
         let expected = [books[1].price, books[2].price, books[3].price, json.store.bicycle.price];
-        expected = [...books[0].price, ...expected];
+        expected = [...(/** @type {number[]} */ (books[0].price)), ...expected];
         const result = jsonpath({json, path: '$.store..price', flatten: true});
         assert.deepEqual(result, expected);
     });

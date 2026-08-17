@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["es2024", "dom"]
+  },
+  "include": ["."],
+  "exclude": ["node-import-test.js"]
+}

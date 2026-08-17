@@ -1,4 +1,16 @@
 
+/**
+ * @type {{
+ *   assert: Chai.AssertStatic,
+ *   jsonpath: (opts: any) => any
+ * }}
+ */
+const testGlobals = globalThis;
+/** @type {Chai.AssertStatic} */
+const assertChai = testGlobals.assert;
+
+const jsonpathFn = testGlobals.jsonpath;
+
 describe('JSONPath - At and Dollar sign', function () {
     const t1 = {
         simpleString: "simpleString",
@@ -15,20 +27,20 @@ describe('JSONPath - At and Dollar sign', function () {
     };
 
     it('test undefined, null', () => {
-        assert.strictEqual(jsonpath({json: {a: null}, path: '$.a', wrap: false}), null);
-        assert.strictEqual(jsonpath({json: undefined, path: 'foo'}), undefined);
-        assert.strictEqual(jsonpath({json: null, path: 'foo'}), undefined);
-        assert.strictEqual(jsonpath({json: {}, path: 'foo'})[0], undefined);
-        assert.strictEqual(jsonpath({json: {a: 'b'}, path: 'foo'})[0], undefined);
-        assert.strictEqual(jsonpath({json: {a: 'b'}, path: 'foo'})[100], undefined);
+        assertChai.isNull(jsonpathFn({json: {a: null}, path: '$.a', wrap: false}));
+        assertChai.isUndefined(jsonpathFn({json: undefined, path: 'foo'}));
+        assertChai.isUndefined(jsonpathFn({json: null, path: 'foo'}));
+        assertChai.isUndefined(jsonpathFn({json: {}, path: 'foo'})[0]);
+        assertChai.isUndefined(jsonpathFn({json: {a: 'b'}, path: 'foo'})[0]);
+        assertChai.isUndefined(jsonpathFn({json: {a: 'b'}, path: 'foo'})[100]);
     });
 
     it('test $ and @', () => {
-        assert.strictEqual(jsonpath({json: t1, path: '`$'})[0], t1.$);
-        assert.strictEqual(jsonpath({json: t1, path: 'a$a'})[0], t1.a$a);
-        assert.strictEqual(jsonpath({json: t1, path: '`@'})[0], t1['@']);
-        assert.strictEqual(jsonpath({json: t1, path: '$.`$.`@'})[0], t1.$['@']);
-        assert.strictEqual(jsonpath({json: t1, path: String.raw`\@`})[1], undefined);
+        assertChai.strictEqual(jsonpathFn({json: t1, path: '`$'})[0], t1.$);
+        assertChai.strictEqual(jsonpathFn({json: t1, path: 'a$a'})[0], t1.a$a);
+        assertChai.strictEqual(jsonpathFn({json: t1, path: '`@'})[0], t1['@']);
+        assertChai.strictEqual(jsonpathFn({json: t1, path: '$.`$.`@'})[0], t1.$['@']);
+        assertChai.isUndefined(jsonpathFn({json: t1, path: String.raw`\@`})[1]);
     });
 
     it('@ as false', () => {
@@ -38,8 +50,8 @@ describe('JSONPath - At and Dollar sign', function () {
             }
         };
         const expected = [false];
-        const result = jsonpath({json, path: "$..*[?(@ === false)]", wrap: false});
-        assert.deepEqual(result, expected);
+        const result = jsonpathFn({json, path: "$..*[?(@ === false)]", wrap: false});
+        assertChai.deepEqual(result, expected);
     });
 
     it('@ as 0', function () {
@@ -49,7 +61,7 @@ describe('JSONPath - At and Dollar sign', function () {
             }
         };
         const expected = [0];
-        const result = jsonpath({json, path: "$.a[?(@property === 'b' && @ < 1)]", wrap: false});
-        assert.deepEqual(result, expected);
+        const result = jsonpathFn({json, path: "$.a[?(@property === 'b' && @ < 1)]", wrap: false});
+        assertChai.deepEqual(result, expected);
     });
 });

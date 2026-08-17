@@ -1,5 +1,9 @@
+/**
+ * @import {JSONPathClass} from '../src/jsonpath.js';
+ */
+
 describe('JSONPath - API', function () {
-    // tests based on examples at http://goessner.net/articles/jsonpath/
+    // tests based on examples at https://goessner.net/articles/jsonpath/
     const json = {
         "store": {
             "book": [{
@@ -89,8 +93,233 @@ describe('JSONPath - API', function () {
             callback () { /* */ },
             parent: null,
             parentProperty: null,
-            otherTypeCallback () { /* */ }
+            otherTypeCallback () {
+                return true;
+            }
         });
         assert.deepEqual(result, expected);
+    });
+
+    it('should handle _handleCallback with undefined callback', () => {
+        const jp = jsonpath({
+            autostart: false
+        });
+        // Test the defensive check in _handleCallback when callback is undefined
+        const retObj = {
+            path: "$['store']['book'][0]",
+            value: json.store.book[0],
+            parent: json.store.book,
+            parentProperty: 0
+        };
+        // This should not throw and should return early
+        assert.doesNotThrow(() => {
+            jp._handleCallback(retObj, undefined, 'value');
+        });
+    });
+
+    it('should handle _getPreferredOutput with string path and all resultType', () => {
+        const jp = jsonpath({
+            autostart: false
+        });
+        jp.currResultType = 'all';
+        const retObj = {
+            path: "$['store']['book'][0]",
+            value: json.store.book[0],
+            parent: json.store.book,
+            parentProperty: 0
+        };
+
+        const result = /** @type {{path: string, pointer: string}} */ (
+            jp._getPreferredOutput(retObj)
+        );
+        assert.deepEqual(result.path, "$['store']['book'][0]");
+        assert.deepEqual(result.pointer, '/store/book/0');
+    });
+
+    it('should return string path directly in _getPreferredOutput for path resultType', () => {
+        const jp = jsonpath({
+            autostart: false
+        });
+        jp.currResultType = 'path';
+        const retObj = {
+            path: "$['store']['book'][0]",
+            value: json.store.book[0],
+            parent: json.store.book,
+            parentProperty: 0
+        };
+
+        const result = /** @type {string} */ (jp._getPreferredOutput(retObj));
+        assert.deepEqual(result, "$['store']['book'][0]");
+    });
+
+    it('should convert string path to array for pointer resultType', () => {
+        const jp = jsonpath({
+            autostart: false
+        });
+        jp.currResultType = 'pointer';
+        const retObj = {
+            path: "$['store']['book'][0]",
+            value: json.store.book[0],
+            parent: json.store.book,
+            parentProperty: 0
+        };
+
+        const result = /** @type {string} */ (jp._getPreferredOutput(retObj));
+        assert.deepEqual(result, '/store/book/0');
+    });
+
+    it('should handle flatten: null in evaluate options', () => {
+        const jp = jsonpath({
+            autostart: false
+        });
+        const result = jp.evaluate({
+            json,
+            path: '$.store.book[*].author',
+            flatten: undefined
+        });
+        const books = json.store.book;
+        const expected = [books[0].author, books[1].author, books[2].author, books[3].author];
+        assert.deepEqual(result, expected);
+    });
+
+    it('should preserve explicit null overrides in evaluate options', () => {
+        const jp = jsonpath({
+            autostart: false,
+            parent: {sentinel: true},
+            parentProperty: 'sentinel'
+        });
+        const result = /** @type {{parent: unknown, parentProperty: unknown, value: unknown}} */ (
+            jp.evaluate({
+                json,
+                path: '$',
+                parent: null,
+                parentProperty: null,
+                wrap: false,
+                resultType: 'all'
+            })
+        );
+        assert.deepEqual(result.parent, null);
+        assert.deepEqual(result.parentProperty, null);
+        assert.deepEqual(result.value, json);
+    });
+
+    it('should handle nested filter with single result', () => {
+        const testJson = {
+            items: [
+                {id: 1, nested: {value: 'a'}},
+                {id: 2, nested: {value: 'b'}}
+            ]
+        };
+        const result = jsonpath({
+            json: testJson,
+            path: '$.items[?(@.nested)]'
+        });
+        assert.deepEqual(result, [testJson.items[0], testJson.items[1]]);
+    });
+
+    it('should handle slice with single element', () => {
+        const testJson = {items: [1]};
+        const result = jsonpath({
+            json: testJson,
+            path: '$.items[0:1]'
+        });
+        assert.deepEqual(result, [1]);
+    });
+
+    it('should handle simple root path returning single object', () => {
+        const testJson = {value: 42};
+        const result = jsonpath({
+            json: testJson,
+            path: '$',
+            wrap: false,
+            resultType: 'all'
+        });
+        assert.deepEqual(result, {
+            path: '$',
+            value: testJson,
+            parent: null,
+            parentProperty: null,
+            hasArrExpr: undefined,
+            pointer: ''
+        });
+    });
+
+    it('should handle otherTypeCallback returning null for @other()', () => {
+        const testJson = {
+            values: [1, 'text', true, null, {obj: 'value'}]
+        };
+
+        const result = jsonpath({
+            json: testJson,
+            path: '$.values[*]@other()',
+            otherTypeCallback (val) {
+                // Return null for objects to test the ?? false fallback
+                if (typeof val === 'object' && val !== null) {
+                    return null;
+                }
+                return false;
+            }
+        });
+        assert.deepEqual(/** @type {unknown} */ (result), []);
+    });
+
+    it('should handle nested filter with property access', () => {
+        const testJson = {
+            items: [
+                {id: 1, subs: [{val: 1}, {val: 2}]},
+                {id: 2, subs: [{val: 3}]},
+                {id: 3, subs: []}
+            ]
+        };
+        // Nested filter: select items that have subs with val > 1
+        const result = jsonpath({
+            json: testJson,
+            path: '$.items[?(@.subs[?(@.val > 1)])]'
+        });
+        // Items 0 and 1 both have subs with val > 1
+        assert.deepEqual(result, [testJson.items[0], testJson.items[1]]);
+    });
+
+    it('should handle slice operation with multiple elements', () => {
+        const testJson = {items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]};
+        const result = jsonpath({
+            json: testJson,
+            path: '$.items[2:8:2]'
+        });
+        assert.deepEqual(result, [3, 5, 7]);
+    });
+
+    it('should handle parenthesis expression with undefined result', () => {
+        const testJson = {a: {x: 1}, b: {y: 2}, c: {z: undefined}};
+        const result = jsonpath({
+            json: testJson,
+            path: '$[(undefined)]'
+        });
+        assert.deepEqual(result, []);
+    });
+
+    // Behavior change: an `undefined` eval result no longer falls through to
+    //   the literal `"undefined"` property (which previously also threw for
+    //   some inputs); it now matches nothing.
+    it('should not match the literal "undefined" key for an undefined parenthesis expression', () => {
+        const testJson = {undefined: 'X', a: 'A'};
+        assert.deepEqual(jsonpath({
+            json: testJson,
+            path: '$[(undefined)]'
+        }), []);
+        assert.deepEqual(jsonpath({
+            json: testJson,
+            path: "$['undefined']"
+        }), ['X']);
+    });
+
+    it('should handle @path expression without predefined sandbox', () => {
+        const testJson = {a: 1, b: 2};
+        // Don't provide sandbox, let it be created on demand
+        const result = jsonpath({
+            json: testJson,
+            path: '$[?(@path == "$[\'a\']")]'
+        });
+        assert.deepEqual(result, [1]);
     });
 });

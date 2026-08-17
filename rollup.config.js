@@ -3,10 +3,10 @@ import {babel} from '@rollup/plugin-babel';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 
+// @ts-expect-error Ok
 const pkg = JSON.parse(await readFile('./package.json'));
 
 /**
- * @external RollupConfig
  * @type {object}
  * @see {@link https://rollupjs.org/guide/en#big-list-of-options}
  */
@@ -15,10 +15,10 @@ const pkg = JSON.parse(await readFile('./package.json'));
  * @param {object} config
  * @param {string} config.input
  * @param {boolean} config.minifying
- * @param {string[]} [config."external"]
+ * @param {string[]} [config.external]
  * @param {string} [config.environment]
- * @param {string} [config.format]
- * @returns {RollupConfig}
+ * @param {"esm"|"umd"|"cjs"} [config.format]
+ * @returns {import('rollup').RollupOptions}
  */
 function getRollupObject ({
     input, minifying, environment,
@@ -64,10 +64,10 @@ function getRollupObject ({
 }
 
 /**
- * @param {PlainObject} config
+ * @param {object} config
  * @param {boolean} config.minifying
- * @param {"node"|"environment"} [config.environment]
- * @returns {RollupConfig[]}
+ * @param {"node"|"environment"|"browser"} [config.environment]
+ * @returns {import('rollup').RollupOptions[]}
  */
 function getRollupObjectByEnv ({minifying, environment}) {
     const input = `src/jsonpath-${environment}.js`;

@@ -1,24 +1,88 @@
-import {JSONPath} from './jsonpath.js';
+import {JSONPath, JSONPathClass} from './jsonpath.js';
 
 /**
- * @typedef {any} ContextItem
+ * @typedef {import('./jsonpath.js').AnyInput} AnyInput
+ */
+/**
+ * @typedef {import('./jsonpath.js').SandboxCallback} SandboxCallback
+ */
+/**
+ * @typedef {import('./jsonpath.js').SandboxPropertyValue} SandboxPropertyValue
+ */
+/**
+ * @typedef {import('./jsonpath.js').ExpressionArray} ExpressionArray
+ */
+/**
+ * @typedef {import('./jsonpath.js').ValueType} ValueType
+ */
+/**
+ * @typedef {import('./jsonpath.js').ParentValue} ParentValue
+ */
+/**
+ * @typedef {import('./jsonpath.js').UnknownResult} UnknownResult
+ */
+/**
+ * @typedef {import('./jsonpath.js').ParentProperty} ParentProperty
+ */
+/**
+ * @typedef {import('./jsonpath.js').PreferredOutput} PreferredOutput
+ */
+/**
+ * @typedef {import('./jsonpath.js').ReturnObject} ReturnObject
+ */
+/**
+ * @typedef {import('./jsonpath.js').JSONPathCallback} JSONPathCallback
+ */
+/**
+ * @typedef {import('./jsonpath.js').OtherTypeCallback} OtherTypeCallback
+ */
+/**
+ * @typedef {import('./jsonpath.js').ContextItem} ContextItem
+ */
+/**
+ * @typedef {import('./jsonpath.js').EvaluatedResult} EvaluatedResult
+ */
+/**
+ * @typedef {import('./jsonpath.js').EvalCallback} EvalCallback
+ */
+/**
+ * @typedef {import('./jsonpath.js').EvalClass} EvalClass
+ */
+/**
+ * @typedef {import('./jsonpath.js').ResultType} ResultType
+ */
+/**
+ * @typedef {import('./jsonpath.js').EvalValue} EvalValue
+ */
+/**
+ * @typedef {import('./jsonpath.js').PathType} PathType
+ */
+/**
+ * @typedef {import('./jsonpath.js').SafeScriptType} SafeScriptType
+ */
+/**
+ * @typedef {import('./jsonpath.js').ScriptType} ScriptType
+ */
+/**
+ * @typedef {import('./jsonpath.js').SandboxType} SandboxType
+ */
+/**
+ * @typedef {import('./jsonpath.js').JSONPathOptions} JSONPathOptions
  */
 
 /**
- * @typedef {any} EvaluatedResult
- */
-
-/**
+ * @template T
  * @callback ConditionCallback
- * @param {ContextItem} item
+ * @param {T} item
  * @returns {boolean}
  */
 
 /**
  * Copy items out of one array into another.
- * @param {GenericArray} source Array with items to copy
- * @param {GenericArray} target Array to which to copy
- * @param {ConditionCallback} conditionCb Callback passed the current item;
+ * @template T
+ * @param {T[]} source Array with items to copy
+ * @param {T[]} target Array to which to copy
+ * @param {ConditionCallback<T>} conditionCb Callback passed the current item;
  *     will move item if evaluates to `true`
  * @returns {void}
  */
@@ -27,8 +91,6 @@ const moveToAnotherArray = function (source, target, conditionCb) {
     for (let i = 0; i < il; i++) {
         const item = source[i];
         if (conditionCb(item)) {
-            // eslint-disable-next-line @stylistic/max-len -- Long
-            // eslint-disable-next-line sonarjs/updated-loop-counter -- Convenient
             target.push(source.splice(i--, 1)[0]);
         }
     }
@@ -46,14 +108,14 @@ class Script {
     }
 
     /**
-     * @param {object} context Object whose items will be added
+     * @param {SandboxType} context Object whose items will be added
      *   to evaluation
      * @returns {EvaluatedResult} Result of evaluated code
      */
     runInNewContext (context) {
         let expr = this.code;
         const keys = Object.keys(context);
-        const funcs = [];
+        const funcs = /** @type {string[]} */ ([]);
         moveToAnotherArray(keys, funcs, (key) => {
             return typeof context[key] === 'function';
         });
@@ -71,7 +133,7 @@ class Script {
 
         expr = funcString + expr;
 
-        // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
+        // Mitigate https://perfectionkills.com/global-eval-what-are-the-options/#new_function
         if (!(/(['"])use strict\1/u).test(expr) && !keys.includes('arguments')) {
             expr = 'var arguments = undefined;' + expr;
         }
@@ -95,8 +157,9 @@ class Script {
     }
 }
 
-JSONPath.prototype.vm = {
+/** @type {{vm: ScriptType}} */
+(/** @type {unknown} */ (JSONPathClass.prototype)).vm = {
     Script
 };
 
-export {JSONPath};
+export {JSONPath, JSONPathClass, Script};

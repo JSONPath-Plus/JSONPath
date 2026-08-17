@@ -1,9 +1,17 @@
 # CHANGES for jsonpath-plus
 
-## 10.4.1
+## 11.0.0
+
+BREAKING CHANGES
+* chore: various changes in types, particularly with return values changing from any to unknown to ensure type safety (by forcing type casts of the results on the user).
 
 * fix(slice): explicit zero end no longer returns the whole array (#265) (@spokodev)
+* fix: restore `JSONPath.prototype.evaluate`, `safeVm`, and `vm` compatibility
+* refactor: expose JSONPathClass prototype through JSONPath for compatibility
 * chore: pnpm update (@brettz9)
+* refactor: implement TypeScript-as-JSDoc and auto-build declaration files from this (avoiding need for maintaining declaration file manually)
+* chore: update devDeps
+* chore: lint
 * build(deps-dev): bump rollup from 4.53.2 to 4.59.0 (@dependabot[bot])
 * build(deps): bump minimatch from 9.0.5 to 9.0.9 (@dependabot[bot])
 * build(deps): bump serialize-javascript (via audit fix) (@dependabot[bot])

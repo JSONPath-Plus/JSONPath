@@ -25,9 +25,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
 
         it('should throw with a bad result type', () => {
             expect(() => {
+                // @ts-ignore -- Deliberately invalid result type.
                 jsonpath({
                     json: {children: [5]},
                     path: '$..children',
+                    // @ts-ignore -- Deliberately invalid result type.
                     resultType: 'badType'
                 });
             }).to.throw(TypeError, 'Unknown result type');
@@ -89,6 +91,19 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     eval: 'safe'
                 });
             }).to.throw(Error, 'jsonPath: Invalid left-hand side in assignment: 2 = 8');
+        });
+
+        it('should throw when `new JSONPath` would unwrap a scalar result', () => {
+            expect(() => {
+                // @ts-expect-error - Confirm constructor misuse is rejected
+                // eslint-disable-next-line no-new -- Testing
+                new /** @type {new (opts: object) => object} */ (
+                    JSONPath
+                )({json: {a: 1}, path: '$.a', wrap: false});
+            }).to.throw(
+                Error,
+                'JSONPath should not be called with "new" (it prevents return of (unwrapped) scalar values)'
+            );
         });
     });
 });

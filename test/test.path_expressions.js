@@ -1,6 +1,6 @@
 
 describe('JSONPath - Path expressions', function () {
-    // tests based on examples at http://goessner.net/articles/JsonPath/
+    // tests based on examples at https://goessner.net/articles/JsonPath/
 
     const json = {"store": {
         "book": [

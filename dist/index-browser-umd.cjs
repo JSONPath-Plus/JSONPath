@@ -1201,7 +1201,28 @@
 	  }
 	};
 
+	/* eslint-disable unicorn/no-top-level-side-effects -- Temporary? */
 	/* eslint-disable no-bitwise -- Convenient */
+
+	/**
+	 * @import {EvaluatedResult, UnknownResult} from './jsonpath.js';
+	 */
+
+	/**
+	 * @typedef {any} AssignmentExpression
+	 */
+
+	/**
+	 * @typedef {any} Substitution
+	 */
+
+	/**
+	 * @typedef {any} AnyParameter
+	 */
+
+	/**
+	 * @typedef {Record<string, Substitution>} Substitutions
+	 */
 
 	// register plugins
 	jsep.plugins.register(index, plugin);
@@ -1213,37 +1234,50 @@
 	const SafeEval = {
 	  /**
 	   * @param {jsep.Expression} ast
-	   * @param {Record<string, any>} subs
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
 	   */
 	  evalAst(ast, subs) {
 	    switch (ast.type) {
 	      case 'BinaryExpression':
 	      case 'LogicalExpression':
-	        return SafeEval.evalBinaryExpression(ast, subs);
+	        return SafeEval.evalBinaryExpression(/** @type {jsep.BinaryExpression} */ast, subs);
 	      case 'Compound':
-	        return SafeEval.evalCompound(ast, subs);
+	        return SafeEval.evalCompound(/** @type {jsep.Compound} */ast, subs);
 	      case 'ConditionalExpression':
-	        return SafeEval.evalConditionalExpression(ast, subs);
+	        return SafeEval.evalConditionalExpression(/** @type {jsep.ConditionalExpression} */ast, subs);
 	      case 'Identifier':
-	        return SafeEval.evalIdentifier(ast, subs);
+	        return SafeEval.evalIdentifier(/** @type {jsep.Identifier} */ast, subs);
 	      case 'Literal':
-	        return SafeEval.evalLiteral(ast, subs);
+	        return SafeEval.evalLiteral(/** @type {jsep.Literal} */ast);
 	      case 'MemberExpression':
-	        return SafeEval.evalMemberExpression(ast, subs);
+	        return SafeEval.evalMemberExpression(/** @type {jsep.MemberExpression} */ast, subs);
 	      case 'UnaryExpression':
-	        return SafeEval.evalUnaryExpression(ast, subs);
+	        return SafeEval.evalUnaryExpression(/** @type {jsep.UnaryExpression} */ast, subs);
 	      case 'ArrayExpression':
-	        return SafeEval.evalArrayExpression(ast, subs);
+	        return SafeEval.evalArrayExpression(/** @type {jsep.ArrayExpression} */ast, subs);
 	      case 'CallExpression':
-	        return SafeEval.evalCallExpression(ast, subs);
+	        return SafeEval.evalCallExpression(/** @type {jsep.CallExpression} */ast, subs);
 	      case 'AssignmentExpression':
-	        return SafeEval.evalAssignmentExpression(ast, subs);
+	        return SafeEval.evalAssignmentExpression(/** @type {AssignmentExpression} */ast, subs);
 	      default:
-	        throw SyntaxError('Unexpected expression', ast);
+	        throw new SyntaxError('Unexpected expression', {
+	          cause: ast
+	        });
 	    }
 	  },
+	  /**
+	   * @param {jsep.BinaryExpression} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalBinaryExpression(ast, subs) {
-	    const result = {
+	    /**
+	     * @typedef {{
+	     *   [key: string]: (a: AnyParameter, b: AnyParameter) => UnknownResult
+	     * }} OperatorTable
+	     */
+	    const result = /** @type {OperatorTable} */{
 	      '||': (a, b) => a || b(),
 	      '&&': (a, b) => a && b(),
 	      '|': (a, b) => a | b(),
@@ -1270,14 +1304,18 @@
 	    }[ast.operator](SafeEval.evalAst(ast.left, subs), () => SafeEval.evalAst(ast.right, subs));
 	    return result;
 	  },
+	  /**
+	   * @param {jsep.Compound} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalCompound(ast, subs) {
 	    let last;
 	    for (let i = 0; i < ast.body.length; i++) {
-	      if (ast.body[i].type === 'Identifier' && ['var', 'let', 'const'].includes(ast.body[i].name) && ast.body[i + 1] && ast.body[i + 1].type === 'AssignmentExpression') {
+	      if (ast.body[i].type === 'Identifier' && ['var', 'let', 'const'].includes(/** @type {jsep.Identifier} */
+	      ast.body[i].name) && Object.hasOwn(ast.body, i + 1) && ast.body[i + 1].type === 'AssignmentExpression') {
 	        // var x=2; is detected as
 	        // [{Identifier var}, {AssignmentExpression x=2}]
-	        // eslint-disable-next-line @stylistic/max-len -- Long
-	        // eslint-disable-next-line sonarjs/updated-loop-counter -- Convenient
 	        i += 1;
 	      }
 	      const expr = ast.body[i];
@@ -1285,71 +1323,120 @@
 	    }
 	    return last;
 	  },
+	  /**
+	   * @param {jsep.ConditionalExpression} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalConditionalExpression(ast, subs) {
 	    if (SafeEval.evalAst(ast.test, subs)) {
 	      return SafeEval.evalAst(ast.consequent, subs);
 	    }
 	    return SafeEval.evalAst(ast.alternate, subs);
 	  },
+	  /**
+	   * @param {jsep.Identifier} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalIdentifier(ast, subs) {
 	    if (Object.hasOwn(subs, ast.name)) {
 	      return subs[ast.name];
 	    }
-	    throw ReferenceError(`${ast.name} is not defined`);
+	    throw new ReferenceError(`${ast.name} is not defined`);
 	  },
+	  /**
+	   * @param {jsep.Literal} ast
+	   * @returns {UnknownResult}
+	   */
 	  evalLiteral(ast) {
 	    return ast.value;
 	  },
+	  /**
+	   * @param {jsep.MemberExpression} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalMemberExpression(ast, subs) {
 	    const prop = String(
 	    // NOTE: `String(value)` throws error when
 	    // value has overwritten the toString method to return non-string
 	    // i.e. `value = {toString: () => []}`
-	    ast.computed ? SafeEval.evalAst(ast.property) // `object[property]`
+	    ast.computed ? SafeEval.evalAst(ast.property, subs) // `object[property]`
 	    : ast.property.name // `object.property` property is Identifier
 	    );
 	    const obj = SafeEval.evalAst(ast.object, subs);
 	    if (obj === undefined || obj === null) {
-	      throw TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
+	      throw new TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
 	    }
 	    if (!Object.hasOwn(obj, prop) && BLOCKED_PROTO_PROPERTIES.has(prop)) {
-	      throw TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
+	      throw new TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
 	    }
-	    const result = obj[prop];
+	    const result = /** @type {Record<string, UnknownResult>} */obj[prop];
 	    if (typeof result === 'function' && result !== Function) {
 	      return result.bind(obj); // arrow functions aren't affected by bind.
 	    }
 	    return result;
 	  },
+	  /**
+	   * @param {jsep.UnaryExpression} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalUnaryExpression(ast, subs) {
-	    const result = {
-	      '-': a => -SafeEval.evalAst(a, subs),
+	    /**
+	     * @typedef {{
+	     *   [key: string]: (a: AnyParameter) => UnknownResult
+	     * }} UnaryOperatorTable
+	     */
+	    const result = /** @type {UnaryOperatorTable} */{
+	      '-': a => -(/** @type {EvaluatedResult} */
+	      SafeEval.evalAst(a, subs)),
 	      '!': a => !SafeEval.evalAst(a, subs),
-	      '~': a => ~SafeEval.evalAst(a, subs),
+	      '~': a => ~(/** @type {EvaluatedResult} */
+	      SafeEval.evalAst(a, subs)),
 	      // eslint-disable-next-line no-implicit-coercion -- API
-	      '+': a => +SafeEval.evalAst(a, subs),
+	      '+': a => +(/** @type {EvaluatedResult} */
+	      SafeEval.evalAst(a, subs)),
 	      typeof: a => typeof SafeEval.evalAst(a, subs),
-	      // eslint-disable-next-line no-void, sonarjs/void-use -- feature
+	      // eslint-disable-next-line no-void -- Ok
 	      void: a => void SafeEval.evalAst(a, subs)
 	    }[ast.operator](ast.argument);
 	    return result;
 	  },
+	  /**
+	   * @param {jsep.ArrayExpression} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalArrayExpression(ast, subs) {
-	    return ast.elements.map(el => SafeEval.evalAst(el, subs));
+	    return ast.elements.map(el => SafeEval.evalAst(/** @type {jsep.Expression} */
+	    el, subs));
 	  },
+	  /**
+	   * @param {jsep.CallExpression} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalCallExpression(ast, subs) {
 	    const args = ast.arguments.map(arg => SafeEval.evalAst(arg, subs));
 	    const func = SafeEval.evalAst(ast.callee, subs);
 	    if (func === Function) {
 	      throw new Error('Function constructor is disabled');
 	    }
-	    return func(...args);
+	    return (/** @type {(...args: AnyParameter[]) => UnknownResult} */
+	    func)(...args);
 	  },
+	  /**
+	   * @param {AssignmentExpression} ast
+	   * @param {Substitutions} subs
+	   * @returns {UnknownResult}
+	   */
 	  evalAssignmentExpression(ast, subs) {
 	    if (ast.left.type !== 'Identifier') {
-	      throw SyntaxError('Invalid left-hand side in assignment');
+	      throw new SyntaxError('Invalid left-hand side in assignment');
 	    }
-	    const id = ast.left.name;
+	    const id = /** @type {jsep.Identifier} */ast.left.name;
 	    const value = SafeEval.evalAst(ast.right, subs);
 	    subs[id] = value;
 	    return subs[id];
@@ -1365,7 +1452,7 @@
 	   */
 	  constructor(expr) {
 	    this.code = expr;
-	    this.ast = jsep(this.code);
+	    this.ast = /** @type {unknown} */jsep(this.code);
 	  }
 
 	  /**
@@ -1376,30 +1463,63 @@
 	  runInNewContext(context) {
 	    // `Object.create(null)` creates a prototypeless object
 	    const keyMap = Object.assign(Object.create(null), context);
-	    return SafeEval.evalAst(this.ast, keyMap);
+	    return SafeEval.evalAst(/** @type {jsep.Expression} */this.ast, keyMap);
 	  }
 	}
 
 	/* eslint-disable camelcase -- Convenient for escaping */
-
+	/* eslint-disable class-methods-use-this -- Consistent monkey-patching */
+	/* eslint-disable unicorn/prefer-private-class-fields -- Allow
+	    monkey-patching */
 
 	/**
-	 * @typedef {null|boolean|number|string|object|GenericArray} JSONObject
+	 * @import {Script} from './jsonpath-browser.js';
 	 */
 
 	/**
-	 * @typedef {any} AnyItem
+	 * @typedef {any} AnyInput
 	 */
 
 	/**
-	 * @typedef {any} AnyResult
+	 * @typedef {((...args: any[]) => any)} SandboxCallback
+	 */
+
+	/**
+	 * @typedef {any|SandboxCallback} SandboxPropertyValue
+	 */
+
+	/**
+	 * @typedef {(string|number)[]} ExpressionArray
+	 */
+
+	/**
+	 * @typedef {"scalar"|"boolean"|"string"|"undefined"
+	 *   |"function"|"integer"|"number"|"nonFinite"|"object"
+	 *   |"array"|"other"|"null"} ValueType
+	 */
+
+	/**
+	 * @typedef {unknown} ParentValue
+	 */
+
+	/**
+	 * @typedef {unknown} UnknownResult
+	 */
+
+	/**
+	 * @typedef {string|number|null} ParentProperty
+	 */
+
+	/**
+	 * @typedef {ReturnObject|string|number|boolean|null|unknown[]
+	 *   |Record<string, unknown>} PreferredOutput
 	 */
 
 	/**
 	 * Copies array and then pushes item into it.
-	 * @param {GenericArray} arr Array to copy and into which to push
-	 * @param {AnyItem} item Array item to add (to end)
-	 * @returns {GenericArray} Copy of the original array
+	 * @param {ExpressionArray} arr Array to copy and into which to push
+	 * @param {string|number} item Array item to add (to end)
+	 * @returns {ExpressionArray} Copy of the original array
 	 */
 	function push(arr, item) {
 	  arr = arr.slice();
@@ -1408,9 +1528,9 @@
 	}
 	/**
 	 * Copies array and then unshifts item into it.
-	 * @param {AnyItem} item Array item to add (to beginning)
-	 * @param {GenericArray} arr Array to copy and into which to unshift
-	 * @returns {GenericArray} Copy of the original array
+	 * @param {string|number} item Array item to add (to beginning)
+	 * @param {ExpressionArray} arr Array to copy and into which to unshift
+	 * @returns {ExpressionArray} Copy of the original array
 	 */
 	function unshift(item, arr) {
 	  arr = arr.slice();
@@ -1419,45 +1539,34 @@
 	}
 
 	/**
-	 * Caught when JSONPath is used without `new` but rethrown if with `new`
-	 * @extends Error
+	 * @typedef {object} ReturnObject
+	 * @property {ExpressionArray|string} path
+	 * @property {unknown} value
+	 * @property {ParentValue} parent
+	 * @property {ParentProperty} parentProperty
+	 * @property {boolean} [isParentSelector]
+	 * @property {boolean} [hasArrExpr]
+	 * @property {ExpressionArray} [expr]
+	 * @property {string} [pointer]
 	 */
-	class NewError extends Error {
-	  /**
-	   * @param {AnyResult} value The evaluated scalar value
-	   */
-	  constructor(value) {
-	    super('JSONPath should not be called with "new" (it prevents return ' + 'of (unwrapped) scalar values)');
-	    this.avoidNew = true;
-	    this.value = value;
-	    this.name = 'NewError';
-	  }
-	}
 
 	/**
-	* @typedef {object} ReturnObject
-	* @property {string} path
-	* @property {JSONObject} value
-	* @property {object|GenericArray} parent
-	* @property {string} parentProperty
-	*/
+	 * @callback JSONPathCallback
+	 * @param {any} preferredOutput Using `any` type instead of `PreferredOutput` so
+	 *    that user can supply flexible type
+	 * @param {"value"|"property"} type
+	 * @param {ReturnObject} fullRetObj
+	 * @returns {void}
+	 */
 
 	/**
-	* @callback JSONPathCallback
-	* @param {string|object} preferredOutput
-	* @param {"value"|"property"} type
-	* @param {ReturnObject} fullRetObj
-	* @returns {void}
-	*/
-
-	/**
-	* @callback OtherTypeCallback
-	* @param {JSONObject} val
-	* @param {string} path
-	* @param {object|GenericArray} parent
-	* @param {string} parentPropName
-	* @returns {boolean}
-	*/
+	 * @callback OtherTypeCallback
+	 * @param {unknown} val
+	 * @param {ExpressionArray} path
+	 * @param {ParentValue} parent
+	 * @param {string|null} parentPropName
+	 * @returns {boolean|null}
+	 */
 
 	/**
 	 * @typedef {any} ContextItem
@@ -1468,523 +1577,841 @@
 	 */
 
 	/**
-	* @callback EvalCallback
-	* @param {string} code
-	* @param {ContextItem} context
-	* @returns {EvaluatedResult}
-	*/
+	 * @callback EvalCallback
+	 * @param {string} code
+	 * @param {ContextItem} context
+	 * @returns {EvaluatedResult}
+	 */
 
 	/**
-	 * @typedef {typeof SafeScript} EvalClass
+	 * @typedef {new (expr: string) => {
+	 *   runInNewContext: (context: object) => EvaluatedResult
+	 * }} ScriptConstructor
+	 */
+
+	/**
+	 * @typedef {ScriptConstructor} EvalClass
+	 */
+
+	/**
+	 * @typedef {"value"|"path"|"pointer"|"parent"|"parentProperty"
+	 *   |"all"} ResultType
+	 */
+
+	/**
+	 * @typedef {EvalCallback|EvalClass|'safe'|'native'|boolean} EvalValue
+	 */
+
+	/**
+	 * @typedef {string|string[]} PathType
+	 */
+
+	/**
+	 * @typedef {{Script: ScriptConstructor}} SafeScriptType
+	 */
+
+	/**
+	 * @typedef {{Script: ScriptConstructor}} ScriptType
+	 */
+
+	/**
+	 * @typedef {{
+	 *   _$_path?: string,
+	 *   _$_parentProperty?: ParentProperty,
+	 *   _$_parent?: ParentValue,
+	 *   _$_property?: string|number,
+	 *   _$_root?: AnyInput,
+	 *   _$_v?: unknown,
+	 *   [key: string]: SandboxPropertyValue
+	 * }} SandboxType
 	 */
 
 	/**
 	 * @typedef {object} JSONPathOptions
-	 * @property {JSON} json
-	 * @property {string|string[]} path
-	 * @property {"value"|"path"|"pointer"|"parent"|"parentProperty"|
-	 *   "all"} [resultType="value"]
+	 * @property {AnyInput} [json]
+	 * @property {PathType} [path]
+	 * @property {ResultType} [resultType="value"]
 	 * @property {boolean} [flatten=false]
 	 * @property {boolean} [wrap=true]
-	 * @property {object} [sandbox={}]
-	 * @property {EvalCallback|EvalClass|'safe'|'native'|
-	 *   boolean} [eval = 'safe']
-	 * @property {object|GenericArray|null} [parent=null]
-	 * @property {string|null} [parentProperty=null]
+	 * @property {SandboxType} [sandbox={}]
+	 * @property {EvalValue} [eval='safe']
+	 * @property {any|null} [parent=null]
+	 * @property {ParentProperty} [parentProperty=null]
 	 * @property {JSONPathCallback} [callback]
 	 * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
 	 *   function which throws on encountering `@other`
 	 * @property {boolean} [autostart=true]
+	 * @property {boolean} [ignoreEvalErrors=false]
 	 */
 
 	/**
-	 * @param {string|JSONPathOptions} opts If a string, will be treated as `expr`
-	 * @param {string} [expr] JSON path to evaluate
-	 * @param {JSON} [obj] JSON object to evaluate against
-	 * @param {JSONPathCallback} [callback] Passed 3 arguments: 1) desired payload
-	 *     per `resultType`, 2) `"value"|"property"`, 3) Full returned object with
+	 * @overload
+	 * @param {string} opts JSON path to evaluate
+	 * @param {AnyInput} [expr] JSON object to evaluate against
+	 * @param {JSONPathCallback} [obj] Passed 3 arguments: 1) desired
+	 *     payload per `resultType`, 2) `"value"|"property"`, 3) Full returned
+	 *     object with all payloads
+	 * @param {OtherTypeCallback} [callback] If `@other()` is at the
+	 *   end of one's query, this will be invoked with the value of the item,
+	 *   its path, its parent, and its parent's property name, and it should
+	 *   return a boolean indicating whether the supplied value belongs to the
+	 *   "other" type or not (or it may handle transformations and return
+	 *   `false`).
+	 * @param {undefined} [otherTypeCallback]
+	 * @returns {unknown} The string form always has `autostart` implicitly
+	 *   `true`, so the result is the evaluated value, not a `JSONPathClass`
+	 */
+	/**
+	 * @overload
+	 * @param {JSONPathOptions & {autostart: false}} opts An options object
+	 *   with `autostart` explicitly set to `false` defers evaluation and
+	 *   returns the `JSONPathClass` instance instead
+	 * @returns {JSONPathClass}
+	 */
+	/**
+	 * @overload
+	 * @param {JSONPathOptions} opts If a string, will be treated as
+	 *   `expr`
+	 * @returns {unknown}
+	 */
+	/**
+	 * @param {JSONPathOptions|string} opts If a string, will be treated as `expr`
+	 * @param {string|AnyInput} [expr] JSON path to evaluate
+	 * @param {AnyInput|JSONPathCallback} [obj] JSON object to evaluate against
+	 * @param {JSONPathCallback|OtherTypeCallback} [callback] Passed 3
+	 *     arguments: 1) desired payload per `resultType`,
+	 *     2) `"value"|"property"`, 3) Full returned object with
 	 *     all payloads
 	 * @param {OtherTypeCallback} [otherTypeCallback] If `@other()` is at the end
 	 *   of one's query, this will be invoked with the value of the item, its
 	 *   path, its parent, and its parent's property name, and it should return
 	 *   a boolean indicating whether the supplied value belongs to the "other"
 	 *   type or not (or it may handle transformations and return `false`).
-	 * @returns {JSONPath}
-	 * @class
+	 * @throws {Error}
+	 * @returns {unknown|JSONPathClass}
 	 */
 	function JSONPath(opts, expr, obj, callback, otherTypeCallback) {
-	  // eslint-disable-next-line no-restricted-syntax -- Allow for pseudo-class
-	  if (!(this instanceof JSONPath)) {
-	    try {
-	      return new JSONPath(opts, expr, obj, callback, otherTypeCallback);
-	    } catch (e) {
-	      if (!e.avoidNew) {
-	        throw e;
-	      }
-	      return e.value;
+	  try {
+	    if (opts && typeof opts === 'object') {
+	      return new JSONPathClass(opts);
 	    }
-	  }
-	  if (typeof opts === 'string') {
-	    otherTypeCallback = callback;
-	    callback = obj;
-	    obj = expr;
-	    expr = opts;
-	    opts = null;
-	  }
-	  const optObj = opts && typeof opts === 'object';
-	  opts = opts || {};
-	  this.json = opts.json || obj;
-	  this.path = opts.path || expr;
-	  this.resultType = opts.resultType || 'value';
-	  this.flatten = opts.flatten || false;
-	  this.wrap = Object.hasOwn(opts, 'wrap') ? opts.wrap : true;
-	  this.sandbox = opts.sandbox || {};
-	  this.eval = opts.eval === undefined ? 'safe' : opts.eval;
-	  this.ignoreEvalErrors = typeof opts.ignoreEvalErrors === 'undefined' ? false : opts.ignoreEvalErrors;
-	  this.parent = opts.parent || null;
-	  this.parentProperty = opts.parentProperty || null;
-	  this.callback = opts.callback || callback || null;
-	  this.otherTypeCallback = opts.otherTypeCallback || otherTypeCallback || function () {
-	    throw new TypeError('You must supply an otherTypeCallback callback option ' + 'with the @other() operator.');
-	  };
-	  if (opts.autostart !== false) {
-	    const args = {
-	      path: optObj ? opts.path : expr
-	    };
-	    if (!optObj) {
-	      args.json = obj;
-	    } else if ('json' in opts) {
-	      args.json = opts.json;
+	    return new JSONPathClass(opts, expr, /** @type {JSONPathCallback|undefined} */obj, /** @type {OtherTypeCallback|undefined} */callback, /** @type {undefined} */otherTypeCallback);
+	  } catch (e) {
+	    if (new.target) {
+	      throw e;
 	    }
-	    const ret = this.evaluate(args);
-	    if (!ret || typeof ret !== 'object') {
-	      throw new NewError(ret);
+	    if (e && typeof e === 'object' && 'value' in e) {
+	      return /** @type {{value: UnknownResult}} */e.value;
 	    }
-	    return ret;
+	    throw e;
 	  }
 	}
 
-	// PUBLIC METHODS
-	JSONPath.prototype.evaluate = function (expr, json, callback, otherTypeCallback) {
-	  let currParent = this.parent,
-	    currParentProperty = this.parentProperty;
-	  let {
-	    flatten,
-	    wrap
-	  } = this;
-	  this.currResultType = this.resultType;
-	  this.currEval = this.eval;
-	  this.currSandbox = this.sandbox;
-	  callback = callback || this.callback;
-	  this.currOtherTypeCallback = otherTypeCallback || this.otherTypeCallback;
-	  json = json || this.json;
-	  expr = expr || this.path;
-	  if (expr && typeof expr === 'object' && !Array.isArray(expr)) {
-	    if (!expr.path && expr.path !== '') {
-	      throw new TypeError('You must supply a "path" property when providing an object ' + 'argument to JSONPath.evaluate().');
-	    }
-	    if (!Object.hasOwn(expr, 'json')) {
-	      throw new TypeError('You must supply a "json" property when providing an object ' + 'argument to JSONPath.evaluate().');
-	    }
-	    ({
-	      json
-	    } = expr);
-	    flatten = Object.hasOwn(expr, 'flatten') ? expr.flatten : flatten;
-	    this.currResultType = Object.hasOwn(expr, 'resultType') ? expr.resultType : this.currResultType;
-	    this.currSandbox = Object.hasOwn(expr, 'sandbox') ? expr.sandbox : this.currSandbox;
-	    wrap = Object.hasOwn(expr, 'wrap') ? expr.wrap : wrap;
-	    this.currEval = Object.hasOwn(expr, 'eval') ? expr.eval : this.currEval;
-	    callback = Object.hasOwn(expr, 'callback') ? expr.callback : callback;
-	    this.currOtherTypeCallback = Object.hasOwn(expr, 'otherTypeCallback') ? expr.otherTypeCallback : this.currOtherTypeCallback;
-	    currParent = Object.hasOwn(expr, 'parent') ? expr.parent : currParent;
-	    currParentProperty = Object.hasOwn(expr, 'parentProperty') ? expr.parentProperty : currParentProperty;
-	    expr = expr.path;
-	  }
-	  currParent = currParent || null;
-	  currParentProperty = currParentProperty || null;
-	  if (Array.isArray(expr)) {
-	    expr = JSONPath.toPathString(expr);
-	  }
-	  if (!expr && expr !== '' || !json) {
-	    return undefined;
-	  }
-	  const exprList = JSONPath.toPathArray(expr);
-	  if (exprList[0] === '$' && exprList.length > 1) {
-	    exprList.shift();
-	  }
-	  this._hasParentSelector = null;
-	  const result = this._trace(exprList, json, ['$'], currParent, currParentProperty, callback).filter(function (ea) {
-	    return ea && !ea.isParentSelector;
-	  });
-	  if (!result.length) {
-	    return wrap ? [] : undefined;
-	  }
-	  if (!wrap && result.length === 1 && !result[0].hasArrExpr) {
-	    return this._getPreferredOutput(result[0]);
-	  }
-	  return result.reduce((rslt, ea) => {
-	    const valOrPath = this._getPreferredOutput(ea);
-	    if (flatten && Array.isArray(valOrPath)) {
-	      rslt = rslt.concat(valOrPath);
-	    } else {
-	      rslt.push(valOrPath);
-	    }
-	    return rslt;
-	  }, []);
-	};
-
-	// PRIVATE METHODS
-
-	JSONPath.prototype._getPreferredOutput = function (ea) {
-	  const resultType = this.currResultType;
-	  switch (resultType) {
-	    case 'all':
-	      {
-	        const path = Array.isArray(ea.path) ? ea.path : JSONPath.toPathArray(ea.path);
-	        ea.pointer = JSONPath.toPointer(path);
-	        ea.path = typeof ea.path === 'string' ? ea.path : JSONPath.toPathString(ea.path);
-	        return ea;
-	      }
-	    case 'value':
-	    case 'parent':
-	    case 'parentProperty':
-	      return ea[resultType];
-	    case 'path':
-	      return JSONPath.toPathString(ea[resultType]);
-	    case 'pointer':
-	      return JSONPath.toPointer(ea.path);
-	    default:
-	      throw new TypeError('Unknown result type');
-	  }
-	};
-	JSONPath.prototype._handleCallback = function (fullRetObj, callback, type) {
-	  if (callback) {
-	    const preferredOutput = this._getPreferredOutput(fullRetObj);
-	    fullRetObj.path = typeof fullRetObj.path === 'string' ? fullRetObj.path : JSONPath.toPathString(fullRetObj.path);
-	    // eslint-disable-next-line n/callback-return -- No need to return
-	    callback(preferredOutput, type, fullRetObj);
-	  }
-	};
-
 	/**
 	 *
-	 * @param {string} expr
-	 * @param {JSONObject} val
-	 * @param {string} path
-	 * @param {object|GenericArray} parent
-	 * @param {string} parentPropName
-	 * @param {JSONPathCallback} callback
-	 * @param {boolean} hasArrExpr
-	 * @param {boolean} literalPriority
-	 * @returns {ReturnObject|ReturnObject[]}
 	 */
-	JSONPath.prototype._trace = function (expr, val, path, parent, parentPropName, callback, hasArrExpr, literalPriority) {
-	  // No expr to follow? return path and value as the result of
-	  //  this trace branch
-	  let retObj;
-	  if (!expr.length) {
-	    retObj = {
-	      path,
-	      value: val,
-	      parent,
-	      parentProperty: parentPropName,
-	      hasArrExpr
-	    };
-	    this._handleCallback(retObj, callback, 'value');
-	    return retObj;
-	  }
-	  const loc = expr[0],
-	    x = expr.slice(1);
-
-	  // We need to gather the return value of recursive trace calls in order to
-	  // do the parent sel computation.
-	  const ret = [];
+	class JSONPathClass {
 	  /**
-	   *
-	   * @param {ReturnObject|ReturnObject[]} elems
+	   * @overload
+	   * @param {string} opts JSON path to evaluate
+	   * @param {AnyInput} [expr] JSON object to evaluate against
+	   * @param {JSONPathCallback} [obj] Passed 3 arguments: 1) desired
+	   *     payload per `resultType`, 2) `"value"|"property"`, 3) Full returned
+	   *     object with all payloads
+	   * @param {OtherTypeCallback} [callback] If `@other()` is at the
+	   *   end of one's query, this will be invoked with the value of the item,
+	   *   its path, its parent, and its parent's property name, and it should
+	   *   return a boolean indicating whether the supplied value belongs to the
+	   *   "other" type or not (or it may handle transformations and return
+	   *   `false`).
+	   * @param {undefined} [otherTypeCallback]
+	   */
+	  /**
+	   * @overload
+	   * @param {JSONPathOptions} opts If a string, will be treated as
+	   *   `expr`
+	   */
+	  /**
+	   * @param {null|string|JSONPathOptions} opts If a string, will be treated as
+	   *   `expr`
+	   * @param {string|AnyInput} [expr] JSON path to evaluate
+	   * @param {AnyInput|JSONPathCallback} [obj] JSON object to evaluate against
+	   * @param {JSONPathCallback|OtherTypeCallback} [callback] Passed 3
+	   *     arguments: 1) desired payload per `resultType`,
+	   *     2) `"value"|"property"`, 3) Full returned
+	   *     object with all payloads
+	   * @param {OtherTypeCallback} [otherTypeCallback] If `@other()` is at the
+	   *   end of one's query, this will be invoked with the value of the item,
+	   *   its path, its parent, and its parent's property name, and it should
+	   *   return a boolean indicating whether the supplied value belongs to the
+	   *   "other" type or not (or it may handle transformations and return
+	   *   `false`).
+	   */
+	  constructor(opts, expr, obj, callback, otherTypeCallback) {
+	    if (typeof opts === 'string') {
+	      otherTypeCallback = /** @type {OtherTypeCallback} */
+	      callback;
+	      callback = /** @type {JSONPathCallback} */
+	      obj;
+	      obj = expr;
+	      expr = opts;
+	      opts = null;
+	    }
+	    const optObj = opts && typeof opts === 'object';
+	    opts ||= /** @type {JSONPathOptions} */{};
+	    /** @type {ResultType|undefined} */
+	    this.currResultType = undefined;
+
+	    /** @type {EvalValue|undefined} */
+	    this.currEval = undefined;
+
+	    /** @type {OtherTypeCallback|undefined} */
+	    this.currOtherTypeCallback = undefined;
+
+	    /** @type {SandboxType|undefined} */
+	    this.currSandbox = undefined;
+	    this._hasParentSelector = false;
+	    this.json = opts.json || obj;
+	    this.path = opts.path || expr;
+	    this.resultType = opts.resultType || 'value';
+	    this.flatten = Object.hasOwn(opts, 'flatten') ? opts.flatten : false;
+	    this.wrap = Object.hasOwn(opts, 'wrap') ? opts.wrap : true;
+	    this.sandbox = opts.sandbox || {};
+	    this.eval = opts.eval === undefined ? 'safe' : opts.eval;
+	    this.ignoreEvalErrors = typeof opts.ignoreEvalErrors === 'undefined' ? false : opts.ignoreEvalErrors;
+	    this.parent = Object.hasOwn(opts, 'parent') ? opts.parent : null;
+	    this.parentProperty = Object.hasOwn(opts, 'parentProperty') ? opts.parentProperty : null;
+	    this.callback = opts.callback || (/** @type {JSONPathCallback} */
+	    callback) || null;
+	    this.otherTypeCallback = opts.otherTypeCallback || otherTypeCallback || function () {
+	      throw new TypeError('You must supply an otherTypeCallback callback option ' + 'with the @other() operator.');
+	    };
+	    if (opts.autostart !== false) {
+	      const args = /** @type {JSONPathOptions} */{
+	        path: optObj ? opts.path : expr
+	      };
+	      if (!optObj && obj !== undefined) {
+	        args.json = obj;
+	      } else if ('json' in opts) {
+	        args.json = opts.json;
+	      }
+	      const ret = this.evaluate(args);
+	      if (!ret || typeof ret !== 'object') {
+	        const err = /** @type {Error & {value: UnknownResult}} */
+	        new Error('JSONPath should not be called with "new" (it ' + 'prevents return of (unwrapped) scalar values)');
+	        err.value = ret;
+	        throw err;
+	      }
+
+	      // eslint-disable-next-line @stylistic/max-len -- Long
+	      // @ts-expect-error - Constructor returns evaluate result for legacy API
+	      // eslint-disable-next-line no-constructor-return -- Legacy API
+	      return ret;
+	    }
+	  }
+
+	  // PUBLIC METHODS
+
+	  /**
+	   * @overload
+	   * @param {JSONPathOptions} [expr]
+	   * @returns {ReturnObject|ReturnObject[]|undefined|unknown}
+	   */
+
+	  /**
+	   * @overload
+	   * @param {PathType|undefined} [expr]
+	   * @param {AnyInput} [json]
+	   * @param {JSONPathCallback|null} [callback]
+	   * @param {OtherTypeCallback} [otherTypeCallback]
+	   * @returns {ReturnObject|ReturnObject[]|undefined|unknown}
+	   */
+
+	  /**
+	   * @param {PathType|JSONPathOptions|undefined} [expr]
+	   * @param {AnyInput} [json]
+	   * @param {JSONPathCallback|null} [callback]
+	   * @param {OtherTypeCallback} [otherTypeCallback]
+	   * @returns {ReturnObject|ReturnObject[]|undefined|unknown}
+	   */
+	  evaluate(expr, json, callback, otherTypeCallback) {
+	    let currParent = this.parent,
+	      currParentProperty = this.parentProperty;
+	    let {
+	      flatten,
+	      wrap
+	    } = this;
+	    this.currResultType = this.resultType;
+	    this.currEval = this.eval;
+	    this.currSandbox = this.sandbox;
+	    callback ||= this.callback;
+	    this.currOtherTypeCallback = otherTypeCallback || this.otherTypeCallback;
+	    if (expr && typeof expr === 'object' && !Array.isArray(expr)) {
+	      const exprObj = expr;
+	      if (!exprObj.path && exprObj.path !== '') {
+	        throw new TypeError('You must supply a "path" property when providing an ' + 'object argument to JSONPath.evaluate().');
+	      }
+	      if (!Object.hasOwn(exprObj, 'json')) {
+	        throw new TypeError('You must supply a "json" property when providing an ' + 'object argument to JSONPath.evaluate().');
+	      }
+	      ({
+	        json
+	      } = exprObj);
+	      flatten = Object.hasOwn(exprObj, 'flatten') ? exprObj.flatten : flatten;
+	      this.currResultType = Object.hasOwn(exprObj, 'resultType') ? exprObj.resultType : this.currResultType;
+	      this.currSandbox = Object.hasOwn(exprObj, 'sandbox') ? exprObj.sandbox : this.currSandbox;
+	      wrap = Object.hasOwn(exprObj, 'wrap') ? exprObj.wrap : wrap;
+	      this.currEval = Object.hasOwn(exprObj, 'eval') ? exprObj.eval : this.currEval;
+	      callback = Object.hasOwn(exprObj, 'callback') ? exprObj.callback : callback;
+	      this.currOtherTypeCallback = Object.hasOwn(exprObj, 'otherTypeCallback') ? exprObj.otherTypeCallback : this.currOtherTypeCallback;
+	      currParent = Object.hasOwn(exprObj, 'parent') ? exprObj.parent : currParent;
+	      currParentProperty = Object.hasOwn(exprObj, 'parentProperty') ? exprObj.parentProperty : currParentProperty;
+	      expr = exprObj.path;
+	    } else {
+	      json ||= this.json;
+	      expr ||= this.path;
+	    }
+	    currParent ||= null;
+	    currParentProperty ||= null;
+	    if (Array.isArray(expr)) {
+	      expr = JSONPath.toPathString(expr);
+	    }
+	    if (!json || !expr && expr !== '') {
+	      return undefined;
+	    }
+	    const exprList = JSONPath.toPathArray(/** @type {string} */
+	    expr);
+	    if (exprList[0] === '$' && exprList.length > 1) {
+	      exprList.shift();
+	    }
+	    this._hasParentSelector = false;
+	    const traceResult = this._trace(exprList, json, ['$'], currParent, currParentProperty, callback ?? undefined, undefined);
+
+	    // eslint-disable-next-line @stylistic/max-len -- Long
+	    /* c8 ignore next 2 -- Unreachable: _trace returns array when hasArrExpr set */
+	    const result = (Array.isArray(traceResult) ? traceResult : [traceResult]).filter(ea => {
+	      return ea && !ea.isParentSelector;
+	    });
+	    if (!result.length) {
+	      // eslint-disable-next-line @stylistic/max-len -- Long
+	      /* c8 ignore next -- Unreachable: valid queries always produce results */
+	      return wrap ? [] : undefined;
+	    }
+	    if (!wrap && result.length === 1 && !result[0].hasArrExpr) {
+	      const preferredOutput = this._getPreferredOutput(result[0]);
+	      return preferredOutput;
+	    }
+	    const reduced = result.reduce((rslt, ea) => {
+	      const valOrPath = this._getPreferredOutput(ea);
+	      if (flatten && Array.isArray(valOrPath)) {
+	        rslt = rslt.concat(valOrPath);
+	      } else {
+	        rslt.push(valOrPath);
+	      }
+	      return rslt;
+	    }, /** @type {UnknownResult[]} */
+	    []);
+	    return reduced;
+	  }
+
+	  // PRIVATE METHODS
+
+	  /**
+	   * @param {ReturnObject} ea
+	   * @returns {PreferredOutput}
+	   */
+	  _getPreferredOutput(ea) {
+	    const resultType = this.currResultType;
+	    switch (resultType) {
+	      case 'all':
+	        {
+	          const path = Array.isArray(ea.path) ? ea.path : JSONPath.toPathArray(ea.path);
+	          ea.pointer = JSONPath.toPointer(/** @type {string[]} */path);
+	          ea.path = typeof ea.path === 'string' ? ea.path : JSONPath.toPathString(/** @type {string[]} */ea.path);
+	          return ea;
+	        }
+	      case 'value':
+	      case 'parent':
+	      case 'parentProperty':
+	        return /** @type {PreferredOutput} */ea[resultType];
+	      case 'path':
+	        if (typeof ea.path === 'string') {
+	          return ea.path;
+	        }
+	        return JSONPath.toPathString(/** @type {string[]} */ea.path);
+	      case 'pointer':
+	        {
+	          const pathArray = Array.isArray(ea.path) ? ea.path : JSONPath.toPathArray(ea.path);
+	          return JSONPath.toPointer(/** @type {string[]} */pathArray);
+	        }
+	      default:
+	        throw new TypeError('Unknown result type');
+	    }
+	  }
+
+	  /**
+	   * @param {ReturnObject} fullRetObj
+	   * @param {JSONPathCallback|undefined} callback
+	   * @param {"value"|"property"} type
 	   * @returns {void}
 	   */
-	  function addRet(elems) {
-	    if (Array.isArray(elems)) {
-	      // This was causing excessive stack size in Node (with or
-	      //  without Babel) against our performance test:
-	      //  `ret.push(...elems);`
-	      elems.forEach(t => {
-	        ret.push(t);
-	      });
-	    } else {
-	      ret.push(elems);
+	  _handleCallback(fullRetObj, callback, type) {
+	    // Early return if no callback provided (defensive
+	    //   check for internal calls)
+	    if (!callback) {
+	      return;
 	    }
+	    const preferredOutput = this._getPreferredOutput(fullRetObj);
+	    if (Array.isArray(fullRetObj.path)) {
+	      fullRetObj.path = JSONPath.toPathString(/** @type {string[]} */fullRetObj.path);
+	    }
+	    callback(preferredOutput, type, fullRetObj);
 	  }
-	  if ((typeof loc !== 'string' || literalPriority) && val && Object.hasOwn(val, loc)) {
-	    // simple case--directly follow property
-	    addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr));
-	    // eslint-disable-next-line unicorn/prefer-switch -- Part of larger `if`
-	  } else if (loc === '*') {
-	    // all child properties
-	    this._walk(val, m => {
-	      addRet(this._trace(x, val[m], push(path, m), val, m, callback, true, true));
-	    });
-	  } else if (loc === '..') {
-	    // all descendent parent properties
-	    // Check remaining expression with val's immediate children
-	    addRet(this._trace(x, val, path, parent, parentPropName, callback, hasArrExpr));
-	    this._walk(val, m => {
-	      // We don't join m and x here because we only want parents,
-	      //   not scalar values
-	      if (typeof val[m] === 'object') {
-	        // Keep going with recursive descent on val's
-	        //   object children
-	        addRet(this._trace(expr.slice(), val[m], push(path, m), val, m, callback, true));
-	      }
-	    });
-	    // The parent sel computation is handled in the frame above using the
-	    // ancestor object of val
-	  } else if (loc === '^') {
-	    // This is not a final endpoint, so we do not invoke the callback here
-	    this._hasParentSelector = true;
-	    return {
-	      path: path.slice(0, -1),
-	      expr: x,
-	      isParentSelector: true
-	    };
-	  } else if (loc === '~') {
-	    // property name
-	    retObj = {
-	      path: push(path, loc),
-	      value: parentPropName,
-	      parent,
-	      parentProperty: null
-	    };
-	    this._handleCallback(retObj, callback, 'property');
-	    return retObj;
-	  } else if (loc === '$') {
-	    // root only
-	    addRet(this._trace(x, val, path, null, null, callback, hasArrExpr));
-	  } else if (/^(-?\d*):(-?\d*):?(\d*)$/u.test(loc)) {
-	    // [start:end:step]  Python slice syntax
-	    addRet(this._slice(loc, x, val, path, parent, parentPropName, callback));
-	  } else if (loc.indexOf('?(') === 0) {
-	    // [?(expr)] (filtering)
-	    if (this.currEval === false) {
-	      throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
-	    }
-	    const safeLoc = loc.replace(/^\?\((.*?)\)$/u, '$1');
-	    // check for a nested filter expression
-	    const nested = /@.?([^?]*)[['](\??\(.*?\))(?!.\)\])[\]']/gu.exec(safeLoc);
-	    if (nested) {
-	      // find if there are matches in the nested expression
-	      // add them to the result set if there is at least one match
-	      this._walk(val, m => {
-	        const npath = [nested[2]];
-	        const nvalue = nested[1] ? val[m][nested[1]] : val[m];
-	        const filterResults = this._trace(npath, nvalue, path, parent, parentPropName, callback, true);
-	        if (filterResults.length > 0) {
-	          addRet(this._trace(x, val[m], push(path, m), val, m, callback, true));
-	        }
-	      });
-	    } else {
-	      this._walk(val, m => {
-	        if (this._eval(safeLoc, val[m], m, path, parent, parentPropName)) {
-	          addRet(this._trace(x, val[m], push(path, m), val, m, callback, true));
-	        }
-	      });
-	    }
-	  } else if (loc[0] === '(') {
-	    // [(expr)] (dynamic property/index)
-	    if (this.currEval === false) {
-	      throw new Error('Eval [(expr)] prevented in JSONPath expression.');
-	    }
-	    // As this will resolve to a property name (but we don't know it
-	    //  yet), property and parent information is relative to the
-	    //  parent of the property to which this expression will resolve
-	    addRet(this._trace(unshift(this._eval(loc, val, path.at(-1), path.slice(0, -1), parent, parentPropName), x), val, path, parent, parentPropName, callback, hasArrExpr));
-	  } else if (loc[0] === '@') {
-	    // value type: @boolean(), etc.
-	    let addType = false;
-	    const valueType = loc.slice(1, -2);
-	    switch (valueType) {
-	      case 'scalar':
-	        if (!val || !['object', 'function'].includes(typeof val)) {
-	          addType = true;
-	        }
-	        break;
-	      case 'boolean':
-	      case 'string':
-	      case 'undefined':
-	      case 'function':
-	        if (typeof val === valueType) {
-	          addType = true;
-	        }
-	        break;
-	      case 'integer':
-	        if (Number.isFinite(val) && !(val % 1)) {
-	          addType = true;
-	        }
-	        break;
-	      case 'number':
-	        if (Number.isFinite(val)) {
-	          addType = true;
-	        }
-	        break;
-	      case 'nonFinite':
-	        if (typeof val === 'number' && !Number.isFinite(val)) {
-	          addType = true;
-	        }
-	        break;
-	      case 'object':
-	        if (val && typeof val === valueType) {
-	          addType = true;
-	        }
-	        break;
-	      case 'array':
-	        if (Array.isArray(val)) {
-	          addType = true;
-	        }
-	        break;
-	      case 'other':
-	        addType = this.currOtherTypeCallback(val, path, parent, parentPropName);
-	        break;
-	      case 'null':
-	        if (val === null) {
-	          addType = true;
-	        }
-	        break;
-	      /* c8 ignore next 2 */
-	      default:
-	        throw new TypeError('Unknown value type ' + valueType);
-	    }
-	    if (addType) {
+
+	  /**
+	   *
+	   * @param {ExpressionArray} expr
+	   * @param {unknown} val
+	   * @param {ExpressionArray} path
+	   * @param {ParentValue} parent
+	   * @param {ParentProperty} parentPropName
+	   * @param {JSONPathCallback|undefined} callback
+	   * @param {boolean|undefined} hasArrExpr
+	   * @param {boolean} [literalPriority]
+	   * @returns {ReturnObject|ReturnObject[]}
+	   */
+	  _trace(expr, val, path, parent, parentPropName, callback, hasArrExpr, literalPriority) {
+	    // No expr to follow? return path and value as the result of
+	    //  this trace branch
+	    let retObj;
+	    if (!expr.length) {
 	      retObj = {
 	        path,
 	        value: val,
 	        parent,
-	        parentProperty: parentPropName
+	        parentProperty: parentPropName,
+	        hasArrExpr
 	      };
 	      this._handleCallback(retObj, callback, 'value');
 	      return retObj;
 	    }
-	    // `-escaped property
-	  } else if (loc[0] === '`' && val && Object.hasOwn(val, loc.slice(1))) {
-	    const locProp = loc.slice(1);
-	    addRet(this._trace(x, val[locProp], push(path, locProp), val, locProp, callback, hasArrExpr, true));
-	  } else if (loc.includes(',')) {
-	    // [name1,name2,...]
-	    const parts = loc.split(',');
-	    for (const part of parts) {
-	      addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback, true));
-	    }
-	    // simple case--directly follow property
-	  } else if (!literalPriority && val && Object.hasOwn(val, loc)) {
-	    addRet(this._trace(x, val[loc], push(path, loc), val, loc, callback, hasArrExpr, true));
-	  }
+	    const loc = /** @type {string} */expr[0],
+	      x = expr.slice(1);
 
-	  // We check the resulting values for parent selections. For parent
-	  // selections we discard the value object and continue the trace with the
-	  // current val object
-	  if (this._hasParentSelector) {
-	    for (let t = 0; t < ret.length; t++) {
-	      const rett = ret[t];
-	      if (rett && rett.isParentSelector) {
-	        const tmp = this._trace(rett.expr, val, rett.path, parent, parentPropName, callback, hasArrExpr);
-	        if (Array.isArray(tmp)) {
-	          ret[t] = tmp[0];
-	          const tl = tmp.length;
-	          for (let tt = 1; tt < tl; tt++) {
-	            // eslint-disable-next-line @stylistic/max-len -- Long
-	            // eslint-disable-next-line sonarjs/updated-loop-counter -- Convenient
-	            t++;
-	            ret.splice(t, 0, tmp[tt]);
+	    // We need to gather the return value of recursive trace calls in order
+	    //  to do the parent sel computation.
+	    /** @type {ReturnObject[]} */
+	    const ret = [];
+	    /**
+	     *
+	     * @param {ReturnObject|ReturnObject[]} elems
+	     * @returns {void}
+	     */
+	    function addRet(elems) {
+	      if (Array.isArray(elems)) {
+	        // This was causing excessive stack size in Node (with or
+	        //  without Babel) against our performance test:
+	        //  `ret.push(...elems);`
+	        elems.forEach(t => {
+	          ret.push(t);
+	        });
+	      } else {
+	        ret.push(elems);
+	      }
+	    }
+	    if (val && (typeof loc !== 'string' || literalPriority) && Object.hasOwn(val, /** @type {PropertyKey} */loc)) {
+	      // simple case--directly follow property
+	      const valObj = /** @type {Record<string, unknown>} */val;
+	      addRet(this._trace(x, valObj[(/** @type {string} */loc)], push(path, loc), val, /** @type {string|number} */loc, callback, hasArrExpr));
+	      // eslint-disable-next-line unicorn/prefer-switch -- Part of larger `if`
+	    } else if (loc === '*') {
+	      // all child properties
+	      this._walk(val, m => {
+	        const valObj = /** @type {Record<string, unknown>} */val;
+	        addRet(this._trace(x, valObj[m], push(path, m), val, m, callback, true, true));
+	      });
+	    } else if (loc === '..') {
+	      // all descendent parent properties
+	      // Check remaining expression with val's immediate children
+	      addRet(this._trace(x, val, path, parent, parentPropName, callback, hasArrExpr));
+	      this._walk(val, m => {
+	        // We don't join m and x here because we only want parents,
+	        //   not scalar values
+	        const valObj = /** @type {Record<string, unknown>} */val;
+	        if (typeof valObj[m] === 'object') {
+	          // Keep going with recursive descent on val's
+	          //   object children
+	          addRet(this._trace(expr.slice(), valObj[m], push(path, m), val, m, callback, true));
+	        }
+	      });
+	      // The parent sel computation is handled in the frame above using the
+	      // ancestor object of val
+	    } else if (loc === '^') {
+	      // This is not a final endpoint, so we do not invoke the
+	      //   callback here
+	      this._hasParentSelector = true;
+	      return /** @type {ReturnObject} */{
+	        path: path.slice(0, -1),
+	        expr: x,
+	        isParentSelector: true,
+	        value: undefined,
+	        parent: undefined,
+	        parentProperty: null
+	      };
+	    } else if (loc === '~') {
+	      // property name
+	      retObj = {
+	        path: push(path, loc),
+	        value: parentPropName,
+	        parent,
+	        parentProperty: null
+	      };
+	      this._handleCallback(retObj, callback, 'property');
+	      return retObj;
+	    } else if (loc === '$') {
+	      // root only
+	      addRet(this._trace(x, val, path, null, null, callback, hasArrExpr));
+	    } else if (/^(-?\d*):(-?\d*):?(\d*)$/u.test(loc)) {
+	      // [start:end:step]  Python slice syntax
+	      const sliceResult = this._slice(loc, x, val, path, parent, parentPropName, callback);
+	      if (sliceResult) {
+	        addRet(sliceResult);
+	      }
+	    } else if (loc.indexOf('?(') === 0) {
+	      // [?(expr)] (filtering)
+	      if (this.currEval === false) {
+	        throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
+	      }
+	      const safeLoc = loc.replace(/^\?\((.*?)\)$/u, '$1');
+	      // check for a nested filter expression
+
+	      const nested = /@.?([^?]*)[['](\??\(.*?\))(?!.\)\])[\]']/gu.exec(safeLoc);
+	      if (nested) {
+	        // find if there are matches in the nested expression
+	        // add them to the result set if there is at least one match
+	        this._walk(val, m => {
+	          const npath = [nested[2]];
+	          const valObj2 = /** @type {Record<string, unknown>} */
+	          val;
+	          const nvalue = /** @type {ValueType} */nested[1] ? /** @type {Record<string, unknown>} */valObj2[m][nested[1]] : valObj2[m];
+	          const filterResults = this._trace(npath, nvalue, path, parent, parentPropName, callback, true);
+	          // eslint-disable-next-line @stylistic/max-len -- Long
+	          /* c8 ignore next 3 -- Unreachable: _trace always returns array for nested filters */
+	          const filterArray = Array.isArray(filterResults) ? filterResults : [filterResults];
+	          if (filterArray.length > 0) {
+	            addRet(this._trace(x, valObj2[m], push(path, m), val, m, callback, true));
 	          }
-	        } else {
-	          ret[t] = tmp;
+	        });
+	      } else {
+	        const valObj3 = /** @type {Record<string, unknown>} */val;
+	        this._walk(val, m => {
+	          if (this._eval(safeLoc, valObj3[m], m, path, parent, parentPropName)) {
+	            addRet(this._trace(x, valObj3[m], push(path, m), val, m, callback, true));
+	          }
+	        });
+	      }
+	    } else if (loc[0] === '(') {
+	      // [(expr)] (dynamic property/index)
+	      if (this.currEval === false) {
+	        throw new Error('Eval [(expr)] prevented in JSONPath expression.');
+	      }
+	      // As this will resolve to a property name (but we don't know it
+	      //  yet), property and parent information is relative to the
+	      const evalResult = this._eval(/** @type {string} */loc, val, /** @type {string|number} */path.at(-1), path.slice(0, -1), parent, parentPropName);
+	      const exprToUse = /** @type {string|number} */
+	      evalResult !== undefined ? evalResult : '';
+	      addRet(this._trace(unshift(exprToUse, x), val, path, parent, parentPropName, callback, hasArrExpr));
+	    } else if (loc[0] === '@') {
+	      // value type: @boolean(), etc.
+	      let addType = false;
+	      const valueType = /** @type {ValueType} */loc.slice(1, -2);
+	      switch (valueType) {
+	        case 'scalar':
+	          if (!val || !['object', 'function'].includes(typeof val)) {
+	            addType = true;
+	          }
+	          break;
+	        case 'boolean':
+	        case 'string':
+	        case 'undefined':
+	        case 'function':
+	          if (typeof val === valueType) {
+	            addType = true;
+	          }
+	          break;
+	        case 'integer':
+	          if (Number.isFinite(val) && !(/** @type {number} */val % 1)) {
+	            addType = true;
+	          }
+	          break;
+	        case 'number':
+	          if (Number.isFinite(val)) {
+	            addType = true;
+	          }
+	          break;
+	        case 'nonFinite':
+	          if (typeof val === 'number' && !Number.isFinite(val)) {
+	            addType = true;
+	          }
+	          break;
+	        case 'object':
+	          if (val && typeof val === valueType) {
+	            addType = true;
+	          }
+	          break;
+	        case 'array':
+	          if (Array.isArray(val)) {
+	            addType = true;
+	          }
+	          break;
+	        case 'other':
+	          addType = this.currOtherTypeCallback?.(val, path, parent, /** @type {string|null} */parentPropName) ?? false;
+	          break;
+	        case 'null':
+	          if (val === null) {
+	            addType = true;
+	          }
+	          break;
+	        /* c8 ignore next 2 */
+	        default:
+	          throw new TypeError('Unknown value type ' + valueType);
+	      }
+	      if (addType) {
+	        retObj = {
+	          path,
+	          value: val,
+	          parent,
+	          parentProperty: parentPropName
+	        };
+	        this._handleCallback(retObj, callback, 'value');
+	        return retObj;
+	      }
+	      // `-escaped property
+	    } else if (val && loc[0] === '`' && Object.hasOwn(val, loc.slice(1))) {
+	      const locProp = loc.slice(1);
+	      const valObj = /** @type {Record<string, unknown>} */val;
+	      addRet(this._trace(x, valObj[locProp], push(path, locProp), val, locProp, callback, hasArrExpr, true));
+	    } else if (loc.includes(',')) {
+	      // [name1,name2,...]
+	      const parts = loc.split(',');
+	      for (const part of parts) {
+	        addRet(this._trace(unshift(part, x), val, path, parent, parentPropName, callback, true));
+	      }
+	      // simple case--directly follow property
+	    } else if (!literalPriority && val && Object.hasOwn(val, loc)) {
+	      const valObj = /** @type {Record<string, unknown>} */val;
+	      addRet(this._trace(x, valObj[loc], push(path, loc), val, loc, callback, hasArrExpr, true));
+	    }
+
+	    // We check the resulting values for parent selections. For parent
+	    // selections we discard the value object and continue the trace with
+	    // the current val object
+	    if (this._hasParentSelector) {
+	      for (let t = 0; t < ret.length; t++) {
+	        const rett = ret[t];
+	        if (rett && rett.isParentSelector) {
+	          const exprToUse = /** @type {ExpressionArray} */
+	          rett.expr;
+	          const pathToUse = /** @type {ExpressionArray} */
+	          rett.path;
+	          const tmp = this._trace(exprToUse, val, pathToUse, parent, parentPropName, callback, hasArrExpr);
+	          if (Array.isArray(tmp)) {
+	            ret[t] = tmp[0];
+	            const tl = tmp.length;
+	            for (let tt = 1; tt < tl; tt++) {
+	              t++;
+	              ret.splice(t, 0, tmp[tt]);
+	            }
+	          } else {
+	            ret[t] = tmp;
+	          }
 	        }
 	      }
 	    }
+	    return ret;
 	  }
-	  return ret;
-	};
-	JSONPath.prototype._walk = function (val, f) {
-	  if (Array.isArray(val)) {
-	    const n = val.length;
-	    for (let i = 0; i < n; i++) {
-	      f(i);
+
+	  /**
+	   * @param {unknown} val
+	   * @param {(prop: string|number) => void} f
+	   * @returns {void}
+	   */
+	  _walk(val, f) {
+	    if (Array.isArray(val)) {
+	      const n = val.length;
+	      for (let i = 0; i < n; i++) {
+	        f(i);
+	      }
+	    } else if (val && typeof val === 'object') {
+	      Object.keys(val).forEach(m => {
+	        f(m);
+	      });
 	    }
-	  } else if (val && typeof val === 'object') {
-	    Object.keys(val).forEach(m => {
-	      f(m);
-	    });
 	  }
-	};
-	JSONPath.prototype._slice = function (loc, expr, val, path, parent, parentPropName, callback) {
-	  if (!Array.isArray(val)) {
-	    return undefined;
+
+	  /**
+	   * @param {string} loc
+	   * @param {ExpressionArray} expr
+	   * @param {unknown} val
+	   * @param {ExpressionArray} path
+	   * @param {ParentValue} parent
+	   * @param {ParentProperty} parentPropName
+	   * @param {JSONPathCallback|undefined} callback
+	   * @returns {ReturnObject[]|undefined}
+	   */
+	  _slice(loc, expr, val, path, parent, parentPropName, callback) {
+	    if (!Array.isArray(val)) {
+	      return undefined;
+	    }
+	    const len = val.length,
+	      parts = loc.split(':'),
+	      step = parts[2] && Number(parts[2]) || 1;
+	    let start = parts[0] && Number(parts[0]) || 0,
+	      end = parts[1] ? Number(parts[1]) : len;
+	    start = start < 0 ? Math.max(0, start + len) : Math.min(len, start);
+	    end = end < 0 ? Math.max(0, end + len) : Math.min(len, end);
+	    /** @type {ReturnObject[]} */
+	    const ret = [];
+	    for (let i = start; i < end; i += step) {
+	      const tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback, true);
+	      // Should only be possible to be an array here since first part of
+	      //   ``unshift(i, expr)` passed in above would not be empty,
+	      //     nor `~`, nor begin with `@` (as could return objects)
+	      // This was causing excessive stack size in Node (with or
+	      //  without Babel) against our performance test: `ret.push(...tmp);`
+	      // eslint-disable-next-line @stylistic/max-len -- Long
+	      /* c8 ignore next -- Unreachable: _trace returns array when expr non-empty */
+	      const tmpArray = Array.isArray(tmp) ? tmp : [tmp];
+	      tmpArray.forEach(t => {
+	        ret.push(t);
+	      });
+	    }
+	    return ret;
 	  }
-	  const len = val.length,
-	    parts = loc.split(':'),
-	    step = parts[2] && Number.parseInt(parts[2]) || 1;
-	  let start = parts[0] && Number.parseInt(parts[0]) || 0,
-	    end = parts[1] ? Number.parseInt(parts[1]) : len;
-	  start = start < 0 ? Math.max(0, start + len) : Math.min(len, start);
-	  end = end < 0 ? Math.max(0, end + len) : Math.min(len, end);
-	  const ret = [];
-	  for (let i = start; i < end; i += step) {
-	    const tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback, true);
-	    // Should only be possible to be an array here since first part of
-	    //   ``unshift(i, expr)` passed in above would not be empty, nor `~`,
-	    //     nor begin with `@` (as could return objects)
-	    // This was causing excessive stack size in Node (with or
-	    //  without Babel) against our performance test: `ret.push(...tmp);`
-	    tmp.forEach(t => {
-	      ret.push(t);
-	    });
-	  }
-	  return ret;
-	};
-	JSONPath.prototype._eval = function (code, _v, _vname, path, parent, parentPropName) {
-	  this.currSandbox._$_parentProperty = parentPropName;
-	  this.currSandbox._$_parent = parent;
-	  this.currSandbox._$_property = _vname;
-	  this.currSandbox._$_root = this.json;
-	  this.currSandbox._$_v = _v;
-	  const containsPath = code.includes('@path');
-	  if (containsPath) {
-	    this.currSandbox._$_path = JSONPath.toPathString(path.concat([_vname]));
-	  }
-	  const scriptCacheKey = this.currEval + 'Script:' + code;
-	  if (!JSONPath.cache[scriptCacheKey]) {
-	    let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root').replaceAll(/@([.\s)[])/gu, '_$_v$1');
+
+	  /**
+	   * @param {string} code
+	   * @param {unknown} _v
+	   * @param {string|number} _vname
+	   * @param {ExpressionArray} path
+	   * @param {ParentValue} parent
+	   * @param {ParentProperty} parentPropName
+	   * @returns {UnknownResult}
+	   */
+	  _eval(code, _v, _vname, path, parent, parentPropName) {
+	    if (this.currSandbox) {
+	      this.currSandbox._$_parentProperty = parentPropName;
+	      this.currSandbox._$_parent = parent;
+	      this.currSandbox._$_property = _vname;
+	      this.currSandbox._$_root = this.json;
+	      this.currSandbox._$_v = _v;
+	    }
+	    const containsPath = code.includes('@path');
 	    if (containsPath) {
-	      script = script.replaceAll('@path', '_$_path');
+	      // eslint-disable-next-line @stylistic/max-len -- Long
+	      /* c8 ignore next -- Unreachable: currSandbox set in evaluate() before _eval */
+	      const currSandbox = this.currSandbox ?? {};
+	      currSandbox._$_path = JSONPath.toPathString(/** @type {string[]} */path.concat([_vname]));
 	    }
-	    if (this.currEval === 'safe' || this.currEval === true || this.currEval === undefined) {
-	      JSONPath.cache[scriptCacheKey] = new this.safeVm.Script(script);
-	    } else if (this.currEval === 'native') {
-	      JSONPath.cache[scriptCacheKey] = new this.vm.Script(script);
-	    } else if (typeof this.currEval === 'function' && this.currEval.prototype && Object.hasOwn(this.currEval.prototype, 'runInNewContext')) {
-	      const CurrEval = this.currEval;
-	      JSONPath.cache[scriptCacheKey] = new CurrEval(script);
-	    } else if (typeof this.currEval === 'function') {
-	      JSONPath.cache[scriptCacheKey] = {
-	        runInNewContext: context => this.currEval(script, context)
-	      };
-	    } else {
-	      throw new TypeError(`Unknown "eval" property "${this.currEval}"`);
+	    const scriptCacheKey = this.currEval + 'Script:' + code;
+	    if (!Object.hasOwn(JSONPath.cache, scriptCacheKey)) {
+	      let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root').replaceAll(/@([.\s)[])/gu, '_$_v$1');
+	      if (containsPath) {
+	        script = script.replaceAll('@path', '_$_path');
+	      }
+	      const evalType = /** @type {string|boolean|undefined} */
+	      this.currEval;
+	      if (['safe', true, undefined].includes(evalType)) {
+	        const {
+	          cache
+	        } = JSONPath;
+	        // eslint-disable-next-line @stylistic/max-len -- Long
+	        /* eslint-disable unicorn/no-undeclared-class-members -- Prototype members */
+	        cache[scriptCacheKey] = new (
+	        /**
+	         * @type {JSONPathClass & {
+	         *   safeVm: SafeScriptType,
+	         *   vm: ScriptType
+	         * }}
+	         */ /** @type {unknown} */
+	        this).safeVm.Script(script);
+	        // eslint-disable-next-line @stylistic/max-len -- Long
+	        /* eslint-enable unicorn/no-undeclared-class-members -- End prototype member scope */
+	      } else if (this.currEval === 'native') {
+	        const {
+	          cache
+	        } = JSONPath;
+	        // eslint-disable-next-line @stylistic/max-len -- Long
+	        /* eslint-disable unicorn/no-undeclared-class-members -- Prototype members */
+	        cache[scriptCacheKey] = new (
+	        /**
+	         * @type {JSONPathClass & {
+	         *   safeVm: SafeScriptType,
+	         *   vm: ScriptType
+	         * }}
+	         */ /** @type {unknown} */
+	        this).vm.Script(script);
+	        // eslint-disable-next-line @stylistic/max-len -- Long
+	        /* eslint-enable unicorn/no-undeclared-class-members -- End prototype member scope */
+	      } else if (typeof this.currEval === 'function' && this.currEval.prototype && Object.hasOwn(this.currEval.prototype, 'runInNewContext')) {
+	        const CurrEval = this.currEval;
+	        const {
+	          cache
+	        } = JSONPath;
+	        // eslint-disable-next-line @stylistic/max-len -- Long
+	        // @ts-expect-error - Type checked above to have proper constructor
+	        cache[scriptCacheKey] = new CurrEval(script);
+	      } else if (typeof this.currEval === 'function') {
+	        const {
+	          cache
+	        } = JSONPath;
+	        // Type narrowing: at this point currEval is a function
+	        //   but not a constructor
+	        const evalFunc = /** @type {EvalCallback} */this.currEval;
+	        cache[scriptCacheKey] = {
+	          runInNewContext: (/** @type {ContextItem} */context) => evalFunc(script, context)
+	        };
+	      } else {
+	        throw new TypeError(`Unknown "eval" property "${this.currEval}"`);
+	      }
+	    }
+	    try {
+	      const {
+	        cache
+	      } = JSONPath;
+
+	      /**
+	       * @typedef {{
+	       *   runInNewContext: (
+	       *     ctx: SandboxType|undefined
+	       *   ) => EvaluatedResult
+	       * }} RunInNewContext
+	       */
+
+	      return /** @type {RunInNewContext} */cache[scriptCacheKey].runInNewContext(this.currSandbox);
+	    } catch (e) {
+	      if (this.ignoreEvalErrors) {
+	        return false;
+	      }
+	      const error = /** @type {Error} */e;
+	      throw new Error('jsonPath: ' + error.message + ': ' + code, {
+	        cause: e
+	      });
 	    }
 	  }
-	  try {
-	    return JSONPath.cache[scriptCacheKey].runInNewContext(this.currSandbox);
-	  } catch (e) {
-	    if (this.ignoreEvalErrors) {
-	      return false;
-	    }
-	    throw new Error('jsonPath: ' + e.message + ': ' + code);
-	  }
+	}
+
+	/** @type {{safeVm: SafeScriptType}} */
+	(/** @type {unknown} */JSONPathClass.prototype).safeVm = {
+	  Script: SafeScript
 	};
+	JSONPath.prototype = JSONPathClass.prototype;
 
 	// PUBLIC CLASS PROPERTIES AND METHODS
 
 	// Could store the cache object itself
+
+	/** @type {Record<string, unknown>} */
 	JSONPath.cache = {};
 
 	/**
@@ -2004,7 +2431,7 @@
 	};
 
 	/**
-	 * @param {string} pointer JSON Path
+	 * @param {string[]} pointer JSON Path array
 	 * @returns {string} JSON Pointer
 	 */
 	JSONPath.toPointer = function (pointer) {
@@ -2027,9 +2454,10 @@
 	  const {
 	    cache
 	  } = JSONPath;
-	  if (cache[expr]) {
-	    return cache[expr].concat();
+	  if (Object.hasOwn(cache, expr)) {
+	    return /** @type {string[]} */cache[expr].concat();
 	  }
+	  /** @type {string[]} */
 	  const subx = [];
 	  const normalized = expr
 	  // Properties
@@ -2037,7 +2465,10 @@
 	  // Parenthetical evaluations (filtering and otherwise), directly
 	  //   within brackets or single quotes
 	  .replaceAll(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {
-	    return '[#' + (subx.push($1) - 1) + ']';
+	    return '[#' + (
+	    // eslint-disable-next-line @stylistic/max-len -- Long
+	    // eslint-disable-next-line unicorn/no-return-array-push -- Optimization
+	    subx.push($1) - 1) + ']';
 	  })
 	  // Escape periods and tildes within properties
 	  .replaceAll(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
@@ -2061,34 +2492,95 @@
 	  .replaceAll(/;$|'?\]|'$/gu, '');
 	  const exprList = normalized.split(';').map(function (exp) {
 	    const match = exp.match(/#(\d+)/u);
-	    return !match || !match[1] ? exp : subx[match[1]];
+	    return !match || !match[1] ? exp : subx[Number(match[1])];
 	  });
 	  cache[expr] = exprList;
-	  return cache[expr].concat();
-	};
-	JSONPath.prototype.safeVm = {
-	  Script: SafeScript
+	  return /** @type {string[]} */cache[expr].concat();
 	};
 
 	/**
-	 * @typedef {any} ContextItem
+	 * @typedef {import('./jsonpath.js').AnyInput} AnyInput
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').SandboxCallback} SandboxCallback
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').SandboxPropertyValue} SandboxPropertyValue
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').ExpressionArray} ExpressionArray
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').ValueType} ValueType
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').ParentValue} ParentValue
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').UnknownResult} UnknownResult
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').ParentProperty} ParentProperty
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').PreferredOutput} PreferredOutput
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').ReturnObject} ReturnObject
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').JSONPathCallback} JSONPathCallback
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').OtherTypeCallback} OtherTypeCallback
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').ContextItem} ContextItem
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').EvaluatedResult} EvaluatedResult
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').EvalCallback} EvalCallback
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').EvalClass} EvalClass
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').ResultType} ResultType
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').EvalValue} EvalValue
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').PathType} PathType
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').SafeScriptType} SafeScriptType
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').ScriptType} ScriptType
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').SandboxType} SandboxType
+	 */
+	/**
+	 * @typedef {import('./jsonpath.js').JSONPathOptions} JSONPathOptions
 	 */
 
 	/**
-	 * @typedef {any} EvaluatedResult
-	 */
-
-	/**
+	 * @template T
 	 * @callback ConditionCallback
-	 * @param {ContextItem} item
+	 * @param {T} item
 	 * @returns {boolean}
 	 */
 
 	/**
 	 * Copy items out of one array into another.
-	 * @param {GenericArray} source Array with items to copy
-	 * @param {GenericArray} target Array to which to copy
-	 * @param {ConditionCallback} conditionCb Callback passed the current item;
+	 * @template T
+	 * @param {T[]} source Array with items to copy
+	 * @param {T[]} target Array to which to copy
+	 * @param {ConditionCallback<T>} conditionCb Callback passed the current item;
 	 *     will move item if evaluates to `true`
 	 * @returns {void}
 	 */
@@ -2097,8 +2589,6 @@
 	  for (let i = 0; i < il; i++) {
 	    const item = source[i];
 	    if (conditionCb(item)) {
-	      // eslint-disable-next-line @stylistic/max-len -- Long
-	      // eslint-disable-next-line sonarjs/updated-loop-counter -- Convenient
 	      target.push(source.splice(i--, 1)[0]);
 	    }
 	  }
@@ -2116,14 +2606,14 @@
 	  }
 
 	  /**
-	   * @param {object} context Object whose items will be added
+	   * @param {SandboxType} context Object whose items will be added
 	   *   to evaluation
 	   * @returns {EvaluatedResult} Result of evaluated code
 	   */
 	  runInNewContext(context) {
 	    let expr = this.code;
 	    const keys = Object.keys(context);
-	    const funcs = [];
+	    const funcs = /** @type {string[]} */[];
 	    moveToAnotherArray(keys, funcs, key => {
 	      return typeof context[key] === 'function';
 	    });
@@ -2139,7 +2629,7 @@
 	    }, '');
 	    expr = funcString + expr;
 
-	    // Mitigate http://perfectionkills.com/global-eval-what-are-the-options/#new_function
+	    // Mitigate https://perfectionkills.com/global-eval-what-are-the-options/#new_function
 	    if (!/(['"])use strict\1/u.test(expr) && !keys.includes('arguments')) {
 	      expr = 'var arguments = undefined;' + expr;
 	    }
@@ -2157,10 +2647,14 @@
 	    return new Function(...keys, code)(...values);
 	  }
 	}
-	JSONPath.prototype.vm = {
+
+	/** @type {{vm: ScriptType}} */
+	(/** @type {unknown} */JSONPathClass.prototype).vm = {
 	  Script
 	};
 
 	exports.JSONPath = JSONPath;
+	exports.JSONPathClass = JSONPathClass;
+	exports.Script = Script;
 
 }));

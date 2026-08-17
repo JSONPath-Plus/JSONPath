@@ -15,11 +15,15 @@ mocha-multi-reporters.json
 .mocharc.cjs
 .github
 .nojekyll
+.ncurc.cjs
 ignore
 pnpm-lock.yaml
+pnpm-workspace.yaml
 eslint.config.js
 .editorconfig
 .eslintignore
 licenseInfo.json
 tsconfig.json
+tsconfig-prod.json
 demo
+xunit.xml

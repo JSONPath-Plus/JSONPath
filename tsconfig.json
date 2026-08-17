@@ -1,9 +1,20 @@
 {
     "compilerOptions": {
-        "lib": ["es2015"]
+        "lib": ["es2024"],
+        "types": ["node", "mocha"],
+        "target": "es2017",
+        "module": "nodenext",
+        "allowJs": true,
+        "checkJs": true,
+        "declaration": true,
+        "noEmit": true,
+        "outDir": "dist",
+        "skipLibCheck": true
     },
     "include": [
-      "src"
+      "src", "bin", "test-helpers", "test",
+      "eslint.config.js"
+      // "rollup.config.js"
     ],
     "exclude": ["node_modules"]
 }

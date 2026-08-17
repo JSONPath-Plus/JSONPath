@@ -3,7 +3,7 @@ import {checkBuiltInVMAndNodeVM} from '../test-helpers/checkVM.js';
 checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
     describe(`JSONPath - Examples (${vmType})`, function () {
         before(setBuiltInState);
-        // tests based on examples at http://goessner.net/articles/jsonpath/
+        // tests based on examples at https://goessner.net/articles/jsonpath/
         const json = {
             "store": {
                 "book": [{
@@ -143,17 +143,17 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         });
 
         it('all properties of a JSON structure (beneath the root)', () => {
-            const expected = [
+            const expected = /** @type {any[]} */ ([
                 json.store,
                 json.store.book,
                 json.store.bicycle
-            ];
+            ]);
             json.store.book.forEach((book) => {
                 expected.push(book);
             });
             json.store.book.forEach(function (book) {
-                Object.keys(book).forEach(function (p) {
-                    expected.push(book[p]);
+                Object.values(book).forEach(function (v) {
+                    expected.push(v);
                 });
             });
             expected.push(
@@ -166,11 +166,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         });
 
         it('all parent components of a JSON structure', () => {
-            const expected = [
+            const expected = /** @type {any[]} */ ([
                 json,
                 json.store,
                 json.store.book
-            ];
+            ]);
             json.store.book.forEach((book) => {
                 expected.push(book);
             });
@@ -207,34 +207,46 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
         });
         it('Custom property: @property', () => {
-            let expected = json.store.book.reduce(function (arr, book) {
+            const expected = json.store.book.reduce(function (arr, book) {
                 arr.push(book.author, book.title);
                 if (book.isbn) {
                     arr.push(book.isbn);
                 }
                 arr.push(book.price);
                 return arr;
-            }, []);
+            }, /** @type {(string|number)[]} */ ([]));
             let result = jsonpath({json, path: '$..book.*[?(@property !== "category")]'});
             assert.deepEqual(result, expected);
 
-            expected = json.store.book.slice(1);
+            const expected2 = json.store.book.slice(1);
             result = jsonpath({json, path: '$..book[?(@property !== 0)]'});
-            assert.deepEqual(result, expected);
+            assert.deepEqual(result, expected2);
         });
         it('Custom property: @parentProperty', () => {
-            let expected = [json.store.bicycle.color, json.store.bicycle.price];
+            const expected = [json.store.bicycle.color, json.store.bicycle.price];
             let result = jsonpath({json, path: '$.store.*[?(@parentProperty !== "book")]'});
             assert.deepEqual(result, expected);
 
-            expected = json.store.book.slice(1).reduce(function (rslt, book) {
-                return [...rslt, ...Object.keys(book).reduce((reslt, prop) => {
-                    reslt.push(book[prop]);
-                    return reslt;
-                }, [])];
-            }, []);
+            const expected2 = json.store.book.slice(1).reduce(
+                (rslt, book) => {
+                    return [...rslt, ...Object.values(book).reduce((reslt, v) => {
+                        reslt.push(v);
+                        return reslt;
+                    }, [])];
+                },
+                /**
+                 * @type {{
+                 *   category: string;
+                 *   author: string;
+                 *   title: string;
+                 *   isbn: string;
+                 *   price: number;
+                 * }[]}
+                 */
+                ([])
+            );
             result = jsonpath({json, path: '$..book.*[?(@parentProperty !== 0)]'});
-            assert.deepEqual(result, expected);
+            assert.deepEqual(result, expected2);
         });
 
         it('Custom property: @root', () => {

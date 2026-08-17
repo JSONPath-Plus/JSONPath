@@ -1,5 +1,9 @@
 import {checkBuiltInVMAndNodeVM} from '../test-helpers/checkVM.js';
 
+/**
+ * @import {SandboxCallback} from '../src/jsonpath.js';
+ */
+
 checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
     describe(`JSONPath - Eval (${vmType} - safe)`, function () {
         before(setBuiltInState);
@@ -110,11 +114,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const expected = [json.store.book];
             const result = jsonpath({
                 json,
-                sandbox: {
+                sandbox: /** @type {{filter: SandboxCallback}} */ ({
                     filter (arg) {
                         return arg.category === 'reference';
                     }
-                },
+                }),
                 path: "$..[?(filter(@))]", wrap: false,
                 eval: 'safe'
             });
@@ -124,6 +128,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
         describe('cyclic object', () => {
             // This is not an eval test, but we put it here for parity with item below
             it('cyclic object without a sandbox', () => {
+                /**
+                 * @typedef {{a: {b: {c: number}, x?: CircularObj}}} CircularObj
+                 */
+
+                /** @type {CircularObj} */
                 const circular = {a: {b: {c: 5}}};
                 circular.a.x = circular;
                 const expected = circular.a.b;
@@ -136,6 +145,12 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 assert.deepEqual(result, expected);
             });
             it('cyclic object in a sandbox', () => {
+                /**
+                 * @typedef {{
+                 *   category: string, recurse?: CircularObjWithRecurse
+                 * }} CircularObjWithRecurse
+                 */
+                /** @type {CircularObjWithRecurse} */
                 const circular = {category: 'fiction'};
                 circular.recurse = circular;
                 const expected = json.store.books;
@@ -211,7 +226,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     }]
                 }
             };
-            const opPathExpecteds = [
+            const opPathExpecteds = /** @type {[string, string, unknown[]][]} */ ([
                 ['|| , ===', '$..[?(@property === "book" || @property === "books")]', [json.store.book, json.store.books]],
                 ['| , &&', '$..[?(@ && (@.shelf === (1 | 2)))]', [json.store.books[1]]],
                 ['^', '$..[?(@ && (@.shelf === (1 ^ 2)))]', [json.store.books[1]]],
@@ -233,7 +248,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 ['+ (unary)', '$..[?(@ && +@.meta === 12)]', [json.store.book]],
                 ['typeof', '$..[?(@ && typeof @.meta === "number")]', [json.store.books[0]]],
                 ['void', '$..books[?(@.meta === void 0)]', [json.store.books[1]]]
-            ];
+            ]);
             for (const [operator, path, expected] of opPathExpecteds) {
                 it(`${operator} operator`, () => {
                     const result = jsonpath({
@@ -280,6 +295,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                         path: pathDoS
                     });
 
+                    // @ts-expect-error Won't get here
                     result.toString(); // DoS
                 }, 'constructor is not defined');
             });
@@ -302,6 +318,8 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             });
             it("10.4.1 RCE", () => {
                 assert.throws(() => {
+                    // @ts-expect-error VM testing
+                    // eslint-disable-next-line unicorn/no-global-object-property-assignment -- Exploit test
                     globalThis.TEST_10_4_1_RCE = 'not exploited';
 
                     const path = "$..[?(@.constructor[( @.getPrototypeOf(@).constructor('globalThis.TEST_10_4_1_RCE=\"RCE\";0')() )])]";

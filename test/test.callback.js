@@ -37,12 +37,16 @@ describe('JSONPath - Callback', function () {
 
     it('Callback', () => {
         const expected = ['value', json.store.bicycle, {path: "$['store']['bicycle']", value: json.store.bicycle, parent: json.store, parentProperty: 'bicycle', hasArrExpr: undefined}];
+
+        /**
+         * @type {undefined|(string|object)[]}
+         */
         let result;
         /**
          *
-         * @param {PlainObject} data
+         * @param {object} data
          * @param {string} type
-         * @param {PlainObject} fullData
+         * @param {object} fullData
          * @returns {void}
          */
         function callback (data, type, fullData) {
@@ -75,12 +79,16 @@ describe('JSONPath - Callback', function () {
                 hasArrExpr: undefined
             }
         ];
+
+        /**
+         * @type {undefined|(string|object)[]}
+         */
         let result;
         /**
          *
-         * @param {PlainObject} data
+         * @param {object} data
          * @param {string} type
-         * @param {PlainObject} fullData
+         * @param {object} fullData
          * @returns {void}
          */
         function callback (data, type, fullData) {
@@ -90,7 +98,7 @@ describe('JSONPath - Callback', function () {
             result.push(type, data, fullData);
         }
         jsonpath({json, path: '$.store.bicycle', resultType: 'all', wrap: false, callback});
-        assert.deepEqual(result[0], expected[0]);
+        assert.deepEqual(result?.[0], expected[0]);
         assert.deepEqual(result, expected);
     });
 
@@ -142,5 +150,60 @@ describe('JSONPath - Callback', function () {
         });
         const result = givenPerson;
         assert.deepEqual(result, expected);
+    });
+
+    // The callback stringifies `retObj.path` in place, so the returned
+    //   results are built from an already-stringified path.
+    it('returns unmangled paths with `resultType: "path"` and a callback', () => {
+        /** @type {unknown[]} */
+        const seen = [];
+        const result = jsonpath({
+            json,
+            path: '$.store.book[*].author',
+            resultType: 'path',
+            callback (preferredOutput) {
+                seen.push(preferredOutput);
+            }
+        });
+        const expected = [
+            "$['store']['book'][0]['author']",
+            "$['store']['book'][1]['author']",
+            "$['store']['book'][2]['author']",
+            "$['store']['book'][3]['author']"
+        ];
+        assert.deepEqual(result, expected);
+        assert.deepEqual(seen, expected);
+    });
+
+    it('returns unmangled pointers with `resultType: "pointer"` and a callback', () => {
+        /** @type {unknown[]} */
+        const seen = [];
+        const result = jsonpath({
+            json,
+            path: '$.store.book[*].author',
+            resultType: 'pointer',
+            callback (preferredOutput) {
+                seen.push(preferredOutput);
+            }
+        });
+        const expected = [
+            '/store/book/0/author',
+            '/store/book/1/author',
+            '/store/book/2/author',
+            '/store/book/3/author'
+        ];
+        assert.deepEqual(result, expected);
+        assert.deepEqual(seen, expected);
+    });
+
+    it('returns an unmangled path with `resultType: "path"`, `wrap: false`, and a callback', () => {
+        const result = jsonpath({
+            json,
+            path: '$.store.bicycle.color',
+            resultType: 'path',
+            wrap: false,
+            callback () { /* */ }
+        });
+        assert.deepEqual(result, "$['store']['bicycle']['color']");
     });
 });
