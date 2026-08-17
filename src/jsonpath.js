@@ -4,6 +4,9 @@
     monkey-patching */
 import {SafeScript} from './Safe-Script.js';
 
+const scriptCache = new Map();
+const pathCache = new Map();
+
 /**
  * @import {Script} from './jsonpath-browser.js';
  */
@@ -995,7 +998,7 @@ class JSONPathClass {
         }
 
         const scriptCacheKey = this.currEval + 'Script:' + code;
-        if (!Object.hasOwn(JSONPath.cache, scriptCacheKey)) {
+        if (!scriptCache.has(scriptCacheKey)) {
             let script = code
                 .replaceAll('@parentProperty', '_$_parentProperty')
                 .replaceAll('@parent', '_$_parent')
@@ -1009,31 +1012,29 @@ class JSONPathClass {
                 this.currEval
             );
             if (['safe', true, undefined].includes(evalType)) {
-                const {cache} = JSONPath;
                 // eslint-disable-next-line @stylistic/max-len -- Long
                 /* eslint-disable unicorn/no-undeclared-class-members -- Prototype members */
-                cache[scriptCacheKey] = new (
+                scriptCache.set(scriptCacheKey, new (
                     /**
                      * @type {JSONPathClass & {
                      *   safeVm: SafeScriptType,
                      *   vm: ScriptType
                      * }}
                      */ (/** @type {unknown} */ (this))
-                ).safeVm.Script(script);
+                ).safeVm.Script(script));
             // eslint-disable-next-line @stylistic/max-len -- Long
             /* eslint-enable unicorn/no-undeclared-class-members -- End prototype member scope */
             } else if (this.currEval === 'native') {
-                const {cache} = JSONPath;
                 // eslint-disable-next-line @stylistic/max-len -- Long
                 /* eslint-disable unicorn/no-undeclared-class-members -- Prototype members */
-                cache[scriptCacheKey] = new (
+                scriptCache.set(scriptCacheKey, new (
                     /**
                      * @type {JSONPathClass & {
                      *   safeVm: SafeScriptType,
                      *   vm: ScriptType
                      * }}
                      */ (/** @type {unknown} */ (this))
-                ).vm.Script(script);
+                ).vm.Script(script));
                 // eslint-disable-next-line @stylistic/max-len -- Long
                 /* eslint-enable unicorn/no-undeclared-class-members -- End prototype member scope */
             } else if (
@@ -1042,20 +1043,18 @@ class JSONPathClass {
                 Object.hasOwn(this.currEval.prototype, 'runInNewContext')
             ) {
                 const CurrEval = this.currEval;
-                const {cache} = JSONPath;
                 // eslint-disable-next-line @stylistic/max-len -- Long
                 // @ts-expect-error - Type checked above to have proper constructor
-                cache[scriptCacheKey] = new CurrEval(script);
+                scriptCache.set(scriptCacheKey, new CurrEval(script));
             } else if (typeof this.currEval === 'function') {
-                const {cache} = JSONPath;
                 // Type narrowing: at this point currEval is a function
                 //   but not a constructor
                 const evalFunc = /** @type {EvalCallback} */ (this.currEval);
-                cache[scriptCacheKey] = {
+                scriptCache.set(scriptCacheKey, {
                     runInNewContext: (
                         /** @type {ContextItem} */ context
                     ) => evalFunc(script, context)
-                };
+                });
             } else {
                 throw new TypeError(
                     `Unknown "eval" property "${this.currEval}"`
@@ -1064,8 +1063,6 @@ class JSONPathClass {
         }
 
         try {
-            const {cache} = JSONPath;
-
             /**
              * @typedef {{
              *   runInNewContext: (
@@ -1075,7 +1072,7 @@ class JSONPathClass {
              */
 
             return /** @type {RunInNewContext} */ (
-                cache[scriptCacheKey]
+                scriptCache.get(scriptCacheKey)
             ).runInNewContext(
                 this.currSandbox
             );
@@ -1100,13 +1097,14 @@ JSONPath.prototype = JSONPathClass.prototype;
 
 // PUBLIC CLASS PROPERTIES AND METHODS
 
-// Could store the cache object itself
-
-/** @type {Record<string, unknown>} */
-JSONPath.cache = {};
-
-/** @type {Record<string, string[]>} */
-JSONPath.pathCache = {};
+/**
+ * Clears cached parsed paths and compiled scripts.
+ * @returns {void}
+ */
+JSONPath.clearCache = function () {
+    pathCache.clear();
+    scriptCache.clear();
+};
 
 /**
  * @param {string[]} pathArr Array to convert
@@ -1145,9 +1143,8 @@ JSONPath.toPointer = function (pointer) {
  * @returns {string[]}
  */
 JSONPath.toPathArray = function (expr) {
-    const {pathCache} = JSONPath;
-    if (Object.hasOwn(pathCache, expr)) {
-        return pathCache[expr].concat();
+    if (pathCache.has(expr)) {
+        return /** @type {string[]} */ (pathCache.get(expr)).concat();
     }
     /** @type {string[]} */
     const subx = [];
@@ -1195,8 +1192,8 @@ JSONPath.toPathArray = function (expr) {
         const match = exp.match(/#(\d+)/u);
         return !match || !match[1] ? exp : subx[Number(match[1])];
     });
-    pathCache[expr] = exprList;
-    return pathCache[expr].concat();
+    pathCache.set(expr, exprList);
+    return /** @type {string[]} */ (pathCache.get(expr)).concat();
 };
 
 export {JSONPath, JSONPathClass};
