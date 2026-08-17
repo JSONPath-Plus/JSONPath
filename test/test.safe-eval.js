@@ -328,6 +328,53 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 }, "Function constructor is disabled");
             });
 
+            it("10.4.1 RCE via call/apply/bind", () => {
+                // @ts-expect-error VM testing
+                // eslint-disable-next-line unicorn/no-global-object-property-assignment -- Exploit test
+                globalThis.TEST_10_4_1_RCE_INDIRECT = 'not exploited';
+
+                const payload =
+                    'globalThis.TEST_10_4_1_RCE_INDIRECT="RCE";0';
+                for (const invocation of [
+                    `constructor.call(0,'${payload}')()`,
+                    `constructor.apply(0,['${payload}'])()`,
+                    `constructor.bind(0)('${payload}')()`
+                ]) {
+                    assert.throws(() => {
+                        const path =
+                            `$..[?(@.constructor[( @.getPrototypeOf(@).${invocation} )])]`;
+                        jsonpath({path, json: {a: {}}});
+                    }, "Function constructor is disabled");
+                }
+
+                assert.equal(
+                    // @ts-expect-error VM testing
+                    globalThis.TEST_10_4_1_RCE_INDIRECT,
+                    'not exploited'
+                );
+            });
+
+            it("async/generator function constructors blocked", () => {
+                const fnJson = {
+                    a: {
+                        // eslint-disable-next-line no-empty-function -- Only need the constructor
+                        af: async function () {}.constructor,
+                        // eslint-disable-next-line no-empty-function -- Only need the constructor
+                        gf: function *() {}.constructor,
+                        // eslint-disable-next-line no-empty-function -- Only need the constructor
+                        agf: async function *() {}.constructor
+                    }
+                };
+                for (const prop of ['af', 'gf', 'agf']) {
+                    assert.throws(() => {
+                        jsonpath({
+                            json: fnJson,
+                            path: `$[?(@.${prop}('return 1')())]`
+                        });
+                    }, "Function constructor is disabled");
+                }
+            });
+
             it("bind() escape guard: function.prototype.constructor blocked", () => {
                 // Regression: bound functions (with no .prototype) are returned to
                 // prevent @.f.prototype.constructor → Function constructor escape.
