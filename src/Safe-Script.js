@@ -40,13 +40,23 @@ const BLOCKED_PROTO_PROPERTIES = new Set([
     '__lookupSetter__'
 ]);
 
-const BINOPS = Object.assign(Object.create(null), {
+/**
+ * @typedef {Record<
+ *   string,
+ *   (a: AnyParameter, b: AnyParameter) => UnknownResult
+ * >} OperatorTable
+ */
+
+// eslint-disable-next-line @stylistic/max-len -- Long
+const BINOPS = Object.assign(Object.create(null), /** @type {OperatorTable} */ ({
     '||': (a, b) => a || b(),
     '&&': (a, b) => a && b(),
     '|': (a, b) => a | b(),
     '^': (a, b) => a ^ b(),
     '&': (a, b) => a & b(),
+    // eslint-disable-next-line eqeqeq -- API
     '==': (a, b) => a == b(),
+    // eslint-disable-next-line eqeqeq -- API
     '!=': (a, b) => a != b(),
     '===': (a, b) => a === b(),
     '!==': (a, b) => a !== b(),
@@ -62,16 +72,24 @@ const BINOPS = Object.assign(Object.create(null), {
     '*': (a, b) => a * b(),
     '/': (a, b) => a / b(),
     '%': (a, b) => a % b()
-});
+}));
 
-const UNOPS = Object.assign(Object.create(null), {
+/**
+ * @typedef {{
+ *   [key: string]: (a: AnyParameter) => UnknownResult
+ * }} UnaryOperatorTable
+ */
+
+// eslint-disable-next-line @stylistic/max-len -- Long
+const UNOPS = Object.assign(Object.create(null), /** @type {UnaryOperatorTable} */ ({
     '-': (a) => -(/** @type {EvaluatedResult} */ (a)),
     '!': (a) => !a,
     '~': (a) => ~(/** @type {EvaluatedResult} */ (a)),
+    // eslint-disable-next-line no-implicit-coercion -- API
     '+': (a) => +(/** @type {EvaluatedResult} */ (a)),
     typeof: (a) => typeof a,
-    void: (a) => void a
-});
+    void: () => undefined
+}));
 
 const SafeEval = {
     /**

@@ -335,7 +335,11 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 // call in evalMemberExpression.
                 assert.throws(() => {
                     jsonpath({
-                        json: {fn: () => {}},
+                        json: {
+                            fn () {
+                                return undefined;
+                            }
+                        },
                         path: "$[?(@.fn.prototype.constructor)]"
                     });
                 }, "Cannot read properties of undefined (reading 'prototype')");
