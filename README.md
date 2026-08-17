@@ -226,8 +226,9 @@ evaluate method (as the first argument) include:
 
 ### Class properties and methods
 
-- ***JSONPath.cache*** - Exposes the cache object for those who wish
-  to preserve and reuse it for optimization purposes.
+- ***JSONPath.clearCache()*** - Clears the internally cached parsed paths and
+  compiled scripts. Cache contents are not exposed; call this method when
+  cache invalidation is needed.
 - ***JSONPath.toPathArray(pathAsString)*** - Accepts a normalized or
   unnormalized path as string and converts to an array: for
   example, `['$', 'aProperty', 'anotherProperty']`.

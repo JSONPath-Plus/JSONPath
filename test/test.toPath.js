@@ -74,4 +74,50 @@ describe('JSONPath - toPath*', function () {
 
         assert.deepEqual(result, json);
     });
+
+    it('keeps script and path caches separate in reverse order', () => {
+        const json = [{b: true}];
+        jsonpath({json, path: '$[?(@.b)]', wrap: false});
+
+        const result = jsonpath.toPathArray('safeScript:@.b');
+
+        assert.deepEqual(result, ['safeScript:@', 'b']);
+    });
+
+    it('does not treat __proto__ as a cache property', () => {
+        const expected = ['__proto__'];
+
+        assert.deepEqual(jsonpath.toPathArray('__proto__'), expected);
+        assert.deepEqual(jsonpath.toPathArray('__proto__'), expected);
+        assert.deepEqual(jsonpath.toPathArray('$.a'), ['$', 'a']);
+    });
+
+    it('clears path and script caches', () => {
+        let compileCount = 0;
+        /* eslint-disable class-methods-use-this, jsdoc/require-jsdoc -- Test evaluator */
+        class EvalClass {
+            constructor () {
+                compileCount++;
+            }
+
+            runInNewContext () {
+                return true;
+            }
+        }
+        /* eslint-enable class-methods-use-this, jsdoc/require-jsdoc -- End test evaluator */
+        const json = [{b: true}];
+        const options = {
+            json,
+            path: '$[?(@.b)]',
+            eval: EvalClass
+        };
+
+        jsonpath(options);
+        jsonpath(options);
+        assert.strictEqual(compileCount, 1);
+
+        jsonpath.clearCache();
+        jsonpath(options);
+        assert.strictEqual(compileCount, 2);
+    });
 });
