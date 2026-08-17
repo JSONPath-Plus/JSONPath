@@ -327,6 +327,19 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     jsonpath({path, json: {a: {}}});
                 }, "Function constructor is disabled");
             });
+
+            it("bind() escape guard: function.prototype.constructor blocked", () => {
+                // Regression: bound functions (with no .prototype) are returned to
+                // prevent @.f.prototype.constructor → Function constructor escape.
+                // This test guards against accidentally removing the result.bind()
+                // call in evalMemberExpression.
+                assert.throws(() => {
+                    jsonpath({
+                        json: {fn: () => {}},
+                        path: "$[?(@.fn.prototype.constructor)]"
+                    });
+                }, "Cannot read properties of undefined (reading 'prototype')");
+            });
         });
     });
 });
