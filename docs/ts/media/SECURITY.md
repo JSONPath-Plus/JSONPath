@@ -10,11 +10,13 @@ If untrusted input is incorporated into a JSONPath expression, an attacker may b
 
 **Important notes:**
 - This does **not** enable random code execution when using `"eval": "safe"` (the default).
-- The primary risk is **data leakage**, not execution of attacker-controlled code.
+- The primary risks are **data leakage** and **denial of service**, not execution of attacker-controlled code.
+- Safe evaluation does not impose a timeout or memory limit. Expressions may invoke permitted native methods with expensive inputs and exhaust CPU or memory.
 
 **Mitigations:**
 1. **Do not interpolate unsanitized user input into JSONPath queries.**
 2. If user-controlled input must be included in a query, ensure the target JSON object contains **only non-confidential data**.
+3. Apply execution time and resource limits outside JSONPath-Plus when queries may be attacker-controlled.
 
 As a general rule, treat JSONPath expressions as code and avoid constructing them dynamically from untrusted sources.
 
