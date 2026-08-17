@@ -40,6 +40,39 @@ const BLOCKED_PROTO_PROPERTIES = new Set([
     '__lookupSetter__'
 ]);
 
+const BINOPS = Object.assign(Object.create(null), {
+    '||': (a, b) => a || b(),
+    '&&': (a, b) => a && b(),
+    '|': (a, b) => a | b(),
+    '^': (a, b) => a ^ b(),
+    '&': (a, b) => a & b(),
+    '==': (a, b) => a == b(),
+    '!=': (a, b) => a != b(),
+    '===': (a, b) => a === b(),
+    '!==': (a, b) => a !== b(),
+    '<': (a, b) => a < b(),
+    '>': (a, b) => a > b(),
+    '<=': (a, b) => a <= b(),
+    '>=': (a, b) => a >= b(),
+    '<<': (a, b) => a << b(),
+    '>>': (a, b) => a >> b(),
+    '>>>': (a, b) => a >>> b(),
+    '+': (a, b) => a + b(),
+    '-': (a, b) => a - b(),
+    '*': (a, b) => a * b(),
+    '/': (a, b) => a / b(),
+    '%': (a, b) => a % b()
+});
+
+const UNOPS = Object.assign(Object.create(null), {
+    '-': (a) => -(/** @type {EvaluatedResult} */ (a)),
+    '!': (a) => !a,
+    '~': (a) => ~(/** @type {EvaluatedResult} */ (a)),
+    '+': (a) => +(/** @type {EvaluatedResult} */ (a)),
+    typeof: (a) => typeof a,
+    void: (a) => void a
+});
+
 const SafeEval = {
     /**
      * @param {jsep.Expression} ast
@@ -109,36 +142,10 @@ const SafeEval = {
      * @returns {UnknownResult}
      */
     evalBinaryExpression (ast, subs) {
-        /**
-         * @typedef {{
-         *   [key: string]: (a: AnyParameter, b: AnyParameter) => UnknownResult
-         * }} OperatorTable
-         */
-        const result = /** @type {OperatorTable} */ ({
-            '||': (a, b) => a || b(),
-            '&&': (a, b) => a && b(),
-            '|': (a, b) => a | b(),
-            '^': (a, b) => a ^ b(),
-            '&': (a, b) => a & b(),
-            // eslint-disable-next-line eqeqeq -- API
-            '==': (a, b) => a == b(),
-            // eslint-disable-next-line eqeqeq -- API
-            '!=': (a, b) => a != b(),
-            '===': (a, b) => a === b(),
-            '!==': (a, b) => a !== b(),
-            '<': (a, b) => a < b(),
-            '>': (a, b) => a > b(),
-            '<=': (a, b) => a <= b(),
-            '>=': (a, b) => a >= b(),
-            '<<': (a, b) => a << b(),
-            '>>': (a, b) => a >> b(),
-            '>>>': (a, b) => a >>> b(),
-            '+': (a, b) => a + b(),
-            '-': (a, b) => a - b(),
-            '*': (a, b) => a * b(),
-            '/': (a, b) => a / b(),
-            '%': (a, b) => a % b()
-        })[ast.operator](
+        if (!Object.hasOwn(BINOPS, ast.operator)) {
+            throw new SyntaxError(`Unknown binary operator: ${ast.operator}`);
+        }
+        const result = BINOPS[ast.operator](
             SafeEval.evalAst(ast.left, subs),
             () => SafeEval.evalAst(ast.right, subs)
         );
@@ -242,28 +249,11 @@ const SafeEval = {
      * @returns {UnknownResult}
      */
     evalUnaryExpression (ast, subs) {
-        /**
-         * @typedef {{
-         *   [key: string]: (a: AnyParameter) => UnknownResult
-         * }} UnaryOperatorTable
-         */
-        const result = /** @type {UnaryOperatorTable} */ ({
-            '-': (a) => -(/** @type {EvaluatedResult} */ (
-                SafeEval.evalAst(a, subs))
-            ),
-            '!': (a) => !SafeEval.evalAst(a, subs),
-            '~': (a) => ~(/** @type {EvaluatedResult} */ (
-                SafeEval.evalAst(a, subs))
-            ),
-            // eslint-disable-next-line no-implicit-coercion -- API
-            '+': (a) => +(/** @type {EvaluatedResult} */ (
-                SafeEval.evalAst(a, subs))
-            ),
-            typeof: (a) => typeof SafeEval.evalAst(a, subs),
-            // eslint-disable-next-line no-void -- Ok
-            void: (a) => void SafeEval.evalAst(a, subs)
-        })[ast.operator](ast.argument);
-        return result;
+        if (!Object.hasOwn(UNOPS, ast.operator)) {
+            throw new SyntaxError(`Unknown unary operator: ${ast.operator}`);
+        }
+        const operand = SafeEval.evalAst(ast.argument, subs);
+        return UNOPS[ast.operator](operand);
     },
 
     /**
