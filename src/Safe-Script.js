@@ -160,6 +160,7 @@ const SafeEval = {
      * @returns {UnknownResult}
      */
     evalBinaryExpression (ast, subs) {
+        /* c8 ignore next 3 -- Defensive guard for malformed ASTs */
         if (!Object.hasOwn(BINOPS, ast.operator)) {
             throw new SyntaxError(`Unknown binary operator: ${ast.operator}`);
         }
@@ -267,6 +268,7 @@ const SafeEval = {
      * @returns {UnknownResult}
      */
     evalUnaryExpression (ast, subs) {
+        /* c8 ignore next 3 -- Defensive guard for malformed ASTs */
         if (!Object.hasOwn(UNOPS, ast.operator)) {
             throw new SyntaxError(`Unknown unary operator: ${ast.operator}`);
         }

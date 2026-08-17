@@ -8,10 +8,6 @@ const scriptCache = new Map();
 const pathCache = new Map();
 
 /**
- * @import {Script} from './jsonpath-browser.js';
- */
-
-/**
  * @typedef {any} AnyInput
  */
 
