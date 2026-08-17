@@ -3,22 +3,34 @@
 ## 11.0.0
 
 BREAKING CHANGES
-* chore: various changes in types, particularly with return values changing from any to unknown to ensure type safety (by forcing type casts of the results on the user).
 
-* fix(slice): explicit zero end no longer returns the whole array (#265) (@spokodev)
-* fix: restore `JSONPath.prototype.evaluate`, `safeVm`, and `vm` compatibility
-* refactor: expose JSONPathClass prototype through JSONPath for compatibility
-* chore: pnpm update (@brettz9)
-* refactor: implement TypeScript-as-JSDoc and auto-build declaration files from this (avoiding need for maintaining declaration file manually)
-* chore: update devDeps
-* chore: lint
-* build(deps-dev): bump rollup from 4.53.2 to 4.59.0 (@dependabot[bot])
-* build(deps): bump minimatch from 9.0.5 to 9.0.9 (@dependabot[bot])
-* build(deps): bump serialize-javascript (via audit fix) (@dependabot[bot])
-* build(deps): bump ajv from 6.12.6 to 6.14.0 (#253) (@dependabot[bot])
-* build(deps): bump qs from 6.14.0 to 6.14.2 (#252) (@dependabot[bot])
-* build(deps): bump markdown-it from 14.1.0 to 14.1.1 (#251) (@dependabot[bot])
-* build(deps): bump minimatch from 3.1.2 to 3.1.4 (#255) (@dependabot[bot])
+JSONPath.cache is no longer exposed or mutable. Consumers
+that used JSONPath.cache to inspect, modify, or clear entries must remove
+that usage and call JSONPath.clearCache() when cache invalidation is needed.
+
+- chore: various changes in types, particularly with return values changing from any to unknown to ensure type safety (by forcing type casts of the results on the user).
+- fix!: isolate caches and add cache reset API
+
+Other changes:
+
+- fix(slice): explicit zero end no longer returns the whole array (#265) (@spokodev)
+- fix: separate JSONPath path and script caches
+- fix: restore `JSONPath.prototype.evaluate`, `safeVm`, and `vm` compatibility
+- fix(safe-eval): harden operator lookup against prototype inheritance (@brettz9)
+- refactor: expose JSONPathClass prototype through JSONPath for compatibility
+- docs: security notes
+- test(safe-eval): guard bind() escape route for constructor access (@brettz9)
+- chore: pnpm update (@brettz9)
+- refactor: implement TypeScript-as-JSDoc and auto-build declaration files from this (avoiding need for maintaining declaration file manually)
+- chore: update devDeps
+- chore: lint
+- build(deps-dev): bump rollup from 4.53.2 to 4.59.0 (@dependabot[bot])
+- build(deps): bump minimatch from 9.0.5 to 9.0.9 (@dependabot[bot])
+- build(deps): bump serialize-javascript (via audit fix) (@dependabot[bot])
+- build(deps): bump ajv from 6.12.6 to 6.14.0 (#253) (@dependabot[bot])
+- build(deps): bump qs from 6.14.0 to 6.14.2 (#252) (@dependabot[bot])
+- build(deps): bump markdown-it from 14.1.0 to 14.1.1 (#251) (@dependabot[bot])
+- build(deps): bump minimatch from 3.1.2 to 3.1.4 (#255) (@dependabot[bot])
 
 
 ## 10.4.0
