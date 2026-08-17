@@ -61,4 +61,17 @@ describe('JSONPath - toPath*', function () {
         const result = jsonpath.toPathArray(path);
         assert.deepEqual(result, expected);
     });
+
+    it('keeps path and script caches separate', () => {
+        const json = [{b: true}];
+        jsonpath({json, path: 'safeScript:@.b'});
+
+        const result = jsonpath({
+            json,
+            path: '$[?(@.b)]',
+            wrap: false
+        });
+
+        assert.deepEqual(result, json);
+    });
 });

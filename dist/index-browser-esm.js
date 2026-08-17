@@ -2419,6 +2419,9 @@ JSONPath.prototype = JSONPathClass.prototype;
 /** @type {Record<string, unknown>} */
 JSONPath.cache = {};
 
+/** @type {Record<string, string[]>} */
+JSONPath.pathCache = {};
+
 /**
  * @param {string[]} pathArr Array to convert
  * @returns {string} The path string
@@ -2457,10 +2460,10 @@ JSONPath.toPointer = function (pointer) {
  */
 JSONPath.toPathArray = function (expr) {
   const {
-    cache
+    pathCache
   } = JSONPath;
-  if (Object.hasOwn(cache, expr)) {
-    return /** @type {string[]} */cache[expr].concat();
+  if (Object.hasOwn(pathCache, expr)) {
+    return pathCache[expr].concat();
   }
   /** @type {string[]} */
   const subx = [];
@@ -2499,8 +2502,8 @@ JSONPath.toPathArray = function (expr) {
     const match = exp.match(/#(\d+)/u);
     return !match || !match[1] ? exp : subx[Number(match[1])];
   });
-  cache[expr] = exprList;
-  return /** @type {string[]} */cache[expr].concat();
+  pathCache[expr] = exprList;
+  return pathCache[expr].concat();
 };
 
 /**
