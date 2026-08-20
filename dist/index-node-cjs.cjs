@@ -1230,6 +1230,25 @@ jsep.addLiteral('null', null);
 jsep.addLiteral('undefined', undefined);
 const BLOCKED_PROTO_PROPERTIES = new Set(['constructor', '__proto__', '__defineGetter__', '__defineSetter__', '__lookupGetter__', '__lookupSetter__']);
 
+// Every function-constructor variant, along with the invocation helpers which
+//   could otherwise reach them indirectly, e.g., `Function.call(0, 'code')()`
+/** @type {WeakSet<object>} */
+const BLOCKED_FUNCTIONS = new WeakSet([Function,
+// eslint-disable-next-line no-empty-function -- Only need the constructor
+function* () {}.constructor,
+// eslint-disable-next-line no-empty-function -- Only need the constructor
+async function () {}.constructor,
+// eslint-disable-next-line no-empty-function -- Only need the constructor
+async function* () {}.constructor, Function.prototype.call, Function.prototype.apply, Function.prototype.bind, Reflect.apply, Reflect.construct]);
+
+/**
+ * @param {UnknownResult} value
+ * @returns {boolean}
+ */
+const isBlockedFunction = value => {
+  return typeof value === 'function' && BLOCKED_FUNCTIONS.has(value);
+};
+
 /**
  * @typedef {Record<
  *   string,
@@ -1397,7 +1416,10 @@ const SafeEval = {
       throw new TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
     }
     const result = /** @type {Record<string, UnknownResult>} */obj[prop];
-    if (typeof result === 'function' && result !== Function) {
+    if (isBlockedFunction(result)) {
+      throw new TypeError('Function constructor is disabled');
+    }
+    if (typeof result === 'function') {
       return result.bind(obj); // arrow functions aren't affected by bind.
     }
     return result;
@@ -1432,7 +1454,7 @@ const SafeEval = {
   evalCallExpression(ast, subs) {
     const args = ast.arguments.map(arg => SafeEval.evalAst(arg, subs));
     const func = SafeEval.evalAst(ast.callee, subs);
-    if (func === Function) {
+    if (isBlockedFunction(func) || args.some(arg => isBlockedFunction(arg))) {
       throw new Error('Function constructor is disabled');
     }
     return (/** @type {(...args: AnyParameter[]) => UnknownResult} */
