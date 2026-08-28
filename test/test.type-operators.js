@@ -229,4 +229,65 @@ describe('JSONPath - Type Operators', function () {
             pointer: '/a'
         }]);
     });
+
+    describe('customTypes', () => {
+        it('allows custom type operators', () => {
+            // @ts-ignore -- Blob may not have construct signature in this TS environment
+            const blobObj = typeof Blob !== 'undefined'
+                ? new Blob(['test'])
+                : {[Symbol.toStringTag]: 'Blob'};
+            const jsonMixed = {
+                nested: {
+                    a: blobObj,
+                    b: null,
+                    c: {
+                        d: 7
+                    }
+                }
+            };
+            const expected = [blobObj];
+
+            const result = jsonpath({
+                json: jsonMixed,
+                path: '$..*@blob()',
+                flatten: true,
+                customTypes: {
+                    blob: (/** @type {any} */ val) => Object.prototype.toString.call(val) === '[object Blob]'
+                }
+            });
+            assert.deepEqual(result, expected);
+        });
+
+        it('allows custom type operators via evaluate method', () => {
+            // @ts-ignore -- Blob may not have construct signature in this TS environment
+            const blobObj = typeof Blob !== 'undefined'
+                ? new Blob(['test'])
+                : {[Symbol.toStringTag]: 'Blob'};
+            const jsonMixed = {a: blobObj};
+            const expected = [blobObj];
+            const jp = jsonpath({autostart: false});
+            const result = jp.evaluate({
+                json: jsonMixed,
+                path: '$..*@blob()',
+                flatten: true,
+                customTypes: {
+                    blob: (/** @type {any} */ val) => Object.prototype.toString.call(val) === '[object Blob]'
+                }
+            });
+            assert.deepEqual(result, expected);
+        });
+
+        it('throws on unregistered custom type operator', () => {
+            expect(() => {
+                jsonpath({
+                    json: {a: 1},
+                    path: '$..*@unregisteredType()',
+                    flatten: true,
+                    customTypes: {
+                        blob: (val) => Object.prototype.toString.call(val) === '[object Blob]'
+                    }
+                });
+            }).to.throw(TypeError, 'Unknown value type unregisteredType');
+        });
+    });
 });
