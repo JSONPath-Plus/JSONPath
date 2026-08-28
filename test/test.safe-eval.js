@@ -391,6 +391,21 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 }
             });
 
+            it("passing blocked function as argument is blocked", () => {
+                assert.throws(() => {
+                    const path = "$[?(dummy(blocked))]";
+                    jsonpath({
+                        path,
+                        json: [1],
+                        sandbox: {
+                            // eslint-disable-next-line no-empty-function -- Test dummy
+                            dummy () {},
+                            blocked: Function
+                        }
+                    });
+                }, "Function constructor is disabled");
+            });
+
             it("bind() escape guard: function.prototype.constructor blocked", () => {
                 // Regression: bound functions (with no .prototype) are returned to
                 // prevent @.f.prototype.constructor → Function constructor escape.

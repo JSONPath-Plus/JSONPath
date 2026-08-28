@@ -211,6 +211,11 @@ evaluate method (as the first argument) include:
   and it should return a boolean indicating whether the supplied value
   belongs to the "other" type or not (or it may handle transformations and
   return false).
+- ***customTypes*** (**default: {}**) - A key-value map of type names to functions.
+  This allows creating custom type operators that can be used in queries
+  (e.g., `@myType()`). The function will be invoked with the value of the item,
+  its path, its parent, and its parent's property name. It should return a
+  boolean indicating whether the supplied value matches the custom type.
 
 ### Instance methods
 

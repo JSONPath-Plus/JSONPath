@@ -1601,7 +1601,7 @@
 	 * @param {unknown} val
 	 * @param {ExpressionArray} path
 	 * @param {ParentValue} parent
-	 * @param {string|null} parentPropName
+	 * @param {string|number|null} parentPropName
 	 * @returns {boolean|null}
 	 */
 
@@ -1677,6 +1677,8 @@
 	 * @property {JSONPathCallback} [callback]
 	 * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
 	 *   function which throws on encountering `@other`
+	 * @property {Record<string, OtherTypeCallback>} [customTypes] Map of custom
+	 *   type operator names to their evaluation callbacks
 	 * @property {boolean} [autostart=true]
 	 * @property {boolean} [ignoreEvalErrors=false]
 	 */
@@ -1805,6 +1807,9 @@
 	    /** @type {OtherTypeCallback|undefined} */
 	    this.currOtherTypeCallback = undefined;
 
+	    /** @type {Record<string, OtherTypeCallback>|undefined} */
+	    this.currCustomTypes = undefined;
+
 	    /** @type {SandboxType|undefined} */
 	    this.currSandbox = undefined;
 	    this._hasParentSelector = false;
@@ -1823,6 +1828,7 @@
 	    this.otherTypeCallback = opts.otherTypeCallback || otherTypeCallback || function () {
 	      throw new TypeError('You must supply an otherTypeCallback callback option ' + 'with the @other() operator.');
 	    };
+	    this.customTypes = opts.customTypes || {};
 	    if (opts.autostart !== false) {
 	      const args = /** @type {JSONPathOptions} */{
 	        path: optObj ? opts.path : expr
@@ -1883,6 +1889,7 @@
 	    this.currSandbox = this.sandbox;
 	    callback ||= this.callback;
 	    this.currOtherTypeCallback = otherTypeCallback || this.otherTypeCallback;
+	    this.currCustomTypes = this.customTypes;
 	    if (expr && typeof expr === 'object' && !Array.isArray(expr)) {
 	      const exprObj = expr;
 	      if (!exprObj.path && exprObj.path !== '') {
@@ -1901,6 +1908,7 @@
 	      this.currEval = Object.hasOwn(exprObj, 'eval') ? exprObj.eval : this.currEval;
 	      callback = Object.hasOwn(exprObj, 'callback') ? exprObj.callback : callback;
 	      this.currOtherTypeCallback = Object.hasOwn(exprObj, 'otherTypeCallback') ? exprObj.otherTypeCallback : this.currOtherTypeCallback;
+	      this.currCustomTypes = Object.hasOwn(exprObj, 'customTypes') ? exprObj.customTypes : this.currCustomTypes;
 	      currParent = Object.hasOwn(exprObj, 'parent') ? exprObj.parent : currParent;
 	      currParentProperty = Object.hasOwn(exprObj, 'parentProperty') ? exprObj.parentProperty : currParentProperty;
 	      expr = exprObj.path;
@@ -2161,7 +2169,7 @@
 	    } else if (loc[0] === '@') {
 	      // value type: @boolean(), etc.
 	      let addType = false;
-	      const valueType = /** @type {ValueType} */loc.slice(1, -2);
+	      const valueType = /** @type {ValueType|string} */loc.slice(1, -2);
 	      switch (valueType) {
 	        case 'scalar':
 	          if (!val || !['object', 'function'].includes(typeof val)) {
@@ -2202,7 +2210,7 @@
 	          }
 	          break;
 	        case 'other':
-	          addType = this.currOtherTypeCallback?.(val, path, parent, /** @type {string|null} */parentPropName) ?? false;
+	          addType = /** @type {OtherTypeCallback} */this.currOtherTypeCallback(val, path, parent, parentPropName) || false;
 	          break;
 	        case 'null':
 	          if (val === null) {
@@ -2211,7 +2219,11 @@
 	          break;
 	        /* c8 ignore next 2 */
 	        default:
-	          throw new TypeError('Unknown value type ' + valueType);
+	          if (this.currCustomTypes && Object.hasOwn(this.currCustomTypes, valueType)) {
+	            addType = this.currCustomTypes[valueType](val, path, parent, parentPropName) || false;
+	          } else {
+	            throw new TypeError('Unknown value type ' + valueType);
+	          }
 	      }
 	      if (addType) {
 	        retObj = {
@@ -2483,7 +2495,7 @@
 	  const subx = [];
 	  const normalized = expr
 	  // Properties
-	  .replaceAll(/@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/gu, ';$&;')
+	  .replaceAll(/@[\w$-]+\(\)/gu, ';$&;')
 	  // Parenthetical evaluations (filtering and otherwise), directly
 	  //   within brackets or single quotes
 	  .replaceAll(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {

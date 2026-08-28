@@ -95,7 +95,7 @@ function unshift (item, arr) {
  * @param {unknown} val
  * @param {ExpressionArray} path
  * @param {ParentValue} parent
- * @param {string|null} parentPropName
+ * @param {string|number|null} parentPropName
  * @returns {boolean|null}
  */
 
@@ -171,6 +171,8 @@ function unshift (item, arr) {
  * @property {JSONPathCallback} [callback]
  * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
  *   function which throws on encountering `@other`
+ * @property {Record<string, OtherTypeCallback>} [customTypes] Map of custom
+ *   type operator names to their evaluation callbacks
  * @property {boolean} [autostart=true]
  * @property {boolean} [ignoreEvalErrors=false]
  */
@@ -308,6 +310,9 @@ class JSONPathClass {
         /** @type {OtherTypeCallback|undefined} */
         this.currOtherTypeCallback = undefined;
 
+        /** @type {Record<string, OtherTypeCallback>|undefined} */
+        this.currCustomTypes = undefined;
+
         /** @type {SandboxType|undefined} */
         this.currSandbox = undefined;
 
@@ -339,6 +344,7 @@ class JSONPathClass {
                     'with the @other() operator.'
                 );
             };
+        this.customTypes = opts.customTypes || {};
 
         if (opts.autostart !== false) {
             const args = /** @type {JSONPathOptions} */ ({
@@ -405,6 +411,7 @@ class JSONPathClass {
         callback ||= this.callback;
         this.currOtherTypeCallback = otherTypeCallback ||
             this.otherTypeCallback;
+        this.currCustomTypes = this.customTypes;
 
         if (expr && typeof expr === 'object' && !Array.isArray(expr)) {
             const exprObj = expr;
@@ -442,6 +449,11 @@ class JSONPathClass {
             )
                 ? exprObj.otherTypeCallback
                 : this.currOtherTypeCallback;
+            this.currCustomTypes = Object.hasOwn(
+                exprObj, 'customTypes'
+            )
+                ? exprObj.customTypes
+                : this.currCustomTypes;
             currParent = Object.hasOwn(exprObj, 'parent')
                 ? exprObj.parent
                 : currParent;
@@ -764,7 +776,9 @@ class JSONPathClass {
             ), val, path, parent, parentPropName, callback, hasArrExpr));
         } else if (loc[0] === '@') { // value type: @boolean(), etc.
             let addType = false;
-            const valueType = /** @type {ValueType} */ (loc).slice(1, -2);
+            const valueType = /** @type {ValueType|string} */ (
+                loc
+            ).slice(1, -2);
             switch (valueType) {
             case 'scalar':
                 if (!val || !(['object', 'function'].includes(typeof val))) {
@@ -803,10 +817,11 @@ class JSONPathClass {
                 }
                 break;
             case 'other':
-                addType = this.currOtherTypeCallback?.(
-                    val, path, parent,
-                    /** @type {string|null} */ (parentPropName)
-                ) ?? false;
+                addType = /** @type {OtherTypeCallback} */ (
+                    this.currOtherTypeCallback
+                )(
+                    val, path, parent, parentPropName
+                ) || false;
                 break;
             case 'null':
                 if (val === null) {
@@ -815,7 +830,15 @@ class JSONPathClass {
                 break;
             /* c8 ignore next 2 */
             default:
-                throw new TypeError('Unknown value type ' + valueType);
+                if (this.currCustomTypes &&
+                    Object.hasOwn(this.currCustomTypes, valueType)
+                ) {
+                    addType = this.currCustomTypes[valueType](
+                        val, path, parent, parentPropName
+                    ) || false;
+                } else {
+                    throw new TypeError('Unknown value type ' + valueType);
+                }
             }
             if (addType) {
                 retObj = {
@@ -1147,7 +1170,7 @@ JSONPath.toPathArray = function (expr) {
     const normalized = expr
         // Properties
         .replaceAll(
-            /@(?:null|boolean|number|string|integer|undefined|nonFinite|scalar|array|object|function|other)\(\)/gu,
+            /@[\w$-]+\(\)/gu,
             ';$&;'
         )
         // Parenthetical evaluations (filtering and otherwise), directly

@@ -13,14 +13,17 @@ that usage and call JSONPath.clearCache() when cache invalidation is needed.
 
 Other changes:
 
+- feat: add `customTypes` option for providing own other type callbacks (e.g., `@blob()`) (@brettz9)
 - fix(slice): explicit zero end no longer returns the whole array (#265) (@spokodev)
-- fix: separate JSONPath path and script caches
+- fix: indicate that the `OtherTypeCallback` callback type can accept a `parentPropName` with type `number` (@brettz9)
+- fix: separate JSONPath path and script caches (@brettz9)
 - fix: restore `JSONPath.prototype.evaluate`, `safeVm`, and `vm` compatibility
 - fix(safe-eval): harden operator lookup against prototype inheritance (@brettz9)
 - fix(security): block indirect Function-constructor access in safe eval (reported by [`@c0rydoras`](https://github.com/c0rydoras): `Arthur Deierlein <info@c0rydoras.dev>`)
 - refactor: expose JSONPathClass prototype through JSONPath for compatibility
 - docs: security notes
 - test(safe-eval): guard bind() escape route for constructor access (@brettz9)
+- test: restore full test coverage (@brettz9)
 - chore: pnpm update (@brettz9)
 - refactor: implement TypeScript-as-JSDoc and auto-build declaration files from this (avoiding need for maintaining declaration file manually)
 - chore: update devDeps
