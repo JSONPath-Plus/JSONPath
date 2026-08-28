@@ -69,7 +69,7 @@
   "bugs": "https://github.com/s3u/JSONPath/issues/",
   "homepage": "https://github.com/s3u/JSONPath",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "react-native": {
     "vm": false
@@ -88,19 +88,19 @@
     "@rollup/plugin-terser": "^1.0.0",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.4.0",
     "c8": "^12.0.0",
     "chai": "^6.2.2",
     "coveradge": "^0.8.2",
-    "eslint": "^10.8.1",
-    "eslint-config-ash-nazg": "^42.4.0",
+    "eslint": "^10.9.1",
+    "eslint-config-ash-nazg": "^43.0.1",
     "http-server": "^14.1.1",
     "license-badger": "^0.23.0",
     "mocha": "^11.8.0",
     "mocha-badge-generator": "^0.11.0",
     "mocha-multi-reporters": "^1.5.1",
     "open-cli": "^9.0.0",
-    "rollup": "4.62.4",
+    "rollup": "4.63.1",
     "typedoc": "^0.28.20",
     "typescript": "^6.0.3"
   },
@@ -109,7 +109,7 @@
     "jsonpath"
   ],
   "browserslist": [
-    "defaults, not op_mini all"
+    "last 2 versions, not IE 10, not IE 11, not ie_mob 10, not ie_mob 11, not op_mini all, not bb 7, not bb 10"
   ],
   "c8": {
     "reporter": [

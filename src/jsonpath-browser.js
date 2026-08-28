@@ -125,7 +125,7 @@ class Script {
 
         const funcString = funcs.reduce((s, func) => {
             let fString = context[func].toString();
-            if (!(/function/u).test(fString)) {
+            if (!(/function/v).test(fString)) {
                 fString = 'function ' + fString;
             }
             return 'var ' + func + '=' + fString + ';' + s;
@@ -134,14 +134,14 @@ class Script {
         expr = funcString + expr;
 
         // Mitigate https://perfectionkills.com/global-eval-what-are-the-options/#new_function
-        if (!(/(['"])use strict\1/u).test(expr) && !keys.includes('arguments')) {
+        if (!(/(['"])use strict\1/v).test(expr) && !keys.includes('arguments')) {
             expr = 'var arguments = undefined;' + expr;
         }
 
         // Remove last semi so `return` will be inserted before
         //  the previous one instead, allowing for the return
         //  of a bare ending expression
-        expr = expr.replace(/;\s*$/u, '');
+        expr = expr.replace(/;\s*$/v, '');
 
         // Insert `return`
         const lastStatementEnd = expr.lastIndexOf(';');
