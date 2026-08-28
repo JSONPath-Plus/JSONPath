@@ -2112,7 +2112,7 @@ class JSONPathClass {
     } else if (loc === '$') {
       // root only
       addRet(this._trace(x, val, path, null, null, callback, hasArrExpr));
-    } else if (/^(-?\d*):(-?\d*):?(\d*)$/u.test(loc)) {
+    } else if (/^(-?\d*):(-?\d*):?(\d*)$/v.test(loc)) {
       // [start:end:step]  Python slice syntax
       const sliceResult = this._slice(loc, x, val, path, parent, parentPropName, callback);
       if (sliceResult) {
@@ -2123,10 +2123,10 @@ class JSONPathClass {
       if (this.currEval === false) {
         throw new Error('Eval [?(expr)] prevented in JSONPath expression.');
       }
-      const safeLoc = loc.replace(/^\?\((.*?)\)$/u, '$1');
+      const safeLoc = loc.replace(/^\?\((.*?)\)$/v, '$1');
       // check for a nested filter expression
 
-      const nested = /@.?([^?]*)[['](\??\(.*?\))(?!.\)\])[\]']/gu.exec(safeLoc);
+      const nested = /@.?([^?]*)[\['](\??\(.*?\))(?!.\)\])[\]']/gv.exec(safeLoc);
       if (nested) {
         // find if there are matches in the nested expression
         // add them to the result set if there is at least one match
@@ -2360,7 +2360,7 @@ class JSONPathClass {
     }
     const scriptCacheKey = this.currEval + 'Script:' + code;
     if (!scriptCache.has(scriptCacheKey)) {
-      let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root').replaceAll(/@([.\s)[])/gu, '_$_v$1');
+      let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root').replaceAll(/@([.\s\)\[])/gv, '_$_v$1');
       if (containsPath) {
         script = script.replaceAll('@path', '_$_path');
       }
@@ -2456,8 +2456,8 @@ JSONPath.toPathString = function (pathArr) {
     n = x.length;
   let p = '$';
   for (let i = 1; i < n; i++) {
-    if (!/^(~|\^|@.*?\(\))$/u.test(x[i])) {
-      p += /^[0-9*]+$/u.test(x[i]) ? '[' + x[i] + ']' : "['" + x[i] + "']";
+    if (!/^(~|\^|@.*?\(\))$/v.test(x[i])) {
+      p += /^[0-9*]+$/v.test(x[i]) ? '[' + x[i] + ']' : "['" + x[i] + "']";
     }
   }
   return p;
@@ -2472,7 +2472,7 @@ JSONPath.toPointer = function (pointer) {
     n = x.length;
   let p = '';
   for (let i = 1; i < n; i++) {
-    if (!/^(~|\^|@.*?\(\))$/u.test(x[i])) {
+    if (!/^(~|\^|@.*?\(\))$/v.test(x[i])) {
       p += '/' + x[i].toString().replaceAll('~', '~0').replaceAll('/', '~1');
     }
   }
@@ -2491,37 +2491,37 @@ JSONPath.toPathArray = function (expr) {
   const subx = [];
   const normalized = expr
   // Properties
-  .replaceAll(/@[\w$-]+\(\)/gu, ';$&;')
+  .replaceAll(/@[\w$\-]+\(\)/gv, ';$&;')
   // Parenthetical evaluations (filtering and otherwise), directly
   //   within brackets or single quotes
-  .replaceAll(/[['](\??\(.*?\))[\]'](?!.\])/gu, function ($0, $1) {
+  .replaceAll(/[\['](\??\(.*?\))[\]'](?!.\])/gv, function ($0, $1) {
     return '[#' + (
     // eslint-disable-next-line @stylistic/max-len -- Long
     // eslint-disable-next-line unicorn/no-return-array-push -- Optimization
     subx.push($1) - 1) + ']';
   })
   // Escape periods and tildes within properties
-  .replaceAll(/\[['"]([^'\]]*)['"]\]/gu, function ($0, prop) {
+  .replaceAll(/\[['"]([^'\]]*)['"]\]/gv, function ($0, prop) {
     return "['" + prop.replaceAll('.', '%@%').replaceAll('~', '%%@@%%') + "']";
   })
   // Properties operator
   .replaceAll('~', ';~;')
   // Split by property boundaries
-  .replaceAll(/['"]?\.['"]?(?![^[]*\])|\[['"]?/gu, ';')
+  .replaceAll(/['"]?\.['"]?(?![^\[]*\])|\[['"]?/gv, ';')
   // Reinsert periods within properties
   .replaceAll('%@%', '.')
   // Reinsert tildes within properties
   .replaceAll('%%@@%%', '~')
   // Parent
-  .replaceAll(/(?:;)?(\^+)(?:;)?/gu, function ($0, ups) {
+  .replaceAll(/(?:;)?(\^+)(?:;)?/gv, function ($0, ups) {
     return ';' + ups.split('').join(';') + ';';
   })
   // Descendents
-  .replaceAll(/;;;|;;/gu, ';..;')
+  .replaceAll(/;;;|;;/gv, ';..;')
   // Remove trailing
-  .replaceAll(/;$|'?\]|'$/gu, '');
+  .replaceAll(/;$|'?\]|'$/gv, '');
   const exprList = normalized.split(';').map(function (exp) {
-    const match = exp.match(/#(\d+)/u);
+    const match = exp.match(/#(\d+)/v);
     return !match || !match[1] ? exp : subx[Number(match[1])];
   });
   pathCache.set(expr, exprList);

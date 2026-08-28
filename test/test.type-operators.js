@@ -75,7 +75,7 @@ describe('JSONPath - Type Operators', function () {
          * @type {OtherTypeCallback}
          */
         function endsIn99 (val /* , path, parent, parentPropName */) {
-            return (/\.99/u).test(String(val));
+            return (/\.99/v).test(String(val));
         }
         const result = jsonpath({json, path: '$.store.book..*@other()', flatten: true, otherTypeCallback: endsIn99});
         assert.deepEqual(result, expected);
