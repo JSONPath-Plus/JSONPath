@@ -149,6 +149,7 @@
     "tsc-demo": "tsc -p demo/tsconfig.json",
     "tsc-prod": "tsc -p tsconfig-prod.json",
     "tsc": "tsc",
+    "tsc:ts7": "npx -y -p typescript@^7 -c \"tsc\"",
     "mocha": "mocha --require test-helpers/node-env.js --reporter-options configFile=mocha-multi-reporters.json test",
     "c8": "rm -Rf ./coverage && rm -Rf ./node_modules/.cache && c8 --all npm run mocha && npm run coverage-badge",
     "rollup": "rollup -c",
