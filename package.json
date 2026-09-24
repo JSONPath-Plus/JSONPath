@@ -118,8 +118,8 @@
       "json-summary"
     ],
     "exclude": [
-      ".mocharc.cjs",
-      ".ncurc.cjs",
+      ".mocharc.js",
+      ".ncurc.js",
       "eslint.config.js",
       "rollup.config.js",
       ".idea",

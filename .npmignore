@@ -12,10 +12,10 @@ docs
 coverage
 badges
 mocha-multi-reporters.json
-.mocharc.cjs
+.mocharc.js
 .github
 .nojekyll
-.ncurc.cjs
+.ncurc.js
 ignore
 pnpm-lock.yaml
 pnpm-workspace.yaml
