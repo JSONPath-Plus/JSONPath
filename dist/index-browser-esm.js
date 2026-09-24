@@ -1227,7 +1227,11 @@ jsep.addLiteral('undefined', undefined);
 const BLOCKED_PROTO_PROPERTIES = new Set(['constructor', '__proto__', '__defineGetter__', '__defineSetter__', '__lookupGetter__', '__lookupSetter__']);
 
 // Every function-constructor variant, along with the invocation helpers which
-//   could otherwise reach them indirectly, e.g., `Function.call(0, 'code')()`
+//   could otherwise reach them indirectly, e.g., `Function.call(0, 'code')()`,
+//   plus whichever BLOCKED_PROTO_PROPERTIES names resolve to an own method on
+//   Object.prototype (e.g. `__defineGetter__`) - an own-property access on a
+//   shared prototype (`@.prototype.__defineGetter__`) bypasses the
+//   inherited-only name check below, so those methods need blocking by value.
 /** @type {WeakSet<object>} */
 const BLOCKED_FUNCTIONS = new WeakSet([Function,
 // eslint-disable-next-line no-empty-function -- Only need the constructor
@@ -1235,7 +1239,7 @@ function* () {}.constructor,
 // eslint-disable-next-line no-empty-function -- Only need the constructor
 async function () {}.constructor,
 // eslint-disable-next-line no-empty-function -- Only need the constructor
-async function* () {}.constructor, Function.prototype.call, Function.prototype.apply, Function.prototype.bind, Reflect.apply, Reflect.construct]);
+async function* () {}.constructor, Function.prototype.call, Function.prototype.apply, Function.prototype.bind, Reflect.apply, Reflect.construct, ...[...BLOCKED_PROTO_PROPERTIES].map(name => Reflect.get(Object.prototype, name)).filter(value => typeof value === 'function')]);
 
 /**
  * @param {UnknownResult} value
