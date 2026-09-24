@@ -2,6 +2,10 @@ export type AssignmentExpression = any;
 export type Substitution = any;
 export type AnyParameter = any;
 export type Substitutions = Record<string, Substitution>;
+export type OperatorTable = Record<string, (a: AnyParameter, b: AnyParameter) => UnknownResult>;
+export type UnaryOperatorTable = {
+    [key: string]: (a: AnyParameter) => UnknownResult;
+};
 /**
  * A replacement for NodeJS' VM.Script which is also {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP | Content Security Policy} friendly.
  */
@@ -19,4 +23,5 @@ export class SafeScript {
      */
     runInNewContext(context: object): EvaluatedResult;
 }
+import type { UnknownResult } from './jsonpath.js';
 import type { EvaluatedResult } from './jsonpath.js';

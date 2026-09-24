@@ -18,7 +18,7 @@ export type ReturnObject = {
     pointer?: string | undefined;
 };
 export type JSONPathCallback = (preferredOutput: any, type: "value" | "property", fullRetObj: ReturnObject) => void;
-export type OtherTypeCallback = (val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: string | null) => boolean | null;
+export type OtherTypeCallback = (val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: string | number | null) => boolean | null;
 export type ContextItem = any;
 export type EvaluatedResult = any;
 export type EvalCallback = (code: string, context: ContextItem) => EvaluatedResult;
@@ -60,6 +60,11 @@ export type JSONPathOptions = {
      * function which throws on encountering `@other`
      */
     otherTypeCallback?: OtherTypeCallback | undefined;
+    /**
+     * Map of custom
+     * type operator names to their evaluation callbacks
+     */
+    customTypes?: Record<string, OtherTypeCallback> | undefined;
     autostart?: boolean | undefined;
     ignoreEvalErrors?: boolean | undefined;
 };
@@ -99,7 +104,11 @@ export function JSONPath(opts: JSONPathOptions & {
  */
 export function JSONPath(opts: JSONPathOptions): unknown;
 export namespace JSONPath {
-    let cache: Record<string, unknown>;
+    /**
+     * Clears cached parsed paths and compiled scripts.
+     * @returns {void}
+     */
+    function clearCache(): void;
     /**
      * @param {string[]} pathArr Array to convert
      * @returns {string} The path string
@@ -148,6 +157,8 @@ export class JSONPathClass {
     currEval: EvalValue | undefined;
     /** @type {OtherTypeCallback|undefined} */
     currOtherTypeCallback: OtherTypeCallback | undefined;
+    /** @type {Record<string, OtherTypeCallback>|undefined} */
+    currCustomTypes: Record<string, OtherTypeCallback> | undefined;
     /** @type {SandboxType|undefined} */
     currSandbox: SandboxType | undefined;
     _hasParentSelector: boolean;
@@ -163,6 +174,7 @@ export class JSONPathClass {
     parentProperty: ParentProperty | undefined;
     callback: JSONPathCallback;
     otherTypeCallback: OtherTypeCallback;
+    customTypes: Record<string, OtherTypeCallback>;
     /**
      * @overload
      * @param {JSONPathOptions} [expr]

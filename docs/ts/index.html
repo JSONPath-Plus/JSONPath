@@ -178,6 +178,11 @@ value of the item, its path, its parent, and its parent's property name,
 and it should return a boolean indicating whether the supplied value
 belongs to the &quot;other&quot; type or not (or it may handle transformations and
 return false).</li>
+<li><em><strong>customTypes</strong></em> (<strong>default: {}</strong>) - A key-value map of type names to functions.
+This allows creating custom type operators that can be used in queries
+(e.g., <code>@myType()</code>). The function will be invoked with the value of the item,
+its path, its parent, and its parent's property name. It should return a
+boolean indicating whether the supplied value matches the custom type.</li>
 </ul>
 <h3 id="instance-methods" class="tsd-anchor-link">Instance methods<a href="#instance-methods" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul>
@@ -193,8 +198,9 @@ for <code>autostart</code> which would have no relevance here).</li>
 </ul>
 <h3 id="class-properties-and-methods" class="tsd-anchor-link">Class properties and methods<a href="#class-properties-and-methods" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul>
-<li><em><strong>JSONPath.cache</strong></em> - Exposes the cache object for those who wish
-to preserve and reuse it for optimization purposes.</li>
+<li><em><strong>JSONPath.clearCache()</strong></em> - Clears the internally cached parsed paths and
+compiled scripts. Cache contents are not exposed; call this method when
+cache invalidation is needed.</li>
 <li><em><strong>JSONPath.toPathArray(pathAsString)</strong></em> - Accepts a normalized or
 unnormalized path as string and converts to an array: for
 example, <code>['$', 'aProperty', 'anotherProperty']</code>.</li>
