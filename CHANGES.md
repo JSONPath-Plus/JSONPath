@@ -4,10 +4,12 @@
 
 BREAKING CHANGES
 
-JSONPath.cache is no longer exposed or mutable. Consumers
-that used JSONPath.cache to inspect, modify, or clear entries must remove
-that usage and call JSONPath.clearCache() when cache invalidation is needed.
+- Require Node >= 22; drops older browser version support
+- JSONPath.cache is no longer exposed or mutable. Consumers that used JSONPath.cache
+    to inspect, modify, or clear entries must remove
+    that usage and call JSONPath.clearCache() when cache invalidation is needed.
 
+- chore: bump `engines` and `browserslist` and use v flag
 - chore: various changes in types, particularly with return values changing from any to unknown to ensure type safety (by forcing type casts of the results on the user).
 - fix!: isolate caches and add cache reset API
 
