@@ -15,13 +15,15 @@
 
         <script type="module">
         // eslint-disable-next-line no-shadow -- Needed import
-        import * as chai from '../node_modules/chai/chai.js';
-        import {JSONPath} from '../dist/index-browser-esm.js';
+        import * as chai from '../node_modules/chai/index.js';
+        import {JSONPath, JSONPathClass} from '../dist/index-browser-esm.js';
 
         mocha.setup('bdd');
         window.assert = chai.assert;
         window.expect = chai.expect;
         window.jsonpath = JSONPath;
+        window.JSONPath = JSONPath;
+        window.JSONPathClass = JSONPathClass;
         mocha.globals(['jsonpath']);
         </script>
 
