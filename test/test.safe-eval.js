@@ -354,6 +354,22 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 );
             });
 
+            for (const method of [
+                '__defineGetter__', '__defineSetter__', '__lookupGetter__', '__lookupSetter__'
+            ]) {
+                it(`prototype pollution via ${method} (own-property bypass)`, () => {
+                    const propName = 'jsonpathSafeEvalPollutionTest';
+                    const arg2 = method.includes('define') ? ', @.prototype.toString' : '';
+                    assert.throws(() => {
+                        const path =
+                            `$[?(@.constructor[( @.prototype.${method}('${propName}'${arg2}) )])]`;
+                        jsonpath({path, json: [{b: 1}]});
+                    }, "Function constructor is disabled");
+
+                    assert.equal(Object.hasOwn(Object.prototype, propName), false);
+                });
+            }
+
             it("async/generator function constructors blocked", () => {
                 const fnJson = {
                     a: {
