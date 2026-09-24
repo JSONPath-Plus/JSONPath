@@ -328,6 +328,31 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 }, "Function constructor is disabled");
             });
 
+            for (const generatedBody of [
+                'return 42',
+                "globalThis.TEST_NESTED_FUNCTION_RCE = 'RCE'"
+            ]) {
+                it('nested property access cannot smuggle Function through native callbacks', () => {
+                    // The nested-property branch can expose Object as the
+                    // filter value; keep this path guarded against indirect
+                    // Function invocation by native array methods.
+                    // @ts-expect-error VM testing
+                    // eslint-disable-next-line unicorn/no-global-object-property-assignment -- Exploit test
+                    globalThis.TEST_NESTED_FUNCTION_RCE = 'not exploited';
+                    const path =
+                        `$[?(@.constructor[([ @.getPrototypeOf(@).constructor, 0 ].reduce(["${generatedBody}"].map).pop()())])]`;
+
+                    assert.throws(() => {
+                        jsonpath({path, json: {x: {}}});
+                    }, 'Function constructor is disabled');
+                    assert.equal(
+                        // @ts-expect-error VM testing
+                        globalThis.TEST_NESTED_FUNCTION_RCE,
+                        'not exploited'
+                    );
+                });
+            }
+
             it("10.4.1 RCE via call/apply/bind", () => {
                 // @ts-expect-error VM testing
                 // eslint-disable-next-line unicorn/no-global-object-property-assignment -- Exploit test
