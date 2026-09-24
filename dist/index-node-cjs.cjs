@@ -1,6 +1,6 @@
 'use strict';
 
-var vm = require('vm');
+var vm = require('node:vm');
 
 /**
  * @implements {IHooks}

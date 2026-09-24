@@ -1,6 +1,6 @@
-import {promisify} from "util";
-import {exec as _exec} from "child_process";
-import path from "path";
+import {promisify} from "node:util";
+import {exec as _exec} from "node:child_process";
+import path from "node:path";
 
 const exec = promisify(_exec);
 

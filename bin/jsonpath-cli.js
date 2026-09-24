@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import {readFile} from 'fs/promises';
+import {readFile} from 'node:fs/promises';
 import {JSONPath as jsonpath} from '../src/jsonpath-node.js';
 
 const file = process.argv[2];

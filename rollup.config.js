@@ -1,4 +1,4 @@
-import {readFile} from 'fs/promises';
+import {readFile} from 'node:fs/promises';
 import {babel} from '@rollup/plugin-babel';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';

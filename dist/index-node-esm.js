@@ -1,4 +1,4 @@
-import vm from 'vm';
+import vm from 'node:vm';
 
 /**
  * @implements {IHooks}
