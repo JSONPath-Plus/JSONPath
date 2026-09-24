@@ -3,6 +3,9 @@
 /* eslint-disable unicorn/prefer-private-class-fields -- Allow
     monkey-patching */
 import {SafeScript, getSafeProperty} from './Safe-Script.js';
+import {
+    toStringTag, structuredCloningCustomTypes
+} from './structuredCloningCustomTypes.js';
 
 const scriptCache = new Map();
 const pathCache = new Map();
@@ -26,7 +29,7 @@ const pathCache = new Map();
 /**
  * @typedef {"scalar"|"boolean"|"string"|"undefined"
  *   |"function"|"integer"|"number"|"nonFinite"|"object"
- *   |"array"|"other"|"null"} ValueType
+ *   |"array"|"other"|"null"|"symbol"|"Promise"|"jsonReference"} ValueType
  */
 
 /**
@@ -96,6 +99,7 @@ function unshift (item, arr) {
  * @param {ExpressionArray} path
  * @param {ParentValue} parent
  * @param {string|number|null} parentPropName
+ * @param {string} arg
  * @returns {boolean|null}
  */
 
@@ -171,8 +175,9 @@ function unshift (item, arr) {
  * @property {JSONPathCallback} [callback]
  * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
  *   function which throws on encountering `@other`
- * @property {Record<string, OtherTypeCallback>} [customTypes] Map of custom
- *   type operator names to their evaluation callbacks
+ * @property {Record<string, OtherTypeCallback>|
+ *   "structuredCloning"} [customTypes] Map of
+ *   custom type operator names to their evaluation callbacks
  * @property {boolean} [autostart=true]
  * @property {boolean} [ignoreEvalErrors=false]
  */
@@ -413,7 +418,9 @@ class JSONPathClass {
         callback ||= this.callback;
         this.currOtherTypeCallback = otherTypeCallback ||
             this.otherTypeCallback;
-        this.currCustomTypes = this.customTypes;
+        this.currCustomTypes = this.customTypes === 'structuredCloning'
+            ? structuredCloningCustomTypes
+            : this.customTypes;
 
         if (expr && typeof expr === 'object' && !Array.isArray(expr)) {
             const exprObj = expr;
@@ -454,7 +461,9 @@ class JSONPathClass {
             this.currCustomTypes = Object.hasOwn(
                 exprObj, 'customTypes'
             )
-                ? exprObj.customTypes
+                ? exprObj.customTypes === 'structuredCloning'
+                    ? structuredCloningCustomTypes
+                    : exprObj.customTypes
                 : this.currCustomTypes;
             currParent = Object.hasOwn(exprObj, 'parent')
                 ? exprObj.parent
@@ -781,65 +790,65 @@ class JSONPathClass {
                 x
             ), val, path, parent, parentPropName, callback, hasArrExpr));
         } else if (loc[0] === '@') { // value type: @boolean(), etc.
+            // eslint-disable-next-line no-useless-assignment -- ESLint bug
             let addType = false;
+            const parenthIndex = loc.indexOf('(');
             const valueType = /** @type {ValueType|string} */ (
                 loc
-            ).slice(1, -2);
+            ).slice(1, parenthIndex);
+            const lastParenth = loc.lastIndexOf(')');
+            const argRaw = loc.slice(parenthIndex + 1, lastParenth);
+            const arg = argRaw ? JSON.parse(argRaw) : undefined;
             switch (valueType) {
             case 'scalar':
-                if (!val || !(['object', 'function'].includes(typeof val))) {
-                    addType = true;
-                }
+                addType = !val ||
+                    !(['object', 'function'].includes(typeof val));
                 break;
             case 'boolean': case 'string': case 'undefined': case 'function':
-                if (typeof val === valueType) {
-                    addType = true;
-                }
+                addType = typeof val === valueType;
                 break;
             case 'integer':
-                if (Number.isFinite(val) &&
-                    !(/** @type {number} */ (val) % 1)) {
-                    addType = true;
-                }
+                addType = Number.isFinite(val) &&
+                    !(/** @type {number} */ (val) % 1);
                 break;
             case 'number':
-                if (Number.isFinite(val)) {
-                    addType = true;
-                }
+                addType = Number.isFinite(val);
                 break;
             case 'nonFinite':
-                if (typeof val === 'number' && !Number.isFinite(val)) {
-                    addType = true;
-                }
+                addType = typeof val === 'number' && !Number.isFinite(val);
                 break;
             case 'object':
-                if (val && typeof val === valueType) {
-                    addType = true;
-                }
+                addType = Boolean(val) && typeof val === valueType;
                 break;
             case 'array':
-                if (Array.isArray(val)) {
-                    addType = true;
-                }
+                addType = Array.isArray(val);
                 break;
             case 'other':
                 addType = /** @type {OtherTypeCallback} */ (
                     this.currOtherTypeCallback
                 )(
-                    val, path, parent, parentPropName
+                    val, path, parent, parentPropName, arg
                 ) || false;
                 break;
             case 'null':
-                if (val === null) {
-                    addType = true;
-                }
+                addType = val === null;
+                break;
+            case 'symbol':
+                addType = typeof val === 'symbol';
+                break;
+            case 'Promise':
+                addType = toStringTag(val) === 'Promise';
+                break;
+            case 'jsonReference':
+                addType = Boolean(val) && typeof val === 'object' &&
+                    Object.hasOwn(/** @type {object} */ (val), '$ref');
                 break;
             default:
                 if (this.currCustomTypes &&
                     Object.hasOwn(this.currCustomTypes, valueType)
                 ) {
                     addType = this.currCustomTypes[valueType](
-                        val, path, parent, parentPropName
+                        val, path, parent, parentPropName, arg
                     ) || false;
                 } else {
                     throw new TypeError('Unknown value type ' + valueType);
@@ -1201,7 +1210,7 @@ JSONPath.toPathArray = function (expr) {
     const normalized = expr
         // Properties
         .replaceAll(
-            /@[\w$\-]+\(\)/gv,
+            /@[\w$\-]+\([^\)]*\)/gv,
             ';$&;'
         )
         // Parenthetical evaluations (filtering and otherwise), directly
