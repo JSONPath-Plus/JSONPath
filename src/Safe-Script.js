@@ -41,7 +41,11 @@ const BLOCKED_PROTO_PROPERTIES = new Set([
 ]);
 
 // Every function-constructor variant, along with the invocation helpers which
-//   could otherwise reach them indirectly, e.g., `Function.call(0, 'code')()`
+//   could otherwise reach them indirectly, e.g., `Function.call(0, 'code')()`,
+//   plus whichever BLOCKED_PROTO_PROPERTIES names resolve to an own method on
+//   Object.prototype (e.g. `__defineGetter__`) - an own-property access on a
+//   shared prototype (`@.prototype.__defineGetter__`) bypasses the
+//   inherited-only name check below, so those methods need blocking by value.
 /** @type {WeakSet<object>} */
 const BLOCKED_FUNCTIONS = new WeakSet([
     Function,
@@ -55,7 +59,10 @@ const BLOCKED_FUNCTIONS = new WeakSet([
     Function.prototype.apply,
     Function.prototype.bind,
     Reflect.apply,
-    Reflect.construct
+    Reflect.construct,
+    ...[...BLOCKED_PROTO_PROPERTIES]
+        .map((name) => Reflect.get(Object.prototype, name))
+        .filter((value) => typeof value === 'function')
 ]);
 
 /**
