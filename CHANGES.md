@@ -17,6 +17,7 @@ Other changes:
 - fix: separate JSONPath path and script caches
 - fix: restore `JSONPath.prototype.evaluate`, `safeVm`, and `vm` compatibility
 - fix(safe-eval): harden operator lookup against prototype inheritance (@brettz9)
+- fix(security): block indirect Function-constructor access in safe eval (reported by [`@c0rydoras`](https://github.com/c0rydoras): `Arthur Deierlein <info@c0rydoras.dev>`)
 - refactor: expose JSONPathClass prototype through JSONPath for compatibility
 - docs: security notes
 - test(safe-eval): guard bind() escape route for constructor access (@brettz9)
