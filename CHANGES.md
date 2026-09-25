@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 11.0.1
+
+- fix(security) nested filter bypass exploit (@andrewmacheret)
+
 ## 11.0.0
 
 BREAKING CHANGES

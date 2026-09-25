@@ -1252,6 +1252,26 @@ const isBlockedFunction = value => {
 };
 
 /**
+ * Guarded `obj[prop]`, applying the same restrictions as a MemberExpression.
+ * @param {UnknownResult} obj
+ * @param {string} prop
+ * @returns {UnknownResult}
+ */
+const getSafeProperty = (obj, prop) => {
+  if (obj === undefined || obj === null) {
+    throw new TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
+  }
+  if (!Object.hasOwn(obj, prop) && BLOCKED_PROTO_PROPERTIES.has(prop)) {
+    throw new TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
+  }
+  const result = /** @type {Record<string, UnknownResult>} */obj[prop];
+  if (isBlockedFunction(result)) {
+    throw new TypeError('Function constructor is disabled');
+  }
+  return result;
+};
+
+/**
  * @typedef {Record<
  *   string,
  *   (a: AnyParameter, b: AnyParameter) => UnknownResult
@@ -1408,16 +1428,7 @@ const SafeEval = {
     : ast.property.name // `object.property` property is Identifier
     );
     const obj = SafeEval.evalAst(ast.object, subs);
-    if (obj === undefined || obj === null) {
-      throw new TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
-    }
-    if (!Object.hasOwn(obj, prop) && BLOCKED_PROTO_PROPERTIES.has(prop)) {
-      throw new TypeError(`Cannot read properties of ${obj} (reading '${prop}')`);
-    }
-    const result = /** @type {Record<string, UnknownResult>} */obj[prop];
-    if (isBlockedFunction(result)) {
-      throw new TypeError('Function constructor is disabled');
-    }
+    const result = getSafeProperty(obj, prop);
     if (typeof result === 'function') {
       return result.bind(obj); // arrow functions aren't affected by bind.
     }
@@ -2132,7 +2143,9 @@ class JSONPathClass {
           const npath = [nested[2]];
           const valObj2 = /** @type {Record<string, unknown>} */
           val;
-          const nvalue = /** @type {ValueType} */nested[1] ? /** @type {Record<string, unknown>} */valObj2[m][nested[1]] : valObj2[m];
+          // guard against nested[1] resolving to `constructor`
+          const nvalue = /** @type {ValueType} */nested[1] ? getSafeProperty(/** @type {Record<string, unknown>} */
+          valObj2[m], nested[1]) : valObj2[m];
           const filterResults = this._trace(npath, nvalue, path, parent, parentPropName, callback, true);
           // eslint-disable-next-line @stylistic/max-len -- Long
           /* c8 ignore next 3 -- Unreachable: _trace always returns array for nested filters */
