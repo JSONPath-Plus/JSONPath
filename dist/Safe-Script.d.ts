@@ -23,5 +23,12 @@ export class SafeScript {
      */
     runInNewContext(context: object): EvaluatedResult;
 }
+/**
+ * Guarded `obj[prop]`, applying the same restrictions as a MemberExpression.
+ * @param {UnknownResult} obj
+ * @param {string} prop
+ * @returns {UnknownResult}
+ */
+export function getSafeProperty(obj: UnknownResult, prop: string): UnknownResult;
 import type { UnknownResult } from './jsonpath.js';
 import type { EvaluatedResult } from './jsonpath.js';
