@@ -1,10 +1,15 @@
 # CHANGES for jsonpath-plus
 
-## 11.0.2
+## 11.1.0
 
 - fix: allow bare `@` in any position (e.g., `$[?(@>1)]`, `$[?(@)]`,
     `$[?(!@)]`) and stop rewriting `@` inside quoted string literals
     (@spokodev)
+- fix: support unions of quoted property names (e.g., `$['x','y']`,
+    `$["a,b",'c.d']`) as literal names (fixes #159; see #268)
+- fix: support quoted property names containing commas (e.g., `$['a,b']`)
+- fix: support `\'`, `\"`, and `\\` escapes within quoted property names
+    and escape `'` and `\` in `toPathString` output so paths round-trip
 
 ## 11.0.1
 

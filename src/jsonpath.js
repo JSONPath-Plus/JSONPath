@@ -862,6 +862,23 @@ class JSONPathClass {
                 x, valObj[locProp], push(path, locProp), val, locProp, callback,
                 hasArrExpr, true
             ));
+        } else if (loc[0] === "'" || loc[0] === '"') { // ['name1','name2',...]
+            // Quoted members are literal property names
+            for (const [, single, double] of loc.matchAll(
+                /'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)"/gv
+            )) {
+                const prop = (single ?? double).replaceAll(
+                    /\\(['"\\])/gv, '$1'
+                );
+                if (!val || !Object.hasOwn(val, prop)) {
+                    continue;
+                }
+                const valObj = /** @type {Record<string, unknown>} */ (val);
+                addRet(this._trace(
+                    x, valObj[prop], push(path, prop), val, prop,
+                    callback, true
+                ));
+            }
         } else if (loc.includes(',')) { // [name1,name2,...]
             const parts = loc.split(',');
             for (const part of parts) {
@@ -1146,7 +1163,9 @@ JSONPath.toPathString = function (pathArr) {
     let p = '$';
     for (let i = 1; i < n; i++) {
         if (!(/^(~|\^|@.*?\(\))$/v).test(x[i])) {
-            p += (/^[0-9*]+$/v).test(x[i]) ? ('[' + x[i] + ']') : ("['" + x[i] + "']");
+            p += (/^[0-9*]+$/v).test(x[i])
+                ? ('[' + x[i] + ']')
+                : ("['" + String(x[i]).replaceAll(/['\\]/gv, String.raw`\$&`) + "']");
         }
     }
     return p;
@@ -1194,6 +1213,20 @@ JSONPath.toPathArray = function (expr) {
                 (subx.push($1) - 1) +
                 ']';
         })
+        // Unions of quoted property names (e.g., `['x','y']`) and quoted
+        //   names with commas or backslash escapes, kept intact (with
+        //   quotes) so their members survive tokenization
+        .replaceAll(
+            /\[\s*((?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")(?:\s*,\s*(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"))*)\s*\]/gv,
+            function ($0, $1) {
+                if (!(/[,\\]/v).test($1)) {
+                    return $0;
+                }
+                // eslint-disable-next-line @stylistic/max-len -- Long
+                // eslint-disable-next-line unicorn/no-return-array-push -- Optimization
+                return '[#' + (subx.push($1) - 1) + ']';
+            }
+        )
         // Escape periods and tildes within properties
         .replaceAll(/\[['"]([^'\]]*)['"]\]/gv, function ($0, prop) {
             return "['" + prop
