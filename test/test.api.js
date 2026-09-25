@@ -254,10 +254,7 @@ describe('JSONPath - API', function () {
             path: '$.values[*]@other()',
             otherTypeCallback (val) {
                 // Return null for objects to test the ?? false fallback
-                if (typeof val === 'object' && val !== null) {
-                    return null;
-                }
-                return false;
+                return typeof val === 'object' && val !== null && null;
             }
         });
         assert.deepEqual(/** @type {unknown} */ (result), []);

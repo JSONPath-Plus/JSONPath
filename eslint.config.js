@@ -95,7 +95,10 @@ export default /** @type {import('eslint').Linter.Config} */ ([
             // Reenable as have time and confirming no longer needing:
             // https://github.com/babel/babel/issues/8951#issuecomment-508045524
             'prefer-named-capture-group': 0,
-            'unicorn/prefer-spread': 0
+            'unicorn/prefer-spread': 0,
+
+            // todo[typescript@>=7]: Disable until upgrading
+            'jsdoc/ts-ban-ts-comment': 0
         }
     }
 ]);

@@ -321,13 +321,13 @@ class JSONPathClass {
         this.json = opts.json || obj;
         this.path = opts.path || expr;
         this.resultType = opts.resultType || 'value';
-        this.flatten = Object.hasOwn(opts, 'flatten') ? opts.flatten : false;
-        this.wrap = Object.hasOwn(opts, 'wrap') ? opts.wrap : true;
+        this.flatten = Object.hasOwn(opts, 'flatten') && opts.flatten;
+        this.wrap = !Object.hasOwn(opts, 'wrap') || opts.wrap;
         this.sandbox = opts.sandbox || {};
         this.eval = opts.eval === undefined ? 'safe' : opts.eval;
-        this.ignoreEvalErrors = (typeof opts.ignoreEvalErrors === 'undefined')
-            ? false
-            : opts.ignoreEvalErrors;
+        this.ignoreEvalErrors = (
+            typeof opts.ignoreEvalErrors !== 'undefined'
+        ) && opts.ignoreEvalErrors;
         this.parent = Object.hasOwn(opts, 'parent') ? opts.parent : null;
         this.parentProperty = Object.hasOwn(opts, 'parentProperty')
             ? opts.parentProperty
@@ -346,32 +346,34 @@ class JSONPathClass {
             };
         this.customTypes = opts.customTypes || {};
 
-        if (opts.autostart !== false) {
-            const args = /** @type {JSONPathOptions} */ ({
-                path: (optObj ? opts.path : expr)
-            });
-            if (!optObj && obj !== undefined) {
-                args.json = obj;
-            } else if ('json' in opts) {
-                args.json = opts.json;
-            }
-            const ret = this.evaluate(args);
-            if (!ret || typeof ret !== 'object') {
-                const err = /** @type {Error & {value: UnknownResult}} */ (
-                    new Error(
-                        'JSONPath should not be called with "new" (it ' +
-                        'prevents return of (unwrapped) scalar values)'
-                    )
-                );
-                err.value = ret;
-                throw err;
-            }
-
-            // eslint-disable-next-line @stylistic/max-len -- Long
-            // @ts-expect-error - Constructor returns evaluate result for legacy API
-            // eslint-disable-next-line no-constructor-return -- Legacy API
-            return ret;
+        if (opts.autostart === false) {
+            return;
         }
+
+        const args = /** @type {JSONPathOptions} */ ({
+            path: (optObj ? opts.path : expr)
+        });
+        if (!optObj && obj !== undefined) {
+            args.json = obj;
+        } else if ('json' in opts) {
+            args.json = opts.json;
+        }
+        const ret = this.evaluate(args);
+        if (!ret || typeof ret !== 'object') {
+            const err = /** @type {Error & {value: UnknownResult}} */ (
+                new Error(
+                    'JSONPath should not be called with "new" (it ' +
+                    'prevents return of (unwrapped) scalar values)'
+                )
+            );
+            err.value = ret;
+            throw err;
+        }
+
+        // @ts-expect-error - Constructor returns evaluate result for legacy API
+        // eslint-disable-next-line @stylistic/max-len -- Long
+        // eslint-disable-next-line consistent-return, no-constructor-return -- Legacy API
+        return ret;
     }
 
     // PUBLIC METHODS
@@ -828,7 +830,6 @@ class JSONPathClass {
                     addType = true;
                 }
                 break;
-            /* c8 ignore next 2 */
             default:
                 if (this.currCustomTypes &&
                     Object.hasOwn(this.currCustomTypes, valueType)
@@ -887,32 +888,34 @@ class JSONPathClass {
         if (this._hasParentSelector) {
             for (let t = 0; t < ret.length; t++) {
                 const rett = ret[t];
-                if (rett && rett.isParentSelector) {
-                    const exprToUse = /** @type {ExpressionArray} */ (
-                        rett.expr
-                    );
-                    const pathToUse = /** @type {ExpressionArray} */ (
-                        rett.path
-                    );
-                    const tmp = this._trace(
-                        exprToUse,
-                        val,
-                        pathToUse,
-                        parent,
-                        parentPropName,
-                        callback,
-                        hasArrExpr
-                    );
-                    if (Array.isArray(tmp)) {
-                        ret[t] = tmp[0];
-                        const tl = tmp.length;
-                        for (let tt = 1; tt < tl; tt++) {
-                            t++;
-                            ret.splice(t, 0, tmp[tt]);
-                        }
-                    } else {
-                        ret[t] = tmp;
+                if (!rett || !rett.isParentSelector) {
+                    continue;
+                }
+
+                const exprToUse = /** @type {ExpressionArray} */ (
+                    rett.expr
+                );
+                const pathToUse = /** @type {ExpressionArray} */ (
+                    rett.path
+                );
+                const tmp = this._trace(
+                    exprToUse,
+                    val,
+                    pathToUse,
+                    parent,
+                    parentPropName,
+                    callback,
+                    hasArrExpr
+                );
+                if (Array.isArray(tmp)) {
+                    ret[t] = tmp[0];
+                    const tl = tmp.length;
+                    for (let tt = 1; tt < tl; tt++) {
+                        t++;
+                        ret.splice(t, 0, tmp[tt]);
                     }
+                } else {
+                    ret[t] = tmp;
                 }
             }
         }

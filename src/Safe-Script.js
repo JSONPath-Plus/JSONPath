@@ -237,10 +237,9 @@ const SafeEval = {
      * @returns {UnknownResult}
      */
     evalConditionalExpression (ast, subs) {
-        if (SafeEval.evalAst(ast.test, subs)) {
-            return SafeEval.evalAst(ast.consequent, subs);
-        }
-        return SafeEval.evalAst(ast.alternate, subs);
+        return SafeEval.evalAst(ast.test, subs)
+            ? SafeEval.evalAst(ast.consequent, subs)
+            : SafeEval.evalAst(ast.alternate, subs);
     },
 
     /**

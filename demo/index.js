@@ -86,7 +86,7 @@ const updateResults = () => {
             path: jsonpathEl.value,
             json,
             eval: /** @type {'safe'|'native'|boolean} */ (
-                $i('#eval').value === 'false' ? false : $i('#eval').value
+                ($i('#eval').value !== 'false') && $i('#eval').value
             ),
             ignoreEvalErrors: $i('#ignoreEvalErrors').value === 'true'
         });
