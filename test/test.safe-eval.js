@@ -325,7 +325,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                     const path = "$..[?(@.constructor[( @.getPrototypeOf(@).constructor('globalThis.TEST_10_4_1_RCE=\"RCE\";0')() )])]";
 
                     jsonpath({path, json: {a: {}}});
-                }, "Function constructor is disabled");
+                }, "Cannot read properties of [object Object] (reading 'constructor')");
             });
 
             for (const generatedBody of [
@@ -344,7 +344,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
 
                     assert.throws(() => {
                         jsonpath({path, json: {x: {}}});
-                    }, 'Function constructor is disabled');
+                    }, "Cannot read properties of [object Object] (reading 'constructor')");
                     assert.equal(
                         // @ts-expect-error VM testing
                         globalThis.TEST_NESTED_FUNCTION_RCE,
@@ -369,7 +369,7 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                         const path =
                             `$..[?(@.constructor[( @.getPrototypeOf(@).${invocation} )])]`;
                         jsonpath({path, json: {a: {}}});
-                    }, "Function constructor is disabled");
+                    }, "Cannot read properties of [object Object] (reading 'constructor')");
                 }
 
                 assert.equal(
@@ -389,11 +389,27 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                         const path =
                             `$[?(@.constructor[( @.prototype.${method}('${propName}'${arg2}) )])]`;
                         jsonpath({path, json: [{b: 1}]});
-                    }, "Function constructor is disabled");
+                    }, "Cannot read properties of [object Object] (reading 'constructor')");
 
                     assert.equal(Object.hasOwn(Object.prototype, propName), false);
                 });
             }
+
+            it('nested-filter fast-path cannot smuggle real built-ins ' +
+                '(Object.prototype pollution via `Object.assign`/' +
+                '`Object.fromEntries`)', () => {
+                const propName = 'jsonpathNestedFilterPollutionTest';
+                assert.throws(() => {
+                    const path =
+                        '$[?(@.constructor[( ' +
+                            `@.assign(@.prototype, @.fromEntries([["${propName}", "pwned"]])) ` +
+                        ')])]';
+                    jsonpath({path, json: [{b: 1}]});
+                }, "Cannot read properties of [object Object] (reading 'constructor')");
+
+                assert.equal(Object.hasOwn(Object.prototype, propName), false);
+                assert.equal(/** @type {Record<string, unknown>} */ ({})[propName], undefined);
+            });
 
             it("async/generator function constructors blocked", () => {
                 const fnJson = {
