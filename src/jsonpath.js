@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this -- Consistent monkey-patching */
 /* eslint-disable unicorn/prefer-private-class-fields -- Allow
     monkey-patching */
-import {SafeScript} from './Safe-Script.js';
+import {SafeScript, getSafeProperty} from './Safe-Script.js';
 
 const scriptCache = new Map();
 const pathCache = new Map();
@@ -729,10 +729,14 @@ class JSONPathClass {
                     const valObj2 = /** @type {Record<string, unknown>} */ (
                         val
                     );
+                    // guard against nested[1] resolving to `constructor`
                     const nvalue = /** @type {ValueType} */ (nested[1]
-                        ? /** @type {Record<string, unknown>} */ (
-                            valObj2[m]
-                        )[nested[1]]
+                        ? getSafeProperty(
+                            /** @type {Record<string, unknown>} */ (
+                                valObj2[m]
+                            ),
+                            nested[1]
+                        )
                         : valObj2[m]);
                     const filterResults = this._trace(npath, nvalue, path,
                         parent, parentPropName, callback, true);

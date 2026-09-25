@@ -74,6 +74,30 @@ const isBlockedFunction = (value) => {
 };
 
 /**
+ * Guarded `obj[prop]`, applying the same restrictions as a MemberExpression.
+ * @param {UnknownResult} obj
+ * @param {string} prop
+ * @returns {UnknownResult}
+ */
+const getSafeProperty = (obj, prop) => {
+    if (obj === undefined || obj === null) {
+        throw new TypeError(
+            `Cannot read properties of ${obj} (reading '${prop}')`
+        );
+    }
+    if (!Object.hasOwn(obj, prop) && BLOCKED_PROTO_PROPERTIES.has(prop)) {
+        throw new TypeError(
+            `Cannot read properties of ${obj} (reading '${prop}')`
+        );
+    }
+    const result = /** @type {Record<string, UnknownResult>} */ (obj)[prop];
+    if (isBlockedFunction(result)) {
+        throw new TypeError('Function constructor is disabled');
+    }
+    return result;
+};
+
+/**
  * @typedef {Record<
  *   string,
  *   (a: AnyParameter, b: AnyParameter) => UnknownResult
@@ -277,20 +301,7 @@ const SafeEval = {
                 : ast.property.name // `object.property` property is Identifier
         );
         const obj = SafeEval.evalAst(ast.object, subs);
-        if (obj === undefined || obj === null) {
-            throw new TypeError(
-                `Cannot read properties of ${obj} (reading '${prop}')`
-            );
-        }
-        if (!Object.hasOwn(obj, prop) && BLOCKED_PROTO_PROPERTIES.has(prop)) {
-            throw new TypeError(
-                `Cannot read properties of ${obj} (reading '${prop}')`
-            );
-        }
-        const result = /** @type {Record<string, UnknownResult>} */ (obj)[prop];
-        if (isBlockedFunction(result)) {
-            throw new TypeError('Function constructor is disabled');
-        }
+        const result = getSafeProperty(obj, prop);
         if (typeof result === 'function') {
             return result.bind(obj); // arrow functions aren't affected by bind.
         }
@@ -388,4 +399,4 @@ class SafeScript {
     }
 }
 
-export {SafeScript};
+export {SafeScript, getSafeProperty};
