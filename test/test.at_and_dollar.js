@@ -74,4 +74,39 @@ describe('JSONPath - At and Dollar sign', function () {
         assertChai.deepEqual(jsonpathFn({json, path: '$[?(@&&@>1)]'}), [2, 3]);
         assertChai.deepEqual(jsonpathFn({json, path: '$[?(@||@===0)]'}), [0, 1, 2, 3]);
     });
+
+    for (const evalType of ['safe', 'native']) {
+        it(`bare @ in any position (${evalType})`, () => {
+            const json = [0, 1, 2, 3];
+            /** @param {string} path */
+            const query = (path) => jsonpathFn({json, path, eval: evalType});
+            assertChai.deepEqual(query('$[?(@)]'), [1, 2, 3]);
+            assertChai.deepEqual(query('$[?(!@)]'), [0]);
+            assertChai.deepEqual(query('$[?(@>1)]'), [2, 3]);
+            assertChai.deepEqual(query('$[?(@-1>0)]'), [2, 3]);
+            assertChai.deepEqual(query('$[?(@?@>2:false)]'), [3]);
+            assertChai.deepEqual(query('$[?((@^1)===0)]'), [1]);
+            assertChai.deepEqual(query('$[?([@][0]>1)]'), [2, 3]);
+        });
+
+        it(`@ inside string literals is left intact (${evalType})`, () => {
+            const json = [
+                {a: 'x@=y'}, {a: 'me@-host'}, {a: 'a@|b'},
+                {a: 'x@.y'}, {a: 'foo @ bar'}, {a: '@'}, {a: "it's@"}
+            ];
+            /** @param {string} path */
+            const query = (path) => jsonpathFn({json, path, eval: evalType});
+            for (const {a} of json) {
+                const quoted = a.includes("'")
+                    ? `"${a}"`
+                    : `'${a}'`;
+                assertChai.deepEqual(
+                    query(`$[?(@.a===${quoted})]`), [{a}], a
+                );
+            }
+            assertChai.deepEqual(
+                query(String.raw`$[?(@.a==='it\'s@')]`), [{a: "it's@"}]
+            );
+        });
+    }
 });

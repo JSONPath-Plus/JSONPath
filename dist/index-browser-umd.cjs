@@ -2375,7 +2375,10 @@
 	    }
 	    const scriptCacheKey = this.currEval + 'Script:' + code;
 	    if (!scriptCache.has(scriptCacheKey)) {
-	      let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root').replaceAll(/@([.\s\)\[])/gv, '_$_v$1');
+	      let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root')
+	      // Replace a bare `@` (not followed by an identifier
+	      //   character) while leaving quoted string literals intact
+	      .replaceAll(/('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|@(?![\w$])/gv, (_, str) => str ?? '_$_v');
 	      if (containsPath) {
 	        script = script.replaceAll('@path', '_$_path');
 	      }

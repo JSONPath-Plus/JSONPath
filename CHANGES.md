@@ -1,5 +1,11 @@
 # CHANGES for jsonpath-plus
 
+## 11.0.2
+
+- fix: allow bare `@` in any position (e.g., `$[?(@>1)]`, `$[?(@)]`,
+    `$[?(!@)]`) and stop rewriting `@` inside quoted string literals
+    (@spokodev)
+
 ## 11.0.1
 
 - fix(security) nested filter bypass exploit (@andrewmacheret)

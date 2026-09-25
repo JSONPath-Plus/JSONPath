@@ -1030,7 +1030,12 @@ class JSONPathClass {
                 .replaceAll('@parent', '_$_parent')
                 .replaceAll('@property', '_$_property')
                 .replaceAll('@root', '_$_root')
-                .replaceAll(/@([\-.\s\)\[<>=!%*\/+\|\q{&}])/gv, '_$_v$1');
+                // Replace a bare `@` (not followed by an identifier
+                //   character) while leaving quoted string literals intact
+                .replaceAll(
+                    /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|@(?![\w$])/gv,
+                    (_, str) => str ?? '_$_v'
+                );
             if (containsPath) {
                 script = script.replaceAll('@path', '_$_path');
             }
