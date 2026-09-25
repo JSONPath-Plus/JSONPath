@@ -215,7 +215,25 @@ evaluate method (as the first argument) include:
   This allows creating custom type operators that can be used in queries
   (e.g., `@myType()`). The function will be invoked with the value of the item,
   its path, its parent, and its parent's property name. It should return a
-  boolean indicating whether the supplied value matches the custom type.
+  boolean indicating whether the supplied value matches the custom type. May
+  also be set to the string "structuredCloning" which predefines various types:
+  @NaN(), @BigInt(), @BigIntObject(), @Date(), @Set(), @Map(), @RegExp(),
+  @Blob(optionalMimeType), @File(optionalMimeType), @Boolean(), @Number(),
+  @String(), @Infinity(), @negativeInfinity(), @negativeZero(),
+  @DOMException(), @Error(), @EvalError(), @RangeError(), @ReferenceError(),
+  @SyntaxError(), @TypeError(), @URIError(), @AggregateError(),
+  @QuotaExceededError(), @WebTransportError(), @FileList, @ArrayBuffer(),
+  @DataView(), @ImageData(), @ImageBitmap(), @Int8Array(), @Uint8Array(),
+  @Uint8ClampedArray(), @Int16Array(), @Uint16Array(), @Int32Array(),
+  @Uint32Array(), @Float32Array(), @Float64Array(), @BigInt64Array(),
+  @BigUint64Array(), @Float16Array, @DOMMatrix(), @DOMMatrixReadOnly(),
+  @DOMPoint(), @DOMPointReadOnly(), @DOMRect, @DOMRectReadOnly(),
+  @DOMQuad(), @CryptoKey(), @AudioData(), @EncodedAudioChunk(),
+  @EncodedVideoChunk(), @VideoFrame(), @CropTarget,
+  @FileSystemDirectoryHandle(), @FileSystemFileHandle(),
+  @GPUCompilationInfo(), @GPUCompilationMessage(),
+  @GPUPipelineError(), @RTCCertificate(), @RTCEncodedAudioFrame(),
+  @RTCEncodedVideoFrame()
 
 ### Instance methods
 
