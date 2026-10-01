@@ -222,38 +222,7 @@ type operators like <code>@string()</code> are silently stripped.</li>
 </code><button type="button">Copy</button></pre>
 
 <p>and the following XML representation:</p>
-<pre><code class="xml"><store>
-    <book>
-        <category>reference</category>
-        <author>Nigel Rees</author>
-        <title>Sayings of the Century</title>
-        <price>8.95</price>
-    </book>
-    <book>
-        <category>fiction</category>
-        <author>Evelyn Waugh</author>
-        <title>Sword of Honour</title>
-        <price>12.99</price>
-    </book>
-    <book>
-        <category>fiction</category>
-        <author>Herman Melville</author>
-        <title>Moby Dick</title>
-        <isbn>0-553-21311-3</isbn>
-        <price>8.99</price>
-    </book>
-    <book>
-        <category>fiction</category>
-        <author>J. R. R. Tolkien</author>
-        <title>The Lord of the Rings</title>
-        <isbn>0-395-19395-8</isbn>
-        <price>22.99</price>
-    </book>
-    <bicycle>
-        <color>red</color>
-        <price>19.95</price>
-    </bicycle>
-</store>
+<pre><code class="xml"><span class="hl-6">&lt;</span><span class="hl-7">store</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;</span><span class="hl-7">book</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">category</span><span class="hl-6">&gt;</span><span class="hl-1">reference</span><span class="hl-6">&lt;/</span><span class="hl-7">category</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">author</span><span class="hl-6">&gt;</span><span class="hl-1">Nigel Rees</span><span class="hl-6">&lt;/</span><span class="hl-7">author</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">title</span><span class="hl-6">&gt;</span><span class="hl-1">Sayings of the Century</span><span class="hl-6">&lt;/</span><span class="hl-7">title</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><span class="hl-1">8.95</span><span class="hl-6">&lt;/</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;/</span><span class="hl-7">book</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;</span><span class="hl-7">book</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">category</span><span class="hl-6">&gt;</span><span class="hl-1">fiction</span><span class="hl-6">&lt;/</span><span class="hl-7">category</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">author</span><span class="hl-6">&gt;</span><span class="hl-1">Evelyn Waugh</span><span class="hl-6">&lt;/</span><span class="hl-7">author</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">title</span><span class="hl-6">&gt;</span><span class="hl-1">Sword of Honour</span><span class="hl-6">&lt;/</span><span class="hl-7">title</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><span class="hl-1">12.99</span><span class="hl-6">&lt;/</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;/</span><span class="hl-7">book</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;</span><span class="hl-7">book</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">category</span><span class="hl-6">&gt;</span><span class="hl-1">fiction</span><span class="hl-6">&lt;/</span><span class="hl-7">category</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">author</span><span class="hl-6">&gt;</span><span class="hl-1">Herman Melville</span><span class="hl-6">&lt;/</span><span class="hl-7">author</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">title</span><span class="hl-6">&gt;</span><span class="hl-1">Moby Dick</span><span class="hl-6">&lt;/</span><span class="hl-7">title</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">isbn</span><span class="hl-6">&gt;</span><span class="hl-1">0-553-21311-3</span><span class="hl-6">&lt;/</span><span class="hl-7">isbn</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><span class="hl-1">8.99</span><span class="hl-6">&lt;/</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;/</span><span class="hl-7">book</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;</span><span class="hl-7">book</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">category</span><span class="hl-6">&gt;</span><span class="hl-1">fiction</span><span class="hl-6">&lt;/</span><span class="hl-7">category</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">author</span><span class="hl-6">&gt;</span><span class="hl-1">J. R. R. Tolkien</span><span class="hl-6">&lt;/</span><span class="hl-7">author</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">title</span><span class="hl-6">&gt;</span><span class="hl-1">The Lord of the Rings</span><span class="hl-6">&lt;/</span><span class="hl-7">title</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">isbn</span><span class="hl-6">&gt;</span><span class="hl-1">0-395-19395-8</span><span class="hl-6">&lt;/</span><span class="hl-7">isbn</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><span class="hl-1">22.99</span><span class="hl-6">&lt;/</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;/</span><span class="hl-7">book</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;</span><span class="hl-7">bicycle</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">color</span><span class="hl-6">&gt;</span><span class="hl-1">red</span><span class="hl-6">&lt;/</span><span class="hl-7">color</span><span class="hl-6">&gt;</span><br/><span class="hl-1">        </span><span class="hl-6">&lt;</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><span class="hl-1">19.95</span><span class="hl-6">&lt;/</span><span class="hl-7">price</span><span class="hl-6">&gt;</span><br/><span class="hl-1">    </span><span class="hl-6">&lt;/</span><span class="hl-7">bicycle</span><span class="hl-6">&gt;</span><br/><span class="hl-6">&lt;/</span><span class="hl-7">store</span><span class="hl-6">&gt;</span>
 </code><button type="button">Copy</button></pre>
 
 <p>Please note that the XPath examples below do not distinguish between

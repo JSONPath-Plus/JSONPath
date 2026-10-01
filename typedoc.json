@@ -1,0 +1,8 @@
+{
+  "out": "docs/ts",
+  "entryPoints": ["src"],
+  "excludeExternals": true,
+  "entryPointStrategy": "expand",
+  "gitRemote": "upstream",
+  "highlightLanguages": ["xml", "js", "shell", "html", "ts", "json"]
+}

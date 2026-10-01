@@ -138,7 +138,7 @@
     "license-badge": "license-badger --corrections --uncategorizedLicenseTemplate \"\\${license} (\\${name} (\\${version}))\" --filteredTypes=nonempty --textTemplate \"License types\n(project, deps, and bundled devDeps)\" --packageJson --production badges/licenses-badge.svg",
     "license-badge-dev": "license-badger --corrections --filteredTypes=nonempty --textTemplate \"License types\n(all devDeps)\" --allDevelopment badges/licenses-badge-dev.svg",
     "license-badges": "npm run license-badge && npm run license-badge-dev",
-    "build-docs": "typedoc --out docs/ts src --excludeExternals --entryPointStrategy Expand --gitRemote upstream",
+    "build-docs": "typedoc",
     "open-docs": "open-cli http://localhost:8084/docs/ts/ && npm start",
     "coverage": "open-cli http://localhost:8084/coverage/ && npm start",
     "coverage-badge": "coveradge badges/coverage-badge.svg",
