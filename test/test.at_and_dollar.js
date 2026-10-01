@@ -87,6 +87,17 @@ describe('JSONPath - At and Dollar sign', function () {
             assertChai.deepEqual(query('$[?(@?@>2:false)]'), [3]);
             assertChai.deepEqual(query('$[?((@^1)===0)]'), [1]);
             assertChai.deepEqual(query('$[?([@][0]>1)]'), [2, 3]);
+            assertChai.deepEqual(query('$[?(@/2>1)]'), [3]);
+            assertChai.deepEqual(query('$[?(@/2/1>1)]'), [3]);
+        });
+
+        it(`@ inside regex (${evalType})`, () => {
+            const result = jsonpathFn({
+                path: '$[?(/@/.test(@.email))]',
+                json: [{email: 'a@b.com'}, {email: 'abc'}]
+            });
+
+            assertChai.deepEqual(result, [{email: 'a@b.com'}]);
         });
 
         it(`@ inside string literals is left intact (${evalType})`, () => {
