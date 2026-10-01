@@ -2382,8 +2382,10 @@ class JSONPathClass {
     if (!scriptCache.has(scriptCacheKey)) {
       let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root')
       // Replace a bare `@` (not followed by an identifier
-      //   character) while leaving quoted string literals intact
-      .replaceAll(/('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|@(?![\w$])/gv, (_, str) => str ?? '_$_v');
+      //   character) while leaving quoted string literals and
+      //   regex literals (a `/` where an operand is expected,
+      //   as opposed to division) intact
+      .replaceAll(/('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|(?:^|[\(,=:\[!\|?\{\};+\-*%<>~^]|&)\s*\/(?:\\.|\[(?:\\.|[^\]\\])*\]|[^\/\\\[])+\/[dgimsuvy]*)|@(?![\w$])/gv, (_, literal) => literal ?? '_$_v');
       if (containsPath) {
         script = script.replaceAll('@path', '_$_path');
       }
