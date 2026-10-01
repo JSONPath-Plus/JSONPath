@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 11.1.1
+
+- fix: avoid treating at sign within regex as current context; fixes #280
+
 ## 11.1.0
 
 - fix: allow bare `@` in any position (e.g., `$[?(@>1)]`, `$[?(@)]`,
