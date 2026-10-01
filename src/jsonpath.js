@@ -1052,7 +1052,7 @@ class JSONPathClass {
                 //   regex literals (a `/` where an operand is expected,
                 //   as opposed to division) intact
                 .replaceAll(
-                    /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|(?:^|[\(,=:\[!\|?\{\};+\-*%<>~^]|&)\s*\/(?:\\.|\[(?:\\.|[^\]\\])*\]|[^\/\\\[])+\/[dgimsuvy]*)|@(?![\w$])/gv,
+                    /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|(?<=(?:^|[\(,=:\[!\|?\{\};+\-*%<>~^]|&)\s*)\/(?:\\.|\[(?:\\.|[^\]\\])*\]|[^\/\\\[])+\/[dgimsuvy]*)|@(?![\w$])/gv,
                     (_, literal) => literal ?? '_$_v'
                 );
             if (containsPath) {
