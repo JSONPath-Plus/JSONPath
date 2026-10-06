@@ -1,5 +1,11 @@
 # CHANGES for jsonpath-plus
 
+## 11.2.0
+
+- feat: allow arg to other type callbacks
+- feat: add @symbol, @Promise, @jsonReference other types
+- feat: add separate optional imports for structuredCloning and extra javascript types
+
 ## 11.1.1
 
 - fix: avoid treating at sign within regex as current context; fixes #280

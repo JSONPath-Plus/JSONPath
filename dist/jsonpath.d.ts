@@ -2,7 +2,7 @@ export type AnyInput = any;
 export type SandboxCallback = ((...args: any[]) => any);
 export type SandboxPropertyValue = any | SandboxCallback;
 export type ExpressionArray = (string | number)[];
-export type ValueType = "scalar" | "boolean" | "string" | "undefined" | "function" | "integer" | "number" | "nonFinite" | "object" | "array" | "other" | "null";
+export type ValueType = "scalar" | "boolean" | "string" | "undefined" | "function" | "integer" | "number" | "nonFinite" | "object" | "array" | "other" | "null" | "symbol" | "Promise" | "BigInt" | "jsonReference";
 export type ParentValue = unknown;
 export type UnknownResult = unknown;
 export type ParentProperty = string | number | null;
@@ -18,7 +18,7 @@ export type ReturnObject = {
     pointer?: string | undefined;
 };
 export type JSONPathCallback = (preferredOutput: any, type: "value" | "property", fullRetObj: ReturnObject) => void;
-export type OtherTypeCallback = (val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: string | number | null) => boolean | null;
+export type OtherTypeCallback = (val: unknown, path: ExpressionArray, parent: ParentValue, parentPropName: string | number | null, arg: string) => boolean | null;
 export type ContextItem = any;
 export type EvaluatedResult = any;
 export type EvalCallback = (code: string, context: ContextItem) => EvaluatedResult;
@@ -61,8 +61,8 @@ export type JSONPathOptions = {
      */
     otherTypeCallback?: OtherTypeCallback | undefined;
     /**
-     * Map of custom
-     * type operator names to their evaluation callbacks
+     * Map of
+     * custom type operator names to their evaluation callbacks
      */
     customTypes?: Record<string, OtherTypeCallback> | undefined;
     autostart?: boolean | undefined;

@@ -1514,6 +1514,13 @@
 	  }
 	}
 
+	/**
+	 * @param {unknown} val
+	 */
+	const toStringTag = val => {
+	  return Object.prototype.toString.call(val).slice(8, -1);
+	};
+
 	/* eslint-disable camelcase -- Convenient for escaping */
 	/* eslint-disable class-methods-use-this -- Consistent monkey-patching */
 	/* eslint-disable unicorn/prefer-private-class-fields -- Allow
@@ -1540,7 +1547,8 @@
 	/**
 	 * @typedef {"scalar"|"boolean"|"string"|"undefined"
 	 *   |"function"|"integer"|"number"|"nonFinite"|"object"
-	 *   |"array"|"other"|"null"} ValueType
+	 *   |"array"|"other"|"null"|"symbol"|"Promise"|"BigInt"
+	 *   |"jsonReference"} ValueType
 	 */
 
 	/**
@@ -1610,6 +1618,7 @@
 	 * @param {ExpressionArray} path
 	 * @param {ParentValue} parent
 	 * @param {string|number|null} parentPropName
+	 * @param {string} arg
 	 * @returns {boolean|null}
 	 */
 
@@ -1685,8 +1694,8 @@
 	 * @property {JSONPathCallback} [callback]
 	 * @property {OtherTypeCallback} [otherTypeCallback] Defaults to
 	 *   function which throws on encountering `@other`
-	 * @property {Record<string, OtherTypeCallback>} [customTypes] Map of custom
-	 *   type operator names to their evaluation callbacks
+	 * @property {Record<string, OtherTypeCallback>} [customTypes] Map of
+	 *   custom type operator names to their evaluation callbacks
 	 * @property {boolean} [autostart=true]
 	 * @property {boolean} [ignoreEvalErrors=false]
 	 */
@@ -2179,58 +2188,59 @@
 	      addRet(this._trace(unshift(exprToUse, x), val, path, parent, parentPropName, callback, hasArrExpr));
 	    } else if (loc[0] === '@') {
 	      // value type: @boolean(), etc.
+	      // eslint-disable-next-line no-useless-assignment -- ESLint bug
 	      let addType = false;
-	      const valueType = /** @type {ValueType|string} */loc.slice(1, -2);
+	      const parenthIndex = loc.indexOf('(');
+	      const valueType = /** @type {ValueType|string} */loc.slice(1, parenthIndex);
+	      const lastParenth = loc.lastIndexOf(')');
+	      const argRaw = loc.slice(parenthIndex + 1, lastParenth);
+	      const arg = argRaw ? JSON.parse(argRaw) : undefined;
 	      switch (valueType) {
 	        case 'scalar':
-	          if (!val || !['object', 'function'].includes(typeof val)) {
-	            addType = true;
-	          }
+	          addType = !val || !['object', 'function'].includes(typeof val);
 	          break;
 	        case 'boolean':
 	        case 'string':
 	        case 'undefined':
 	        case 'function':
-	          if (typeof val === valueType) {
-	            addType = true;
-	          }
+	          addType = typeof val === valueType;
 	          break;
 	        case 'integer':
-	          if (Number.isFinite(val) && !(/** @type {number} */val % 1)) {
-	            addType = true;
-	          }
+	          addType = Number.isFinite(val) && !(/** @type {number} */val % 1);
 	          break;
 	        case 'number':
-	          if (Number.isFinite(val)) {
-	            addType = true;
-	          }
+	          addType = Number.isFinite(val);
 	          break;
 	        case 'nonFinite':
-	          if (typeof val === 'number' && !Number.isFinite(val)) {
-	            addType = true;
-	          }
+	          addType = typeof val === 'number' && !Number.isFinite(val);
 	          break;
 	        case 'object':
-	          if (val && typeof val === valueType) {
-	            addType = true;
-	          }
+	          addType = Boolean(val) && typeof val === valueType;
 	          break;
 	        case 'array':
-	          if (Array.isArray(val)) {
-	            addType = true;
-	          }
+	          addType = Array.isArray(val);
 	          break;
 	        case 'other':
-	          addType = /** @type {OtherTypeCallback} */this.currOtherTypeCallback(val, path, parent, parentPropName) || false;
+	          addType = /** @type {OtherTypeCallback} */this.currOtherTypeCallback(val, path, parent, parentPropName, arg) || false;
 	          break;
 	        case 'null':
-	          if (val === null) {
-	            addType = true;
-	          }
+	          addType = val === null;
+	          break;
+	        case 'symbol':
+	          addType = typeof val === 'symbol';
+	          break;
+	        case 'BigInt':
+	          addType = typeof val === 'bigint';
+	          break;
+	        case 'Promise':
+	          addType = toStringTag(val) === 'Promise';
+	          break;
+	        case 'jsonReference':
+	          addType = Boolean(val) && typeof val === 'object' && Object.hasOwn(/** @type {object} */val, '$ref');
 	          break;
 	        default:
 	          if (this.currCustomTypes && Object.hasOwn(this.currCustomTypes, valueType)) {
-	            addType = this.currCustomTypes[valueType](val, path, parent, parentPropName) || false;
+	            addType = this.currCustomTypes[valueType](val, path, parent, parentPropName, arg) || false;
 	          } else {
 	            throw new TypeError('Unknown value type ' + valueType);
 	          }
@@ -2391,7 +2401,7 @@
 	      //   character) while leaving quoted string literals and
 	      //   regex literals (a `/` where an operand is expected,
 	      //   as opposed to division) intact
-	      .replaceAll(/('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|(?:^|[\(,=:\[!\|?\{\};+\-*%<>~^]|&)\s*\/(?:\\.|\[(?:\\.|[^\]\\])*\]|[^\/\\\[])+\/[dgimsuvy]*)|@(?![\w$])/gv, (_, literal) => literal ?? '_$_v');
+	      .replaceAll(/('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|(?<=(?:^|[\(,=:\[!\|?\{\};+\-*%<>~^]|&)\s*)\/(?:\\.|\[(?:\\.|[^\]\\])*\]|[^\/\\\[])+\/[dgimsuvy]*)|@(?![\w$])/gv, (_, literal) => literal ?? '_$_v');
 	      if (containsPath) {
 	        script = script.replaceAll('@path', '_$_path');
 	      }
@@ -2522,7 +2532,7 @@
 	  const subx = [];
 	  const normalized = expr
 	  // Properties
-	  .replaceAll(/@[\w$\-]+\(\)/gv, ';$&;')
+	  .replaceAll(/@[\w$\-]+\([^\)]*\)/gv, ';$&;')
 	  // Parenthetical evaluations (filtering and otherwise), directly
 	  //   within brackets or single quotes
 	  .replaceAll(/[\['](\??\(.*?\))[\]'](?!.\])/gv, function ($0, $1) {
