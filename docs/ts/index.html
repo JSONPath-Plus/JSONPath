@@ -182,8 +182,35 @@ return false).</li>
 This allows creating custom type operators that can be used in queries
 (e.g., <code>@myType()</code>). The function will be invoked with the value of the item,
 its path, its parent, and its parent's property name. It should return a
-boolean indicating whether the supplied value matches the custom type.</li>
+boolean indicating whether the supplied value matches the custom type. May
+also be set to:
+<ol>
+<li>The value of the import <code>jsonpath-plus/src/structuredCloningTypes.js</code> which predefines the following types:
+@NaN(), @BigIntObject(), @Date(), @Set(), @Map(), @RegExp(),
+@Blob(optionalMimeType), @File(optionalMimeType), @Boolean(), @Number(),
+@String(), @Infinity(), @negativeInfinity(), @negativeZero(),
+@DOMException(), @Error(), @EvalError(), @RangeError(), @ReferenceError(),
+@SyntaxError(), @TypeError(), @URIError(), @AggregateError(),
+@QuotaExceededError(), @WebTransportError(), @FileList, @ArrayBuffer(),
+@DataView(), @ImageData(), @ImageBitmap(), @Int8Array(), @Uint8Array(),
+@Uint8ClampedArray(), @Int16Array(), @Uint16Array(), @Int32Array(),
+@Uint32Array(), @Float32Array(), @Float64Array(), @BigInt64Array(),
+@BigUint64Array(), @Float16Array, @DOMMatrix(), @DOMMatrixReadOnly(),
+@DOMPoint(), @DOMPointReadOnly(), @DOMRect, @DOMRectReadOnly(),
+@DOMQuad(), @CryptoKey(), @AudioData(), @EncodedAudioChunk(),
+@EncodedVideoChunk(), @VideoFrame(), @CropTarget,
+@FileSystemDirectoryHandle(), @FileSystemFileHandle(),
+@GPUCompilationInfo(), @GPUCompilationMessage(),
+@GPUPipelineError(), @RTCCertificate(), @RTCEncodedAudioFrame(),
+@RTCEncodedVideoFrame()</li>
+</ol>
+</li>
 </ul>
+<ol start="2">
+<li>The value of the import <code>jsonpath-plus/src/javascriptTypes.js</code> which predefines the following types:
+@Generator(), @AsyncGenerator(), @GeneratorFunction(),
+@AsyncGeneratorFunction(), @Iterable(), @AsyncIterable(), @Iterator()</li>
+</ol>
 <h3 id="instance-methods" class="tsd-anchor-link">Instance methods<a href="#instance-methods" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul>
 <li><em><strong>evaluate(path, json, callback, otherTypeCallback)</strong></em> OR
@@ -382,7 +409,7 @@ may be helpful (set to <code>xml</code> or <code>xml-strict</code>).</p>
 <td><code>//book/../*[. instance of element(*, xs:decimal)]</code> (in XPath 2.0)</td>
 <td><code>$..book..*@number()</code></td>
 <td>Get the numeric values within the book array</td>
-<td><code>@number()</code>, the other basic types (<code>@boolean()</code>, <code>@string()</code>), other low-level derived types (<code>@null()</code>, <code>@object()</code>, <code>@array()</code>), the JSONSchema-added type, <code>@integer()</code>, the compound type <code>@scalar()</code> (which also accepts <code>undefined</code> and non-finite numbers for JavaScript objects as well as all of the basic non-object/non-function types), the type, <code>@other()</code>, to be used in conjunction with a user-defined callback (see <code>otherTypeCallback</code>) and the following non-JSON types that can nevertheless be used with JSONPath when querying non-JSON JavaScript objects (<code>@undefined()</code>, <code>@function()</code>, <code>@nonFinite()</code>) are not present in the original spec</td>
+<td><code>@number()</code>, the other basic types (<code>@boolean()</code>, <code>@string()</code>), other low-level derived types (<code>@null()</code>, <code>@object()</code>, <code>@array()</code>), the JSONSchema-added type, <code>@integer()</code>, the compound type <code>@scalar()</code> (which also accepts <code>undefined</code> and non-finite numbers for JavaScript objects as well as all of the basic non-object/non-function types), the type, <code>@other()</code>, to be used in conjunction with a user-defined callback (see <code>otherTypeCallback</code>). The special JSON type <code>@jsonReference()</code> is also provided, and the following non-JSON types can nevertheless also be used with JSONPath when querying non-JSON JavaScript objects (<code>@undefined()</code>, <code>@function()</code>, <code>@nonFinite()</code>, <code>@symbol()</code>, <code>@BigInt()</code>, and <code>@Promise</code>) are not present in the original spec</td>
 </tr>
 <tr>
 <td><code>//book/*[name() = 'category' and matches(., 'tion$')]</code> (XPath 2.0)</td>
