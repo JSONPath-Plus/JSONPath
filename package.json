@@ -10,6 +10,14 @@
   "main": "dist/index-node-cjs.cjs",
   "exports": {
     "./package.json": "./package.json",
+    "./src/javascriptTypes.js": {
+      "types": "./dist/javascriptTypes.d.ts",
+      "import": "./src/javascriptTypes.js"
+    },
+    "./src/structuredCloningTypes.js": {
+      "types": "./dist/structuredCloningTypes.d.ts",
+      "import": "./src/structuredCloningTypes.js"
+    },
     ".": {
       "browser": {
         "types": "./dist/jsonpath-browser.d.ts",
@@ -112,6 +120,11 @@
     "last 2 versions, not IE 10, not IE 11, not ie_mob 10, not ie_mob 11, not op_mini all, not bb 7, not bb 10, not kaios 2.5"
   ],
   "c8": {
+    "checkCoverage": true,
+    "lines": 100,
+    "statements": 100,
+    "branches": 100,
+    "functions": 100,
     "reporter": [
       "text",
       "html",
@@ -134,7 +147,7 @@
   },
   "scripts": {
     "prepublishOnly": "pnpm i && npm run build && npm run build-docs",
-    "attw": "attw --pack .",
+    "attw": "attw --pack . --profile node16",
     "license-badge": "license-badger --corrections --uncategorizedLicenseTemplate \"\\${license} (\\${name} (\\${version}))\" --filteredTypes=nonempty --textTemplate \"License types\n(project, deps, and bundled devDeps)\" --packageJson --production badges/licenses-badge.svg",
     "license-badge-dev": "license-badger --corrections --filteredTypes=nonempty --textTemplate \"License types\n(all devDeps)\" --allDevelopment badges/licenses-badge-dev.svg",
     "license-badges": "npm run license-badge && npm run license-badge-dev",

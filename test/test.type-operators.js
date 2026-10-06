@@ -199,6 +199,78 @@ describe('JSONPath - Type Operators', function () {
         assert.deepEqual(result, expected);
     });
 
+    it('@symbol()', () => {
+        const sym = Symbol('abc');
+        const jsonMixed = {
+            nested: {
+                a: 50.7,
+                b: sym,
+                c: [
+                    42, [false, 73]
+                ]
+            }
+        };
+        const expected = [sym];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@symbol()'
+        });
+        assert.deepEqual(result, expected);
+    });
+
+    it('@BigInt()', () => {
+        const jsonMixed = {
+            nested: {
+                a: 50.7,
+                b: 1234n,
+                c: [
+                    42, [false, 73]
+                ]
+            }
+        };
+        const expected = [1234n];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@BigInt()'
+        });
+        assert.deepEqual(result, expected);
+    });
+
+    it('@Promise()', () => {
+        const prom = Promise.resolve();
+        const jsonMixed = {
+            nested: {
+                a: 50.7,
+                b: prom,
+                c: [
+                    42, [false, 73]
+                ]
+            }
+        };
+        const expected = [prom];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@Promise()'
+        });
+        assert.deepEqual(result, expected);
+    });
+
+    it('@jsonReference()', () => {
+        const jsonMixed = {
+            nested: {
+                a: 50.7,
+                b: {
+                    $ref: 'https://example.com/some/path'
+                },
+                c: [
+                    42, [false, 73]
+                ]
+            }
+        };
+        const expected = [{$ref: 'https://example.com/some/path'}];
+        const result = jsonpath({
+            json: jsonMixed, path: '$..*@jsonReference()'
+        });
+        assert.deepEqual(result, expected);
+    });
+
     it('unwraps a lone type-operator result with `wrap: false`', () => {
         const result = jsonpath({
             json: {a: 1}, path: '$..*[@number()]', wrap: false
@@ -249,10 +321,10 @@ describe('JSONPath - Type Operators', function () {
 
             const result = jsonpath({
                 json: jsonMixed,
-                path: '$..*@blob()',
+                path: '$..*@Blob()',
                 flatten: true,
                 customTypes: {
-                    blob: (/** @type {any} */ val) => Object.prototype.toString.call(val) === '[object Blob]'
+                    Blob: (/** @type {any} */ val) => Object.prototype.toString.call(val) === '[object Blob]'
                 }
             });
             assert.deepEqual(result, expected);
@@ -268,10 +340,10 @@ describe('JSONPath - Type Operators', function () {
             const jp = jsonpath({autostart: false});
             const result = jp.evaluate({
                 json: jsonMixed,
-                path: '$..*@blob()',
+                path: '$..*@Blob()',
                 flatten: true,
                 customTypes: {
-                    blob: (/** @type {any} */ val) => Object.prototype.toString.call(val) === '[object Blob]'
+                    Blob: (val) => Object.prototype.toString.call(val) === '[object Blob]'
                 }
             });
             assert.deepEqual(result, expected);
@@ -284,10 +356,48 @@ describe('JSONPath - Type Operators', function () {
                     path: '$..*@unregisteredType()',
                     flatten: true,
                     customTypes: {
-                        blob: (val) => Object.prototype.toString.call(val) === '[object Blob]'
+                        Blob: (val) => Object.prototype.toString.call(val) === '[object Blob]'
                     }
                 });
             }).to.throw(TypeError, 'Unknown value type unregisteredType');
+        });
+
+        it('allows custom type operators with arguments', () => {
+            // @ts-ignore -- Blob may not have construct signature in this TS environment
+            const blobObj = typeof Blob !== 'undefined'
+                ? new Blob(['test'], {
+                    type: 'text/plain'
+                })
+                : {[Symbol.toStringTag]: 'Blob', type: 'text/plain'};
+            const jsonMixed = {
+                nested: {
+                    a: blobObj,
+                    b: null,
+                    c: {
+                        d: 7
+                    }
+                }
+            };
+            const expected = [blobObj];
+
+            const result = jsonpath({
+                json: jsonMixed,
+                path: '$..*@Blob("text/plain")',
+                flatten: true,
+                customTypes: {
+                    Blob (val, _1, _2, _3, arg) {
+                        if (!val) {
+                            return false;
+                        }
+                        return Object.prototype.toString.call(val) === '[object Blob]' &&
+                            Boolean(val) && typeof val === 'object' &&
+                            'type' in (
+                                /** @type {object} */ (val)
+                            ) && /** @type {{type?: string}} */ (val).type === arg;
+                    }
+                }
+            });
+            assert.deepEqual(result, expected);
         });
     });
 });
