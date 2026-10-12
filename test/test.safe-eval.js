@@ -243,6 +243,8 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
                 ['*', '$..[?(@ && @.shelf * 2 === 2)]', [json.store.book]],
                 ['/', '$..[?(@ && @.shelf / 2 === 1)]', [json.store.books[0]]],
                 ['%', '$..[?(@ && @.shelf % 2 === 0)]', [json.store.books[0]]],
+                ['**', '$..[?(@ && @.shelf ** 2 === 9)]', [json.store.books[1]]],
+                ['??', '$..[?(@ && (@.isbn ?? "none") === "none" && @.shelf)]', [json.store.book, json.store.books[0]]],
                 ['!', '$..[?(@ && @.emptyArray && !@.emptyArray.length)]', [json.store.books[1]]],
                 ['~', '$..[?(@ && ~@.shelf === -2)]', [json.store.book]],
                 ['+ (unary)', '$..[?(@ && +@.meta === 12)]', [json.store.book]],
