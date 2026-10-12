@@ -107,6 +107,7 @@ const getSafeProperty = (obj, prop) => {
 // eslint-disable-next-line @stylistic/max-len -- Long
 const BINOPS = Object.assign(Object.create(null), /** @type {OperatorTable} */ ({
     '||': (a, b) => a || b(),
+    '??': (a, b) => a ?? b(),
     '&&': (a, b) => a && b(),
     '|': (a, b) => a | b(),
     '^': (a, b) => a ^ b(),
@@ -128,7 +129,8 @@ const BINOPS = Object.assign(Object.create(null), /** @type {OperatorTable} */ (
     '-': (a, b) => a - b(),
     '*': (a, b) => a * b(),
     '/': (a, b) => a / b(),
-    '%': (a, b) => a % b()
+    '%': (a, b) => a % b(),
+    '**': (a, b) => a ** b()
 }));
 
 /**
