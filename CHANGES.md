@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 11.2.1
+
+- fix(safe eval): support the `??` and `**` operators
+
 ## 11.2.0
 
 - feat: allow arg to other type callbacks
