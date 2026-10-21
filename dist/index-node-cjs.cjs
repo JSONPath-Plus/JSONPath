@@ -94,7 +94,9 @@ class Plugins {
   }
 }
 
-//     JavaScript Expression Parser (JSEP) 1.4.0
+//     JavaScript Expression Parser (JSEP) 1.6.0
+//     JSEP may be freely distributed under the MIT License
+//     https://ericsmekens.github.io/jsep/
 
 class Jsep {
   /**
@@ -102,7 +104,7 @@ class Jsep {
    */
   static get version() {
     // To be filled in by the template
-    return '1.4.0';
+    return '1.6.0';
   }
 
   /**
