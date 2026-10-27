@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 11.2.2
+
+- fix: leave @root, @parent, @property, @parentProperty and @path inside literals intact (@youdie006)
+
 ## 11.2.1
 
 - fix(safe eval): support the `??` and `**` operators
