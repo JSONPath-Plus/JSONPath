@@ -119,5 +119,26 @@ describe('JSONPath - At and Dollar sign', function () {
                 query(String.raw`$[?(@.a==='it\'s@')]`), [{a: "it's@"}]
             );
         });
+
+        it(`@root, @parent, etc. inside literals are left intact (${evalType})`, () => {
+            const json = [
+                {a: 'jo@rootmail.com'}, {a: 'kim@parentco.org'},
+                {a: 'lee@property.io'}, {a: 'x@parentProperty'},
+                {a: 'y@path'}
+            ];
+            /** @param {string} path */
+            const query = (path) => jsonpathFn({json, path, eval: evalType});
+            for (const {a} of json) {
+                assertChai.deepEqual(query(`$[?(@.a==='${a}')]`), [{a}], a);
+                assertChai.deepEqual(query(`$[?(@.a==="${a}")]`), [{a}], a);
+            }
+            assertChai.deepEqual(
+                query('$[?(/@root/.test(@.a))]'), [{a: 'jo@rootmail.com'}]
+            );
+            assertChai.deepEqual(
+                query(`$[?(@property===4 && @path==="$[4]" && @.a==='y@path')]`),
+                [{a: 'y@path'}]
+            );
+        });
     }
 });
