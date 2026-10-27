@@ -2398,15 +2398,12 @@ class JSONPathClass {
     }
     const scriptCacheKey = this.currEval + 'Script:' + code;
     if (!scriptCache.has(scriptCacheKey)) {
-      let script = code.replaceAll('@parentProperty', '_$_parentProperty').replaceAll('@parent', '_$_parent').replaceAll('@property', '_$_property').replaceAll('@root', '_$_root')
-      // Replace a bare `@` (not followed by an identifier
+      // Replace `@parentProperty`, `@parent`, `@property`, `@root`,
+      //   `@path` and a bare `@` (not followed by an identifier
       //   character) while leaving quoted string literals and
       //   regex literals (a `/` where an operand is expected,
       //   as opposed to division) intact
-      .replaceAll(/('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|(?<=(?:^|[\(,=:\[!\|?\{\};+\-*%<>~^]|&)\s*)\/(?:\\.|\[(?:\\.|[^\]\\])*\]|[^\/\\\[])+\/[dgimsuvy]*)|@(?![\w$])/gv, (_, literal) => literal ?? '_$_v');
-      if (containsPath) {
-        script = script.replaceAll('@path', '_$_path');
-      }
+      const script = code.replaceAll(/('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|(?<=(?:^|[\(,=:\[!\|?\{\};+\-*%<>~^]|&)\s*)\/(?:\\.|\[(?:\\.|[^\]\\])*\]|[^\/\\\[])+\/[dgimsuvy]*)|@(?:(parentProperty|parent|property|root|path)|(?![\w$]))/gv, (_, literal, name) => literal ?? '_$_' + (name ?? 'v'));
       const evalType = /** @type {string|boolean|undefined} */
       this.currEval;
       if (['safe', true, undefined].includes(evalType)) {
