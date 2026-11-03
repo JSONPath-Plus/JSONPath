@@ -2134,7 +2134,7 @@ class JSONPathClass {
     } else if (loc === '$') {
       // root only
       addRet(this._trace(x, val, path, null, null, callback, hasArrExpr));
-    } else if (/^(-?\d*):(-?\d*):?(\d*)$/v.test(loc)) {
+    } else if (/^(-?\d*):(-?\d*):?(-?\d*)$/v.test(loc)) {
       // [start:end:step]  Python slice syntax
       const sliceResult = this._slice(loc, x, val, path, parent, parentPropName, callback);
       if (sliceResult) {
@@ -2346,14 +2346,25 @@ class JSONPathClass {
     }
     const len = val.length,
       parts = loc.split(':'),
-      step = parts[2] && Number(parts[2]) || 1;
-    let start = parts[0] && Number(parts[0]) || 0,
-      end = parts[1] ? Number(parts[1]) : len;
-    start = start < 0 ? Math.max(0, start + len) : Math.min(len, start);
-    end = end < 0 ? Math.max(0, end + len) : Math.min(len, end);
+      step = parts[2] ? Number(parts[2]) : 1;
     /** @type {ReturnObject[]} */
     const ret = [];
-    for (let i = start; i < end; i += step) {
+    // A step of zero selects nothing (RFC 9535 section 2.3.4.2.2)
+    if (step === 0) {
+      return ret;
+    }
+    /**
+     * @param {number} index
+     * @returns {number}
+     */
+    const normalize = index => index < 0 ? index + len : index;
+    // With a negative step the defaults run backwards: from the last
+    //   item to (and including) the first
+    const start = normalize(parts[0] ? Number(parts[0]) : step > 0 ? 0 : len - 1),
+      end = normalize(parts[1] ? Number(parts[1]) : step > 0 ? len : -len - 1);
+    // The first and last positions to visit, whichever way we are going
+    const [from, to] = step > 0 ? [Math.min(Math.max(start, 0), len), Math.min(Math.max(end, 0), len)] : [Math.min(Math.max(start, -1), len - 1), Math.min(Math.max(end, -1), len - 1)];
+    for (let i = from; step > 0 ? i < to : i > to; i += step) {
       const tmp = this._trace(unshift(i, expr), val, path, parent, parentPropName, callback, true);
       // Should only be possible to be an array here since first part of
       //   ``unshift(i, expr)` passed in above would not be empty,
