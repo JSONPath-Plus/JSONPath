@@ -64,3 +64,49 @@ describe('JSONPath - slice', function () {
         }), []);
     });
 });
+
+describe('JSONPath - slice with a negative step', function () {
+    const small = [0, 1, 2, 3];
+    const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    // From RFC 9535 section 2.3.4 and the JSONPath compliance test suite
+    /** @type {[string, number[], number[]][]} */
+    const cases = [
+        ['$[::-1]', small, [3, 2, 1, 0]],
+        ['$[:0:-1]', small, [3, 2, 1]],
+        ['$[2::-1]', small, [2, 1, 0]],
+        ['$[::-2]', small, [3, 1]],
+        ['$[-1:-3:-1]', digits, [9, 8]],
+        ['$[-1:-6:-2]', digits, [9, 7, 5]],
+        ['$[-1:-7:-2]', digits, [9, 7, 5]],
+        ['$[-1:1:-1]', digits, [9, 8, 7, 6, 5, 4, 3, 2]],
+        ['$[7:-5:-1]', digits, [7, 6]],
+        ['$[9:0:-1]', digits, [9, 8, 7, 6, 5, 4, 3, 2, 1]],
+        ['$[113667776004:0:-1]', digits, [9, 8, 7, 6, 5, 4, 3, 2, 1]],
+        ['$[3:-113667776004:-1]', digits, [3, 2, 1, 0]],
+        ['$[-1:-10:-113667776004]', digits, [9]],
+        ['$[::-1]', [], []]
+    ];
+
+    for (const [path, json, expected] of cases) {
+        it(`should evaluate ${path} on ${JSON.stringify(json)}`, function () {
+            assert.deepEqual(jsonpath({json, path}), expected);
+        });
+    }
+
+    it('should reverse objects and report their paths', function () {
+        const json = {children: [{a: 1}, {a: 2}, {a: 3}]};
+        assert.deepEqual(
+            jsonpath({json, path: '$.children[::-1].a'}), [3, 2, 1]
+        );
+        assert.deepEqual(
+            jsonpath({json, path: '$.children[::-2]', resultType: 'path'}),
+            ["$['children'][2]", "$['children'][0]"]
+        );
+    });
+
+    it('should select nothing for a step of zero', function () {
+        assert.deepEqual(jsonpath({json: digits, path: '$[1:2:0]'}), []);
+        assert.deepEqual(jsonpath({json: digits, path: '$[::0]'}), []);
+    });
+});
