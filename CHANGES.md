@@ -1,5 +1,9 @@
 # CHANGES for jsonpath-plus
 
+## 11.3.0
+
+- feat(slice): support negative steps like `[::-1]` (@simonkundrik)
+
 ## 11.2.2
 
 - fix: leave @root, @parent, @property, @parentProperty and @path inside literals intact (@youdie006)

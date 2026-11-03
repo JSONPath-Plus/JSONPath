@@ -1,7 +1,7 @@
 {
   "author": "Stefan Goessner",
   "name": "jsonpath-plus",
-  "version": "11.2.2",
+  "version": "11.3.0",
   "type": "module",
   "bin": {
     "jsonpath": "./bin/jsonpath-cli.js",
@@ -79,7 +79,7 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "packageManager": "pnpm@12.15.0",
+  "packageManager": "pnpm@12.16.1",
   "react-native": {
     "vm": false
   },
@@ -90,18 +90,18 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
-    "@babel/core": "^8.0.9",
+    "@babel/core": "^8.1.0",
     "@babel/preset-env": "^8.0.7",
     "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.2",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "c8": "^12.0.0",
     "chai": "^6.3.0",
     "coveradge": "^0.9.0",
-    "eslint": "^10.13.0",
+    "eslint": "^10.14.0",
     "eslint-config-ash-nazg": "^43.2.4",
     "http-server": "^14.1.1",
     "license-badger": "^0.23.2",
@@ -109,7 +109,7 @@
     "mocha-badge-generator": "^0.13.0",
     "mocha-multi-reporters": "^1.5.2",
     "open-cli": "^9.0.0",
-    "rollup": "4.65.1",
+    "rollup": "4.67.4",
     "typedoc": "^0.28.20",
     "typescript": "^6.0.3"
   },
