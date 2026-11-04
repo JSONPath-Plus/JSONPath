@@ -1251,6 +1251,22 @@ JSONPath.toPathArray = function (expr) {
                 return '[#' + (subx.push($1) - 1) + ']';
             }
         )
+        // Quoted property names containing characters which would otherwise
+        //   be read as path syntax (e.g., `['a[b]']`), kept intact with a
+        //   leading backtick escape so they are looked up as they are
+        .replaceAll(
+            /\[\s*(?:'([^']*)'|"([^"]*)")\s*\]/gv,
+            function ($0, single, double) {
+                const name = single ?? double;
+                if (!(/(?:^[@"])|[\[\];^']|#\d/v).test(name)) {
+                    return $0;
+                }
+                const escaped = name[0] === '`' ? name : '`' + name;
+                // eslint-disable-next-line @stylistic/max-len -- Long
+                // eslint-disable-next-line unicorn/no-return-array-push -- Optimization
+                return '[#' + (subx.push(escaped) - 1) + ']';
+            }
+        )
         // Escape periods and tildes within properties
         .replaceAll(/\[['"]([^'\]]*)['"]\]/gv, function ($0, prop) {
             return "['" + prop

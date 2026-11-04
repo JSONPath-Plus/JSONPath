@@ -91,6 +91,55 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             }
         });
 
+        it('Quoted property names with path syntax characters', () => {
+            const names = [
+                'cd[DataLayer]', '[', ']', 'phoneNumbers [1]', 'x;y', 'a^b',
+                "it's", "a'", "'lastName'", '"lastName"', 'say "hi"', '@id'
+            ];
+            for (const name of names) {
+                const data = {[name]: {y: 'Y'}, x: {[name]: 'N'}, z: 1};
+                /**
+                 * @param {string|string[]} path
+                 * @param {"value"|"path"} [resultType]
+                 * @param {boolean} [wrap]
+                 * @returns {unknown}
+                 */
+                const query = (path, resultType, wrap = true) => jsonpath({
+                    json: data, path, resultType, wrap
+                });
+                const quotedNames = /** @type {string[]} */ ([]);
+                if (!name.includes("'")) {
+                    quotedNames.push(`'${name}'`);
+                }
+                if (!name.includes('"')) {
+                    quotedNames.push(`"${name}"`);
+                }
+                for (const quoted of quotedNames) {
+                    const msg = quoted;
+                    assert.deepEqual(query(`$[${quoted}]`), [{y: 'Y'}], msg);
+                    assert.deepEqual(query(`$[${quoted}].y`), ['Y'], msg);
+                    assert.deepEqual(query(`$.x[${quoted}]`), ['N'], msg);
+                    assert.deepEqual(
+                        query(`$..[${quoted}]`), [{y: 'Y'}, 'N'], msg
+                    );
+                    // A single name is not an array expression
+                    assert.strictEqual(
+                        query(`$[${quoted}].y`, 'value', false), 'Y', msg
+                    );
+                }
+                // Result paths and array paths find the name again
+                const [path] = /** @type {string[]} */ (
+                    query('$.*.y', 'path')
+                );
+                assert.deepEqual(query(path), ['Y'], path);
+                assert.deepEqual(query(['$', name, 'y']), ['Y'], name);
+            }
+            // A leading backtick still escapes the rest of the name
+            assert.deepEqual(jsonpath({
+                json: {'a[b]': 1, '`a[b]': 2}, path: "$['`a[b]']"
+            }), [1]);
+        });
+
         it('At signs within properties', () => {
             let result = jsonpath({json, path: "$.datafield[?(@.tag=='035')]", wrap: false});
             assert.deepEqual(result, [json.datafield[0]]);
