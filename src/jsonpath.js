@@ -650,6 +650,9 @@ class JSONPathClass {
                 val, /** @type {string|number} */ (loc), callback,
                 hasArrExpr
             ));
+        } else if (typeof loc !== 'string') {
+            // A number or other value (e.g., from `[(@.length-1)]`) which is
+            //   not a property of this value, so there is nothing to follow
         // eslint-disable-next-line unicorn/prefer-switch -- Part of larger `if`
         } else if (loc === '*') { // all child properties
             this._walk(val, (m) => {
