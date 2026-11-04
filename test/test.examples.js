@@ -85,6 +85,43 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(result, expected);
         });
 
+        it('last property of entire tree (index which does not exist)', () => {
+            // `-1` is not an index of an empty array, so nothing is found
+            assert.deepEqual(jsonpath({
+                json: {items: []}, path: '$.items[(@.length-1)]'
+            }), []);
+            // Other arrays in the tree are still searched
+            assert.deepEqual(jsonpath({
+                json: {items: [], other: {items: [5, 6]}},
+                path: '$..items[(@.length-1)]'
+            }), [6]);
+            assert.deepEqual(jsonpath({
+                json: {a: [], b: [1, 2]}, path: '$.*[(@.length-1)]'
+            }), [2]);
+            assert.deepEqual(jsonpath({
+                json: {items: [1, 2]}, path: '$.items[(@.length+5)]'
+            }), []);
+            // Results which cannot be property names (here `NaN`, `null`
+            //   and `true`) find nothing, including after a slice (#181)
+            const obj = {o: {a: 1}};
+            assert.deepEqual(jsonpath({
+                json: obj, path: '$.o[(@.length-1)]'
+            }), []);
+            assert.deepEqual(jsonpath({json: obj, path: '$.o[(null)]'}), []);
+            assert.deepEqual(jsonpath({json: obj, path: '$.o[(true)]'}), []);
+            assert.deepEqual(jsonpath({
+                json: {stores: [{name: 'a'}, {name: 'b'}, {name: 'c'}]},
+                path: '$.stores[0:3:2][(@.length-1)].name'
+            }), []);
+            // Properties with those names are still found
+            assert.deepEqual(jsonpath({
+                json: {o: {null: 'N', true: 'T'}}, path: '$.o[(null)]'
+            }), ['N']);
+            assert.deepEqual(jsonpath({
+                json: {o: {null: 'N', true: 'T'}}, path: '$.o[(true)]'
+            }), ['T']);
+        });
+
         it('range of property of entire tree', () => {
             const books = json.store.book;
             const expected = [books[0], books[1]];
