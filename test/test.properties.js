@@ -60,6 +60,50 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             assert.deepEqual(query('$[x, y]'), [1, 3]);
         });
 
+        it('Union of quoted property names and other selectors', () => {
+            /**
+             * @param {string} path
+             * @param {unknown} data
+             * @param {"value"|"path"} [resultType]
+             * @returns {unknown}
+             */
+            const query = (path, data, resultType) => jsonpath({
+                json: /** @type {object} */ (data), path, resultType
+            });
+            const obj = {a: 1, b: 2};
+            const list = ['x', 'y', 'z'];
+            // A quoted name next to an index, in either order
+            assert.deepEqual(query("$['a',1]", obj), [1]);
+            assert.deepEqual(query("$[1,'a']", obj), [1]);
+            assert.deepEqual(query("$['a','b',0]", obj), [1, 2]);
+            assert.deepEqual(query('$["a",0]', obj), [1]);
+            assert.deepEqual(query("$['a', 1]", obj), [1]);
+            assert.deepEqual(query("$['a',1]", obj, 'path'), ["$['a']"]);
+            assert.deepEqual(query("$[0,'a']", list), ['x']);
+            assert.deepEqual(query("$['a',2,0]", list), ['z', 'x']);
+            // A wildcard or a slice next to a name keeps every match
+            assert.deepEqual(query("$[*,'a']", {a: 'A', b: 'B'}), [
+                'A', 'B', 'A'
+            ]);
+            assert.deepEqual(query("$[0:2,'a']", list), ['x', 'y']);
+            // Commas inside the quotes do not split the name
+            assert.deepEqual(query("$['a,b',0]", {'a,b': 5, 0: 6}), [5, 6]);
+            // A quoted name next to a bare name, as in the last example of #159
+            assert.deepEqual(query("$..['io.nest',out]", {
+                functions: {foo: {'io.nest': 'foo'}, bar: {out: 'bar'}}
+            }), ['foo', 'bar']);
+            // Escapes work as in a union of only quoted names
+            assert.deepEqual(
+                query(String.raw`$['it\'s',0]`, {"it's": 7, 0: 8}), [7, 8]
+            );
+            // A quote within a bare name does not make it a mixed union
+            assert.deepEqual(query("$[it's,x]", {"it's": 1, x: 2}), [1, 2]);
+            // The rest of the path continues from every member
+            assert.deepEqual(query("$['n',0].v", {n: {v: 1}, 0: {v: 2}}), [
+                1, 2
+            ]);
+        });
+
         it('Quoted property names with commas and escapes', () => {
             const data = {
                 'a,b': 1, "it's": 2, 'say "hi"': 3, 'a\\b': 4, a: 5, b: 6

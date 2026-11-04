@@ -7,6 +7,9 @@ import {toStringTag} from './utils.js';
 
 const scriptCache = new Map();
 const pathCache = new Map();
+// A union of quoted names and other selectors (e.g., `0,'a'`); only needed
+//   for unions which don't start with a quote
+const mixedUnion = /^(?=[^'"]*['"])(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|[^,'"\s\[\]]+)(?:\s*,\s*(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|[^,'"\s\[\]]+))*$/v;
 
 /**
  * @typedef {any} AnyInput
@@ -868,11 +871,27 @@ class JSONPathClass {
                 x, valObj[locProp], push(path, locProp), val, locProp, callback,
                 hasArrExpr, true
             ));
-        } else if (loc[0] === "'" || loc[0] === '"') { // ['name1','name2',...]
-            // Quoted members are literal property names
-            for (const [, single, double] of loc.matchAll(
-                /'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)"/gv
+        } else if (
+            loc[0] === "'" || loc[0] === '"' ||
+            (loc.includes(',') && mixedUnion.test(loc))
+        ) { // ['name1','name2',...], possibly with other selectors
+            for (const [, single, double, other] of loc.matchAll(
+                /'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)"|([^,'"\s\[\]]+)/gv
             )) {
+                if (other !== undefined) {
+                    // Not a quoted name, so trace it as usual (e.g., an index)
+                    addRet(this._trace(
+                        unshift(other, x),
+                        val,
+                        path,
+                        parent,
+                        parentPropName,
+                        callback,
+                        true
+                    ));
+                    continue;
+                }
+                // Quoted members are literal property names
                 const prop = (single ?? double).replaceAll(
                     /\\(['"\\])/gv, '$1'
                 );
@@ -1237,13 +1256,14 @@ JSONPath.toPathArray = function (expr) {
                 (subx.push($1) - 1) +
                 ']';
         })
-        // Unions of quoted property names (e.g., `['x','y']`) and quoted
-        //   names with commas or backslash escapes, kept intact (with
-        //   quotes) so their members survive tokenization
+        // Unions of quoted property names (e.g., `['x','y']`), optionally
+        //   mixed with other selectors (e.g., `['x',0]`), and quoted names
+        //   with commas or backslash escapes, kept intact (with quotes) so
+        //   their members survive tokenization
         .replaceAll(
-            /\[\s*((?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")(?:\s*,\s*(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"))*)\s*\]/gv,
+            /\[\s*((?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|[^,'"\s\[\]]+)(?:\s*,\s*(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|[^,'"\s\[\]]+))*)\s*\]/gv,
             function ($0, $1) {
-                if (!(/[,\\]/v).test($1)) {
+                if (!(/['"]/v).test($1) || !(/[,\\]/v).test($1)) {
                     return $0;
                 }
                 // eslint-disable-next-line @stylistic/max-len -- Long
