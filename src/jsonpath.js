@@ -756,8 +756,8 @@ class JSONPathClass {
             } else {
                 const valObj3 = /** @type {Record<string, unknown>} */ (val);
                 this._walk(val, (m) => {
-                    if (this._eval(safeLoc, valObj3[m], m, path, parent,
-                        parentPropName)) {
+                    if (this._eval(safeLoc, valObj3[m], m, path,
+                        Array.isArray(val) ? parent : val, parentPropName)) {
                         addRet(this._trace(x, valObj3[m], push(path, m), val, m,
                             callback, true));
                     }
