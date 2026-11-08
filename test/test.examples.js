@@ -206,6 +206,17 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             const result = jsonpath({json, path: '$..book[?(@parent.bicycle && @parent.bicycle.color === "red")].category'});
             assert.deepEqual(result, expected);
         });
+        it('uses the containing object as @parent in object filters', () => {
+            const data = {id: 1, foo: {id: 2, bar: {id: 3, foo: {id: 4}}}};
+            assert.deepEqual(jsonpath({
+                json: data,
+                path: '$.foo.bar[?(@property === "foo" && @parent.id === 3)]'
+            }), [data.foo.bar.foo]);
+            assert.deepEqual(jsonpath({
+                json: data,
+                path: '$.foo.bar[?(@property === "foo" && @parent.id === 2)]'
+            }), []);
+        });
         it('Custom property: @property', () => {
             const expected = json.store.book.reduce(function (arr, book) {
                 arr.push(book.author, book.title);
