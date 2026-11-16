@@ -196,6 +196,70 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             });
             assert.deepEqual(result, expected);
         });
+        describe('assignment operators in safe mode script', () => {
+            const items = {items: [{n: 'a', v: 5}, {n: 'b', v: 15}, {n: 'c', v: 25}]};
+            /**
+             * @param {string} path
+             * @returns {unknown}
+             */
+            const names = (path) => jsonpath({
+                json: items,
+                path,
+                eval: 'safe'
+            });
+            const opPathExpecteds = /** @type {[string, string, string[]][]} */ ([
+                ['+=', '$.items[?(x = 1, x += @.v, x > 10)].n', ['b', 'c']],
+                ['-=', '$.items[?(x = 30, x -= @.v, x > 10)].n', ['a', 'b']],
+                ['*=', '$.items[?(x = 2, x *= @.v, x > 20)].n', ['b', 'c']],
+                ['/=', '$.items[?(x = 75, x /= @.v, x === 5)].n', ['b']],
+                ['%=', '$.items[?(x = 20, x %= @.v, x === 0)].n', ['a']],
+                ['**=', '$.items[?(x = 2, x **= @.v / 5, x === 8)].n', ['b']],
+                ['<<=', '$.items[?(x = 1, x <<= @.v / 5, x === 2)].n', ['a']],
+                ['>>=', '$.items[?(x = -64, x >>= @.v / 5, x === -2)].n', ['c']],
+                ['>>>=', '$.items[?(x = 64, x >>>= @.v / 5, x === 8)].n', ['b']],
+                ['&=', '$.items[?(x = 7, x &= @.v, x === 5)].n', ['a']],
+                ['^=', '$.items[?(x = 10, x ^= @.v, x === 5)].n', ['b']],
+                ['|=', '$.items[?(x = 16, x |= @.v, x === 31)].n', ['b']],
+                ['||=', '$.items[?(x = @.v > 10 && @.v, x ||= 99, x === 99)].n', ['a']],
+                ['&&=', '$.items[?(x = @.v > 10 && @.v, x &&= 99, x === 99)].n', ['b', 'c']],
+                ['??=', '$.items[?(x = @.v > 10 ? null : @.v, x ??= 99, x === 99)].n', ['b', 'c']],
+                ['++ (postfix)', '$.items[?(x = @.v, y = x++, y === 15 && x === 16)].n', ['b']],
+                ['-- (postfix)', '$.items[?(x = @.v, y = x--, y === 15 && x === 14)].n', ['b']],
+                ['++ (prefix)', '$.items[?(x = @.v, y = ++x, y === 16 && x === 16)].n', ['b']],
+                ['-- (prefix)', '$.items[?(x = @.v, y = --x, y === 14 && x === 14)].n', ['b']],
+                ['++ on a string', '$.items[?(x = "4", x++, x === 5)].n', ['a', 'b', 'c']]
+            ]);
+            for (const [operator, path, expected] of opPathExpecteds) {
+                it(`${operator} operator`, () => {
+                    assert.deepEqual(names(path), expected);
+                });
+            }
+            it('short-circuits the right side of `||=`', () => {
+                assert.deepEqual(
+                    names('$.items[?(z = 0, x = @.v > 10, x ||= (z = 1), z === 0)].n'),
+                    ['b', 'c']
+                );
+            });
+            it('throws on an undefined variable', () => {
+                assert.throws(() => {
+                    names('$.items[?(q += 1)].n');
+                }, /q is not defined/v);
+                assert.throws(() => {
+                    names('$.items[?(q++)].n');
+                }, /q is not defined/v);
+            });
+            it('throws on a property operand', () => {
+                assert.throws(() => {
+                    names('$.items[?(@.v += 1)].n');
+                }, /Invalid left-hand side in assignment/v);
+                assert.throws(() => {
+                    names('$.items[?(@.v++)].n');
+                }, /Invalid left-hand side expression in postfix operation/v);
+                assert.throws(() => {
+                    names('$.items[?(++@.v)].n');
+                }, /Invalid left-hand side expression in prefix operation/v);
+            });
+        });
         describe('binary operators in safe mode script', () => {
             // eslint-disable-next-line no-shadow -- Convenient
             const json = {

@@ -13,6 +13,10 @@ import jsepAssignment from '@jsep-plugin/assignment';
  */
 
 /**
+ * @typedef {any} UpdateExpression
+ */
+
+/**
  * @typedef {any} Substitution
  */
 
@@ -206,6 +210,11 @@ const SafeEval = {
                 /** @type {AssignmentExpression} */ (ast),
                 subs
             );
+        case 'UpdateExpression':
+            return SafeEval.evalUpdateExpression(
+                /** @type {UpdateExpression} */ (ast),
+                subs
+            );
         default:
             throw new SyntaxError('Unexpected expression', {
                 cause: ast
@@ -368,9 +377,44 @@ const SafeEval = {
         const id = /** @type {jsep.Identifier} */ (
             ast.left
         ).name;
-        const value = SafeEval.evalAst(ast.right, subs);
-        subs[id] = value;
+        if (ast.operator === '=') {
+            subs[id] = SafeEval.evalAst(ast.right, subs);
+            return subs[id];
+        }
+        // `x += y` is `x = x + y`, `x ??= y` is `x = x ?? y`, etc.
+        const operator = ast.operator.slice(0, -1);
+        /* c8 ignore next 5 -- Defensive guard for malformed ASTs */
+        if (!Object.hasOwn(BINOPS, operator)) {
+            throw new SyntaxError(
+                `Unknown assignment operator: ${ast.operator}`
+            );
+        }
+        subs[id] = BINOPS[operator](
+            SafeEval.evalIdentifier(ast.left, subs),
+            () => SafeEval.evalAst(ast.right, subs)
+        );
         return subs[id];
+    },
+
+    /**
+     * @param {UpdateExpression} ast
+     * @param {Substitutions} subs
+     * @returns {UnknownResult}
+     */
+    evalUpdateExpression (ast, subs) {
+        if (ast.argument.type !== 'Identifier') {
+            throw new SyntaxError(
+                'Invalid left-hand side expression in ' +
+                `${ast.prefix ? 'prefix' : 'postfix'} operation`
+            );
+        }
+        let value = /** @type {number} */ (
+            SafeEval.evalIdentifier(ast.argument, subs)
+        );
+        // Let JS do the numeric conversion (e.g. `"1"` -> 1, BigInt stays).
+        const before = ast.operator === '++' ? value++ : value--;
+        subs[/** @type {jsep.Identifier} */ (ast.argument).name] = value;
+        return ast.prefix ? value : before;
     }
 };
 
