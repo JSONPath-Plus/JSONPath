@@ -196,6 +196,61 @@ checkBuiltInVMAndNodeVM(function (vmType, setBuiltInState) {
             });
             assert.deepEqual(result, expected);
         });
+        describe('optional chaining in safe mode script', () => {
+            const shelf = {
+                books: [
+                    {title: 'A', meta: {tags: ['x']}},
+                    {title: 'B', meta: null},
+                    {title: 'C'}
+                ]
+            };
+            /**
+             * @param {string} path
+             * @returns {unknown}
+             */
+            const titles = (path) => jsonpath({
+                json: shelf,
+                path,
+                eval: 'safe'
+            });
+            it('member access (`?.`)', () => {
+                assert.deepEqual(
+                    titles('$.books[?(@.meta?.tags[0] === "x")].title'),
+                    ['A']
+                );
+                assert.deepEqual(
+                    titles('$.books[?(@.meta?.tags === undefined)].title'),
+                    ['B', 'C']
+                );
+            });
+            it('computed member access (`?.[]`)', () => {
+                assert.deepEqual(
+                    titles('$.books[?(@.meta?.["tags"]?.length)].title'),
+                    ['A']
+                );
+            });
+            it('call (`?.()`)', () => {
+                assert.deepEqual(
+                    titles('$.books[?(@.meta?.tags.join("") === "x")].title'),
+                    ['A']
+                );
+                assert.deepEqual(
+                    titles('$.books[?(@.meta?.nope?.() === undefined)].title'),
+                    ['A', 'B', 'C']
+                );
+            });
+            it('skips the rest of the chain', () => {
+                assert.deepEqual(
+                    titles('$.books[?(n = 0, @.meta?.[n = 1], n === 0)].title'),
+                    ['B', 'C']
+                );
+            });
+            it('still throws without `?.`', () => {
+                assert.throws(() => {
+                    titles('$.books[?(@.meta.tags)].title');
+                }, /Cannot read properties of null \(reading 'tags'\)/v);
+            });
+        });
         describe('binary operators in safe mode script', () => {
             // eslint-disable-next-line no-shadow -- Convenient
             const json = {

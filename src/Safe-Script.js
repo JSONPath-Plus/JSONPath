@@ -150,6 +150,21 @@ const UNOPS = Object.assign(Object.create(null), /** @type {UnaryOperatorTable} 
     void: () => undefined
 }));
 
+/**
+ * Returned by a member or call link when an optional link (`?.`) met
+ *   `null` or `undefined`: the rest of the chain is skipped and the chain
+ *   evaluates to `undefined`.
+ */
+const SHORT_CIRCUIT = Symbol('optional chain short-circuit');
+
+/**
+ * @param {UnknownResult} value
+ * @returns {boolean}
+ */
+const isNullish = (value) => {
+    return value === null || value === undefined;
+};
+
 const SafeEval = {
     /**
      * @param {jsep.Expression} ast
@@ -182,10 +197,8 @@ const SafeEval = {
         case 'Literal':
             return SafeEval.evalLiteral(/** @type {jsep.Literal} */ (ast));
         case 'MemberExpression':
-            return SafeEval.evalMemberExpression(
-                /** @type {jsep.MemberExpression} */ (ast),
-                subs
-            );
+        case 'CallExpression':
+            return SafeEval.evalChain(ast, subs);
         case 'UnaryExpression':
             return SafeEval.evalUnaryExpression(
                 /** @type {jsep.UnaryExpression} */ (ast),
@@ -194,11 +207,6 @@ const SafeEval = {
         case 'ArrayExpression':
             return SafeEval.evalArrayExpression(
                 /** @type {jsep.ArrayExpression} */ (ast),
-                subs
-            );
-        case 'CallExpression':
-            return SafeEval.evalCallExpression(
-                /** @type {jsep.CallExpression} */ (ast),
                 subs
             );
         case 'AssignmentExpression':
@@ -289,11 +297,49 @@ const SafeEval = {
     },
 
     /**
+     * Evaluates a whole member/call chain such as `@.a?.b.c()`.
+     * @param {jsep.Expression} ast
+     * @param {Substitutions} subs
+     * @returns {UnknownResult}
+     */
+    evalChain (ast, subs) {
+        const result = SafeEval.evalChainLink(ast, subs);
+        return result === SHORT_CIRCUIT ? undefined : result;
+    },
+
+    /**
+     * Evaluates one link of a member/call chain. Unlike `evalAst`, this
+     *   passes `SHORT_CIRCUIT` up so an earlier `?.` skips the later links.
+     * @param {jsep.Expression} ast
+     * @param {Substitutions} subs
+     * @returns {UnknownResult}
+     */
+    evalChainLink (ast, subs) {
+        if (ast.type === 'MemberExpression') {
+            return SafeEval.evalMemberExpression(
+                /** @type {jsep.MemberExpression} */ (ast),
+                subs
+            );
+        }
+        if (ast.type === 'CallExpression') {
+            return SafeEval.evalCallExpression(
+                /** @type {jsep.CallExpression} */ (ast),
+                subs
+            );
+        }
+        return SafeEval.evalAst(ast, subs);
+    },
+
+    /**
      * @param {jsep.MemberExpression} ast
      * @param {Substitutions} subs
      * @returns {UnknownResult}
      */
     evalMemberExpression (ast, subs) {
+        const obj = SafeEval.evalChainLink(ast.object, subs);
+        if (obj === SHORT_CIRCUIT || (ast.optional && isNullish(obj))) {
+            return SHORT_CIRCUIT;
+        }
         const prop = String(
             // NOTE: `String(value)` throws error when
             // value has overwritten the toString method to return non-string
@@ -302,7 +348,6 @@ const SafeEval = {
                 ? SafeEval.evalAst(ast.property, subs) // `object[property]`
                 : ast.property.name // `object.property` property is Identifier
         );
-        const obj = SafeEval.evalAst(ast.object, subs);
         const result = getSafeProperty(obj, prop);
         if (typeof result === 'function') {
             return result.bind(obj); // arrow functions aren't affected by bind.
@@ -343,8 +388,11 @@ const SafeEval = {
      * @returns {UnknownResult}
      */
     evalCallExpression (ast, subs) {
+        const func = SafeEval.evalChainLink(ast.callee, subs);
+        if (func === SHORT_CIRCUIT || (ast.optional && isNullish(func))) {
+            return SHORT_CIRCUIT;
+        }
         const args = ast.arguments.map((arg) => SafeEval.evalAst(arg, subs));
-        const func = SafeEval.evalAst(ast.callee, subs);
         if (
             isBlockedFunction(func) ||
             args.some((arg) => isBlockedFunction(arg))
